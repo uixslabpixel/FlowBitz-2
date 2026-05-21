@@ -8,6 +8,7 @@ import {
   Plus,
 } from "lucide-react";
 import SEO from "../components/SEO.jsx";
+import { seoPages, jsonLd } from "../content/brandCopy.js";
 import Logo from "../components/Logo.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { Input } from "../components/ui/input.jsx";
@@ -352,27 +353,14 @@ const Showcase = () => {
     },
   ];
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "FlowBitz Showcase",
-    description:
-      "Explore real-world examples and showcases of FlowBitz components in action. See how developers are using our interactive components in their Webflow projects.",
-    url: "https://www.flowbitz.dev/showcase",
-    mainEntity: {
-      "@type": "ItemList",
-      name: "FlowBitz Component Showcases",
-      description:
-        "Real-world examples of FlowBitz components in Webflow projects",
-    },
-  };
+  const structuredData = jsonLd.showcase;
 
   return (
     <>
       <SEO
-        title="Showcase - FlowBitz Components for Webflow | Real Projects"
-        description="Explore real-world Webflow projects built with FlowBitz components. See how teams ship polished motion using GSAP-style effects powered by simple HTML attributes."
-        keywords="FlowBitz showcase, Webflow component examples, Webflow motion, GSAP effects in Webflow, FlowBitz projects, interactive webflow components"
+        title={seoPages.showcase.title}
+        description={seoPages.showcase.description}
+        keywords={seoPages.showcase.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/showcase"
         structuredData={structuredData}
@@ -396,9 +384,8 @@ const Showcase = () => {
             </h1>
 
             <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-              Explore real-world Webflow builds powered by FlowBitz—see
-              how teams turn ideas into polished motion with our
-              components.
+              Premium Webflow sites built with FlowBitz—see how freelancers and
+              agencies ship polished motion with the same system.
             </p>
           </header>
           {/* End Hero Section */}

@@ -24,6 +24,7 @@ import {
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useNavigate } from "react-router-dom";
+import { seoPages } from "../content/brandCopy.js";
 
 const Installation = () => {
   const [copyStates, setCopyStates] = useState({});
@@ -53,7 +54,7 @@ const Installation = () => {
     {
       question: "Do I need to install GSAP separately?",
       answer:
-        "No! FlowBitz includes GSAP and all necessary plugins bundled in. Just add our single script tag and everything will work automatically.",
+        "No separate GSAP install. FlowBitz bundles GSAP and required plugins—add one script tag and components are ready in Webflow.",
     },
     {
       question: "Can I use FlowBitz with other frameworks besides Webflow?",
@@ -116,9 +117,9 @@ const Installation = () => {
   return (
     <>
       <SEO
-        title="Installation Guide - FlowBitz | Add GSAP Animations to Webflow"
-        description="Complete guide to installing FlowBitz in your Webflow projects. Add the script and configure GSAP-powered animations with simple HTML attributes—step-by-step, no coding required."
-        keywords="FlowBitz installation, webflow installation guide, webflow custom code, FlowBitz script, webflow HTML attributes, webflow GSAP animations"
+        title={seoPages.installation.title}
+        description={seoPages.installation.description}
+        keywords={seoPages.installation.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/installation"
         structuredData={structuredData}
@@ -135,8 +136,8 @@ const Installation = () => {
                 Installation Guide
               </h1>
               <p className="text-paragraph large text-text-medium">
-                Learn how to install and use FlowBitz animations in your Webflow
-                projects with this step-by-step guide.
+                Add FlowBitz to your Webflow project—one script, wb-* attributes,
+                premium motion on your next build.
               </p>
             </div>
 

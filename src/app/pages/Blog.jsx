@@ -5,6 +5,7 @@ import SEO from "../components/SEO.jsx";
 import { getAllPosts } from "../data/blogPosts.js";
 import Footer from "../components/layout/Footer.jsx";
 import Logo from "../components/Logo.jsx";
+import { seoPages } from "../content/brandCopy.js";
 
 const posts = getAllPosts();
 const POSTS_PER_PAGE = 10;
@@ -28,10 +29,10 @@ const Blog = () => {
   return (
     <>
       <SEO
-        title="FlowBitz Blog | Webflow Animation Tutorials, Release Notes & Motion Workflows"
-        description="Read FlowBitz tutorials, release notes, and Webflow motion workflows. Learn how to create GSAP-powered animations with simple HTML attributes—no custom JavaScript required."
+        title={seoPages.blog.title}
+        description={seoPages.blog.description}
         url="https://www.flowbitz.dev/blog"
-        keywords="FlowBitz blog, Webflow animation tutorials, FlowBitz release notes, GSAP for Webflow, webflow motion workflows, HTML attributes animations, interactive components"
+        keywords={seoPages.blog.keywords}
       />
       <div className="relative z-[2] text-foreground">
         <div className="max-w-[1200px] mx-2 md:mx-4 lg:mx-auto flex justify-center items-center flex-col border-x border-foreground/10">
@@ -47,12 +48,12 @@ const Blog = () => {
           </div>
 
             <h1 className="inter-semi-48 w-2/3 md:w-full text-center text-foreground">
-              Insights and Release News
+              Motion craft and release notes
             </h1>
 
             <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-              Tutorials, release notes, and motion workflows—learn how to ship
-              FlowBitz-powered GSAP-style effects in Webflow with less
+              Tutorials, release notes, and workflows for serious Webflow
+              creators—ship premium motion with FlowBitz and less
               friction.
             </p>
           </header>

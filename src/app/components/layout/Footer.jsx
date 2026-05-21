@@ -67,7 +67,7 @@ const Footer = ({ onScrollToTop }) => {
               <Logo className="h-10 w-auto" />
 
               <p className="inter-reg-18 w-[294px] md:w-auto opacity-80 text-foreground">
-                Create stunning animations with our library of GSAP components.
+                Premium UI motion for Webflow—craft interactions that feel studio-made.
               </p>
             </div>
 
