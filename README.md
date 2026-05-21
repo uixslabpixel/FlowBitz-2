@@ -1,6 +1,6 @@
 # FlowBitz
 
-[![Version](https://img.shields.io/badge/version-2.4.4-blue.svg)](https://github.com/Slabpixel/FlowBitz)
+[![Version](https://img.shields.io/badge/version-2.4.5-blue.svg)](https://github.com/Slabpixel/FlowBitz)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![CDN](https://img.shields.io/badge/CDN-flowbitz.dev-orange.svg)](https://www.flowbitz.dev)
 

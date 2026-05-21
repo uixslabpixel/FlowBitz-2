@@ -24,5 +24,5 @@ This directory contains all documentation files for the FlowBitz project (except
 
 ---
 
-**Last Updated**: Based on FlowBitz v2.4.x
+**Last Updated**: Based on FlowBitz v2.4.5
 
