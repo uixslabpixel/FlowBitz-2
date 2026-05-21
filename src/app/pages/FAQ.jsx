@@ -19,6 +19,7 @@ import {
 import Sidebar from "../components/layout/LeftSidebar.jsx";
 import SEO from "../components/SEO.jsx";
 import { useNavigate } from "react-router-dom";
+import { seoPages, jsonLd } from "../content/brandCopy.js";
 
 const FAQ = () => {
   const [openItems, setOpenItems] = useState({});
@@ -44,7 +45,7 @@ const FAQ = () => {
     {
       question: "How do I install FlowBitz components?",
       answer:
-        "Installing FlowBitz is incredibly simple! Just add one script tag to your Webflow project's custom code section, then add HTML attributes to any element. No complex setup, no multiple files - just one script and you're ready to add professional GSAP animations.",
+        "Add one FlowBitz script tag in your Webflow project custom code, then set wb-component and related wb-* attributes on elements. One script, consistent motion across pages.",
       category: "installation",
     },
     {
@@ -70,7 +71,7 @@ const FAQ = () => {
     {
       question: "Do I need to know JavaScript to use FlowBitz?",
       answer:
-        "Absolutely not! FlowBitz is specifically designed for designers who want professional animations without coding. Just add HTML attributes to your Webflow elements - no JavaScript knowledge required. This is what makes FlowBitz different from manual GSAP coding.",
+        "You do not need to write custom GSAP or JavaScript. FlowBitz is configured with wb-* attributes in Webflow—different from maintaining your own animation codebase on every project.",
       category: "usage",
     },
     {
@@ -148,7 +149,7 @@ const FAQ = () => {
     {
       question: "Are FlowBitz components free to use?",
       answer:
-        "Yes! FlowBitz is 100% free forever with no premium tiers, hidden costs, or usage limits. Unlike expensive animation libraries, we believe professional web animations shouldn't be a luxury. You can use, modify, and distribute them without any restrictions.",
+        "Yes—the core FlowBitz library is free and open source for personal and commercial Webflow projects. Use, modify, and distribute per the MIT license.",
       category: "general",
     },
     {
@@ -203,12 +204,7 @@ const FAQ = () => {
   };
 
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    name: "FlowBitz FAQ",
-    description:
-      "Frequently asked questions about FlowBitz - the free interactive components library for Webflow. Get help with installation, usage, and troubleshooting.",
-    url: "https://www.flowbitz.dev/faq",
+    ...jsonLd.faq,
     mainEntity: faqItems.map((faq) => ({
       "@type": "Question",
       name: faq.question,
@@ -222,9 +218,9 @@ const FAQ = () => {
   return (
     <>
       <SEO
-        title="FAQ - FlowBitz Components | Webflow Animation Help"
-        description="Find answers to common questions about FlowBitz installation, usage, and Webflow animation troubleshooting. Get support and best practices for GSAP-powered components."
-        keywords="FlowBitz FAQ, webflow animation troubleshooting, FlowBitz installation help, webflow GSAP components, interactive components support, FlowBitz support"
+        title={seoPages.faq.title}
+        description={seoPages.faq.description}
+        keywords={seoPages.faq.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/faq"
         structuredData={structuredData}
@@ -241,8 +237,8 @@ const FAQ = () => {
                 Frequently Asked Questions
               </h1>
               <p className="text-paragraph large text-text-medium">
-                Find answers to common questions about FlowBitz components,
-                installation, usage, and troubleshooting.
+                Help with installing FlowBitz, wb-* attributes, performance, and
+                troubleshooting—built for serious Webflow creators.
               </p>
             </div>
 

@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import Logo from "../components/Logo.jsx";
 import Footer from "../components/layout/Footer";
 import SEO from "../components/SEO.jsx";
+import { seoPages } from "../content/brandCopy.js";
 
 const Release = () => {
     const releases = [
@@ -140,9 +141,9 @@ const Release = () => {
     return (
         <>
             <SEO
-                title="Release Notes - FlowBitz | Version History & Roadmap"
-                description="Track FlowBitz release notes, version history, and roadmap updates. See what's new in free GSAP-powered Webflow animation components."
-                keywords="FlowBitz release notes, FlowBitz changelog, webflow components version history, animation roadmap, GSAP components for Webflow"
+                title={seoPages.release.title}
+                description={seoPages.release.description}
+                keywords={seoPages.release.keywords}
                 image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
                 url="https://www.flowbitz.dev/release"
                 structuredData={structuredData}
@@ -160,7 +161,7 @@ const Release = () => {
                         </h1>
 
                         <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-                            Track the evolution of FlowBitz - from pre-release to stable versions. See what's new in each release.
+                            Version history for the FlowBitz motion system—what shipped, what improved, and what matters for your Webflow builds.
                         </p>
                     </header>
 

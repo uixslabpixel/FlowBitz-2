@@ -7,6 +7,7 @@ import SEO from "../components/SEO.jsx";
 import { Button } from "../components/ui/button.jsx";
 import { Copy, RotateCcw, Download, Code, RotateCw } from "lucide-react";
 import { useWebflowBits } from "../hooks/useWebflowBits";
+import { seoPages, jsonLd } from "../content/brandCopy.js";
 
 const ComponentDetail = () => {
   const { componentName } = useParams();
@@ -286,27 +287,18 @@ const ComponentDetail = () => {
      SEO Structured Data
      ═══════════════════════════════════════════════════════ */
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: component.name,
-    description: component.description,
-    url: `https://www.flowbitz.dev/components/${componentName}`,
-    applicationCategory: "Web Development Tool",
-    operatingSystem: "Web",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-      description: "Free Webflow component",
-    },
-    creator: {
-      "@type": "Organization",
-      name: "SlabPixel Studio",
-      url: "https://slabpixel.com",
-    },
-    keywords: `webflow, ${component.name.toLowerCase()}, ${component.category}, interactive components, webflow library`,
-  };
+  const pageSeo = seoPages.componentDetail(
+    component.name,
+    component.description,
+    componentName,
+    component.category
+  );
+  const structuredData = jsonLd.component(
+    component.name,
+    component.description,
+    componentName,
+    component.category
+  );
 
   /* ═══════════════════════════════════════════════════════
      Main Render — 3 Column Layout
@@ -315,9 +307,9 @@ const ComponentDetail = () => {
   return (
     <>
       <SEO
-        title={`${component.name} - FlowBitz Component for Webflow | Free GSAP Animation`}
-        description={`${component.description} Build with FlowBitz using simple HTML attributes. Get GSAP-powered motion for Webflow—free and easy to customize.`}
-        keywords={`FlowBitz, webflow, ${component.name.toLowerCase()}, ${component.category}, GSAP for Webflow, webflow HTML attributes, interactive components, webflow animation library, ${componentName}`}
+        title={pageSeo.title}
+        description={pageSeo.description}
+        keywords={pageSeo.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url={`https://www.flowbitz.dev/components/${componentName}`}
         structuredData={structuredData}

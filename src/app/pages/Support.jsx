@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button.jsx";
 import Sidebar from "../components/layout/LeftSidebar.jsx";
 import SEO from "../components/SEO.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { seoPages, jsonLd } from "../content/brandCopy.js";
 
 const Support = () => {
   const navigate = useNavigate();
@@ -41,26 +42,14 @@ const Support = () => {
     navigate("/components");
   };
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "SupportPage",
-    name: "FlowBitz Support",
-    description:
-      "Get help and support for FlowBitz - the free interactive components library for Webflow. Find documentation, report bugs, and request features.",
-    url: "https://www.flowbitz.dev/support",
-    mainEntity: {
-      "@type": "Organization",
-      name: "SlabPixel Studio",
-      url: "https://slabpixel.com",
-    },
-  };
+  const structuredData = jsonLd.support;
 
   return (
     <>
       <SEO
-        title="Support - FlowBitz Components | Docs, Bug Reports & Feature Requests"
-        description="Get help with FlowBitz. Find documentation, report bugs, and request features for Webflow animation components."
-        keywords="FlowBitz support, webflow components help, FlowBitz documentation, bug report, feature request, webflow animation support"
+        title={seoPages.support.title}
+        description={seoPages.support.description}
+        keywords={seoPages.support.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/support"
         structuredData={structuredData}
@@ -77,8 +66,8 @@ const Support = () => {
                 Support & Help
               </h1>
               <p className="text-paragraph large text-text-medium">
-                Need help with FlowBitz? We're here to assist you. Find answers
-                to common questions or get in touch with our team.
+                Documentation, bugs, and feature requests for the FlowBitz motion
+                system—support for serious Webflow creators.
               </p>
             </div>
 

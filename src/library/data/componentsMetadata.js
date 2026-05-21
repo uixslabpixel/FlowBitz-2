@@ -21,13 +21,12 @@
 
 export const componentsMetadata = {
   // Text Components
-  "split-text": {
-    name: "Split Text",
-    description: "Character, word, or line-based split animations",
-    category: "text",
-    file: "splitText.js",
-    installationNotes:
-      "Works with any text element like <h1>, <h2>, <p>, <span>, <div>, etc. The component automatically splits the text content and wraps each part in spans for animation.",
+  'split-text': {
+    name: 'Split Text',
+    description: 'Choreographed split-text motion for premium headlines—chars, words, or lines',
+    category: 'text',
+    file: 'splitText.js',
+    installationNotes: 'Works with any text element like <h1>, <h2>, <p>, <span>, <div>, etc. The component automatically splits the text content and wraps each part in spans for animation.',
     hoverPreview: true,
     attributes: [
       {
@@ -99,18 +98,16 @@ export const componentsMetadata = {
     example: {
       title: "Split Text Animation",
       code: '<h1 wb-component="split-text" wb-split-type="words" class="lg:text-6xl text-3xl">Create Amazing Websites with Powerful Animations</h1>',
-      description:
-        "Each word animates separately with customizable split type and timing",
-    },
+      description: 'Words or characters reveal with stagger—ideal for hero headlines and scroll moments'
+    }
   },
 
-  "gradient-text": {
-    name: "Gradient Text",
-    description: "Animated gradient text with customizable colors",
-    category: "text",
-    file: "gradientText.js",
-    installationNotes:
-      "Perfect for headings like <h1>, <h2>, <h3> or any text element. The gradient animation works best with larger text sizes for better visual impact.",
+  'gradient-text': {
+    name: 'Gradient Text',
+    description: 'Animated gradient type for premium headlines and display text',
+    category: 'text',
+    file: 'gradientText.js',
+    installationNotes: 'Perfect for headings like <h1>, <h2>, <h3> or any text element. The gradient animation works best with larger text sizes for better visual impact.',
     hoverPreview: false,
     attributes: [
       {
@@ -140,18 +137,16 @@ export const componentsMetadata = {
     example: {
       title: "Gradient Text Animation",
       code: '<h1 wb-component="gradient-text" class="lg:text-6xl text-3xl">Gradient Text</h1>',
-      description:
-        "Animated gradient text with customizable colors and effects",
-    },
+      description: 'Flowing gradient on type—tuned for heroes, labels, and brand moments'
+    }
   },
 
-  "text-type": {
-    name: "Text Type",
-    description: "Typewriter effect with customizable cursor",
-    category: "text",
-    file: "textType.js",
-    installationNotes:
-      "Use with <span> elements inside headings or paragraphs. The component replaces the text content with a typewriter animation. Works best with monospace fonts.",
+  'text-type': {
+    name: 'Text Type',
+    description: 'Rotating typewriter motion for heroes and labels—cursor and timing controlled',
+    category: 'text',
+    file: 'textType.js',
+    installationNotes: 'Use with <span> elements inside headings or paragraphs. The component replaces the text content with a typewriter animation. Works best with monospace fonts.',
     hoverPreview: false,
     attributes: [
       {
@@ -230,17 +225,16 @@ export const componentsMetadata = {
     example: {
       title: "Typewriter Effect",
       code: '<h1 class="lg:text-6xl text-3xl">Learn more about <span wb-component="text-type" wb-text-1="Coding" wb-text-2="Webflow" wb-text-3="Animation" class="lg:text-6xl text-3xl">Coding</span></h1>',
-      description: "Typewriter effect with customizable cursor and timing",
-    },
+      description: 'Cycles phrases with a refined typewriter feel for dynamic hero copy'
+    }
   },
 
-  "blur-text": {
-    name: "Blur Text",
-    description: "Blur-to-clear transition effects",
-    category: "text",
-    file: "blurText.js",
-    installationNotes:
-      "Works with any text element like <h1>, <h2>, <p>, <span>. The blur effect is applied on scroll or hover, revealing text from blur to clear.",
+  'blur-text': {
+    name: 'Blur Text',
+    description: 'Blur-to-clear text reveal for refined entrances and scroll moments',
+    category: 'text',
+    file: 'blurText.js',
+    installationNotes: 'Works with any text element like <h1>, <h2>, <p>, <span>. The blur effect is applied on scroll or hover, revealing text from blur to clear.',
     hoverPreview: true,
     attributes: [
       {
@@ -312,17 +306,16 @@ export const componentsMetadata = {
     example: {
       title: "Blur Text Animation",
       code: '<h1 wb-component="blur-text" class="lg:text-6xl text-3xl">Blur to Clear</h1>',
-      description: "Blur-to-clear transition effects with customizable timing",
-    },
+      description: 'Soft blur resolves into sharp type—controlled timing per word or character'
+    }
   },
 
-  "shiny-text": {
-    name: "Shiny Text",
-    description: "Shimmer and shine text effects",
-    category: "text",
-    file: "shinyText.js",
-    installationNotes:
-      "Best used with larger headings like <h1>, <h2> or prominent text elements. The shine effect creates a moving gradient overlay across the text.",
+  'shiny-text': {
+    name: 'Shiny Text',
+    description: 'Subtle shimmer sweep across display type—polished, not gimmicky',
+    category: 'text',
+    file: 'shinyText.js',
+    installationNotes: 'Best used with larger headings like <h1>, <h2> or prominent text elements. The shine effect creates a moving gradient overlay across the text.',
     hoverPreview: false,
     attributes: [
       {
@@ -360,17 +353,16 @@ export const componentsMetadata = {
     example: {
       title: "Shiny Text Effect",
       code: '<h1 class="lg:text-6xl text-3xl" wb-component="shiny-text" wb-text-color="#0a70ff" wb-shine-color="#8cbcff" style="line-height: 1.2;">Shiny Text</h1>',
-      description: "Shimmer and shine text effects with customizable speed",
-    },
+      description: 'Light sweep across headlines—CSS-driven and performance-friendly'
+    }
   },
 
-  "count-up": {
-    name: "Count Up",
-    description: "Animated number counting",
-    category: "text",
-    file: "countUp.js",
-    installationNotes:
-      "Perfect for statistics, numbers, or counters. Use with <span>, <div>, or any element containing numeric values. The component animates from a starting number to a target value.",
+  'count-up': {
+    name: 'Count Up',
+    description: 'Animated stat counters for credibility-focused landing sections',
+    category: 'text',
+    file: 'countUp.js',
+    installationNotes: 'Perfect for statistics, numbers, or counters. Use with <span>, <div>, or any element containing numeric values. The component animates from a starting number to a target value.',
     hoverPreview: true,
     attributes: [
       {
@@ -459,17 +451,16 @@ export const componentsMetadata = {
     example: {
       title: "Count Up Animation",
       code: '<h1 wb-component="count-up" wb-count-to="1250" wb-count-separator="," class="lg:text-6xl text-4xl">0</h1>',
-      description: "Animated number counting with customizable formatting",
-    },
+      description: 'Numbers count up with separators and easing—built for metrics and proof sections'
+    }
   },
 
-  "decrypted-text": {
-    name: "Decrypted Text",
-    description: "Matrix-style decryption effects",
-    category: "text",
-    file: "decryptedText.js",
-    installationNotes:
-      "Great for dramatic reveals and tech-themed content. Works with any text element like <h1>, <h2>, <p>, <span>. The component scrambles characters before revealing the final text.",
+  'decrypted-text': {
+    name: 'Decrypted Text',
+    description: 'Matrix-style decode reveal for bold headlines and launch moments',
+    category: 'text',
+    file: 'decryptedText.js',
+    installationNotes: 'Great for dramatic reveals and tech-themed content. Works with any text element like <h1>, <h2>, <p>, <span>. The component scrambles characters before revealing the final text.',
     hoverPreview: true,
     attributes: [
       {
@@ -551,18 +542,16 @@ export const componentsMetadata = {
     example: {
       title: "Decrypted Text Effect",
       code: '<h1 wb-component="decrypted-text" wb-use-original-chars="true" class="lg:text-6xl text-3xl">SECRET MESSAGE</h1>',
-      description:
-        "Matrix-style decryption effects with customizable characters",
-    },
+      description: 'Characters resolve from scramble—dramatic reveal for key statements'
+    }
   },
 
-  "scramble-text": {
-    name: "Scramble Text",
-    description: "Interactive character scrambling",
-    category: "text",
-    file: "scrambleText.js",
-    installationNotes:
-      "Interactive hover effect that scrambles text on mouse proximity. Works with any text element like <p>, <span>, <div>. Best with monospace fonts for consistent character spacing.",
+  'scramble-text': {
+    name: 'Scramble Text',
+    description: 'Interactive scramble on proximity—expressive hover language for type',
+    category: 'text',
+    file: 'scrambleText.js',
+    installationNotes: 'Interactive hover effect that scrambles text on mouse proximity. Works with any text element like <p>, <span>, <div>. Best with monospace fonts for consistent character spacing.',
     hoverPreview: false,
     attributes: [
       {
@@ -629,18 +618,16 @@ export const componentsMetadata = {
     example: {
       title: "Scramble Text Effect",
       code: '<p wb-component="scramble-text" wb-font="monospace" class="lg:text-2xl text-md max-w-[570px]">Once you hover over me, you will see the effect in action! You can customize the radius, duration, and speed of the scramble effect.</p>',
-      description:
-        "Interactive character scrambling with customizable radius, duration, and speed",
-    },
+      description: 'Proximity-driven scramble—cursor radius and speed tuned for editorial feel'
+    }
   },
 
-  "variable-proximity": {
-    name: "Variable Proximity",
-    description: "Mouse proximity font variations",
-    category: "text",
-    file: "variableProximity.js",
-    installationNotes:
-      "Requires variable fonts that support weight variations. Works with any text element like <h1>, <h2>, <p>, <span>. The font weight changes based on mouse proximity.",
+  'variable-proximity': {
+    name: 'Variable Proximity',
+    description: 'Mouse-driven variable font modulation for editorial headlines',
+    category: 'text',
+    file: 'variableProximity.js',
+    installationNotes: 'Requires variable fonts that support weight variations. Works with any text element like <h1>, <h2>, <p>, <span>. The font weight changes based on mouse proximity.',
     hoverPreview: false,
     attributes: [
       {
@@ -676,18 +663,16 @@ export const componentsMetadata = {
     example: {
       title: "Variable Proximity Effect",
       code: '<h1 wb-component="variable-proximity" class="lg:text-4xl text-xl max-w-[570px]">Please hover over me to see the amazing variable font effects!</h1>',
-      description:
-        "Mouse proximity font variations with customizable weight and size sliders",
-    },
+      description: 'Weight responds to cursor distance—subtle, premium variable font motion'
+    }
   },
 
-  "rotating-text": {
-    name: "Rotating Text",
-    description: "Auto-rotating text with stagger effects",
-    category: "text",
-    file: "rotatingText.js",
-    installationNotes:
-      "Use with <span> elements inside headings or paragraphs. The component cycles through different text options with smooth transitions. Great for highlighting multiple features or benefits.",
+  'rotating-text': {
+    name: 'Rotating Text',
+    description: 'Rotating phrase carousel with stagger—dynamic hero statements',
+    category: 'text',
+    file: 'rotatingText.js',
+    installationNotes: 'Use with <span> elements inside headings or paragraphs. The component cycles through different text options with smooth transitions. Great for highlighting multiple features or benefits.',
     hoverPreview: false,
     attributes: [
       {
@@ -807,18 +792,16 @@ export const componentsMetadata = {
     example: {
       title: "Rotating Text Animation",
       code: '<h1 class="lg:text-6xl text-3xl">Powerful <span wb-component="rotating-text" wb-text-1="Animations" wb-text-2="Effects" wb-text-3="Interactions" wb-background-color="#0a70ff" wb-text-color="#ffffff" wb-border-radius="8px" class="lg:text-6xl text-3xl">Animations</span></h1>',
-      description:
-        "Auto-rotating text with stagger effects, background color, text color, border radius, and automatic centering",
-    },
+      description: 'Phrases cycle with staggered entrance—pill styles and timing via attributes'
+    }
   },
 
-  "text-pressure": {
-    name: "Text Pressure",
-    description: "Mouse proximity font variations with variable fonts",
-    category: "text",
-    file: "textPressure.js",
-    installationNotes:
-      "Requires variable fonts (like Compressa VF, Recursive, Roboto Flex). Works with any text element. The component dynamically changes font weight, width, and italic based on mouse proximity.",
+  'text-pressure': {
+    name: 'Text Pressure',
+    description: 'Variable font pressure from cursor proximity—expressive display type',
+    category: 'text',
+    file: 'textPressure.js',
+    installationNotes: 'Requires variable fonts (like Compressa VF, Recursive, Roboto Flex). Works with any text element. The component dynamically changes font weight, width, and italic based on mouse proximity.',
     hoverPreview: false,
     attributes: [
       {
@@ -913,19 +896,16 @@ export const componentsMetadata = {
     example: {
       title: "Text Pressure Effect",
       code: '<h1 wb-component="text-pressure" wb-font-family="Compressa VF" class="lg:text-[160px] text-[80px] lg:w-[570px] w-[300px]">PRESSURE!</h1>',
-      description:
-        "Mouse proximity font variations with Compressa VF variable font",
-    },
+      description: 'Weight, width, and italic shift with cursor—built for variable font headlines'
+    }
   },
 
-  shuffle: {
-    name: "Shuffle",
-    description:
-      "Character-based sliding shuffle effects with customizable direction and scrambling",
-    category: "text",
-    file: "shuffle.js",
-    installationNotes:
-      "Works with any text element like <h1>, <h2>, <p>, <span>. The component creates sliding shuffle effects with characters moving in different directions. Best with monospace fonts.",
+  'shuffle': {
+    name: 'Shuffle',
+    description: 'Sliding character shuffle for punchy headline transitions',
+    category: 'text',
+    file: 'shuffle.js',
+    installationNotes: 'Works with any text element like <h1>, <h2>, <p>, <span>. The component creates sliding shuffle effects with characters moving in different directions. Best with monospace fonts.',
     hoverPreview: false,
     attributes: [
       {
@@ -1034,20 +1014,17 @@ export const componentsMetadata = {
     example: {
       title: "Shuffle Text Effect",
       code: '<h1 wb-component="shuffle" class="lg:text-6xl text-3xl">Create Amazing Websites With Powerful Animations</h1>',
-      description:
-        "Character-based sliding shuffle effects with customizable direction",
-    },
+      description: 'Characters slide and reorder—direction and color shifts for bold type moments'
+    }
   },
 
   "tooltip-text": {
     newComponent: true,
-    name: "Tooltip Text",
-    description:
-      "Hover tooltips for any text element with customizable positioning and styling",
-    category: "text",
-    file: "tooltipText.js",
-    installationNotes:
-      "Use with any text element like <span>, <a>, <strong>, <em>. The component adds a hover tooltip with customizable content, position, and styling.",
+    name: 'Tooltip Text',
+    description: 'Refined hover tooltips for inline labels and product UI copy',
+    category: 'text',
+    file: 'tooltipText.js',
+    installationNotes: 'Use with any text element like <span>, <a>, <strong>, <em>. The component adds a hover tooltip with customizable content, position, and styling.',
     hoverPreview: false,
     attributes: [
       {
@@ -1127,20 +1104,17 @@ export const componentsMetadata = {
     example: {
       title: "Tooltip Text Effect",
       code: '<p class="lg:text-lg text-md font-normal">The example of the <span wb-component="tooltip-text" wb-tooltip-text="This is a helpful tooltip!" class="text-primary text-lg">Tooltip</span> Text component.</p>',
-      description:
-        "Hover tooltips for any text element with customizable positioning and styling",
-    },
+      description: 'Contextual tooltips with placement, delay, and theme-friendly styling'
+    }
   },
 
   "roll-text": {
     newComponent: true,
-    name: "Roll Text",
-    description:
-      "Vertical rolling text effect on hover by duplicating content and translating the container upward.",
-    category: "text",
-    file: "rollText.js",
-    installationNotes:
-      'Wrap your text with a <div wb-component="roll-text"> wrapper. The first child inside the wrapper must be one of: <div>, <p>, <a>, <span>, <h1>, <h2>, <h3>, <h4>, <h5> or <h6> containing the text. The wrapper becomes an inline-block overflow-hidden mask; on hover, the original line rolls up and the duplicate line replaces it.',
+    name: 'Roll Text',
+    description: 'Vertical roll swap on hover—premium link and label motion',
+    category: 'text',
+    file: 'rollText.js',
+    installationNotes: 'Wrap your text with a <div wb-component="roll-text"> wrapper. The first child inside the wrapper must be one of: <div>, <p>, <a>, <span>, <h1>, <h2>, <h3>, <h4>, <h5> or <h6> containing the text. The wrapper becomes an inline-block overflow-hidden mask; on hover, the original line rolls up and the duplicate line replaces it.',
     hoverPreview: false,
     attributes: [
       {
@@ -1192,18 +1166,16 @@ export const componentsMetadata = {
     example: {
       title: "Roll Text Hover",
       code: '<div wb-component="roll-text" class="inline-block">\\n  <span>Hover me to roll</span>\\n</div>',
-      description:
-        "The content is duplicated and vertically rolled on hover; the duplicate line replaces the original.",
-    },
+      description: 'Duplicate line rolls into place on hover—clean motion for nav and CTAs'
+    }
   },
 
-  "gradient-button": {
-    name: "Gradient Button",
-    description: "Animated gradient button with customizable colors",
-    category: "button",
-    file: "gradientButton.js",
-    installationNotes:
-      "Use with <button>, <a>, or any clickable element. The component adds animated gradient background with customizable colors and hover effects.",
+  'gradient-button': {
+    name: 'Gradient Button',
+    description: 'Animated gradient fills for primary CTAs and key actions',
+    category: 'button',
+    file: 'gradientButton.js',
+    installationNotes: 'Use with <button>, <a>, or any clickable element. The component adds animated gradient background with customizable colors and hover effects.',
     attributes: [
       {
         name: "wb-component",
@@ -1247,19 +1219,16 @@ export const componentsMetadata = {
     example: {
       title: "Gradient Button Animation",
       code: '<button wb-component="gradient-button" class="text-md px-6 py-3 rounded-md font-semibold">Gradient Button</button>',
-      description:
-        "Animated gradient button with customizable colors and hover effects",
-    },
+      description: 'Gradient sweep on buttons—colors and speed via wb-* attributes'
+    }
   },
 
-  "ripple-button": {
-    name: "Ripple Button",
-    description:
-      "Button with Material Design ripple effect and scale animation on click",
-    category: "button",
-    file: "rippleButton.js",
-    installationNotes:
-      "Perfect for <button>, <a>, or any clickable element. Creates a Material Design ripple effect that spreads from the click point with customizable colors and duration.",
+  'ripple-button': {
+    name: 'Ripple Button',
+    description: 'Material-style ripple on click—tactile feedback for buttons and links',
+    category: 'button',
+    file: 'rippleButton.js',
+    installationNotes: 'Perfect for <button>, <a>, or any clickable element. Creates a Material Design ripple effect that spreads from the click point with customizable colors and duration.',
     attributes: [
       {
         name: "wb-component",
@@ -1295,19 +1264,16 @@ export const componentsMetadata = {
     example: {
       title: "Ripple Button Animation",
       code: '<a href="#" wb-component="ripple-button" class="text-md px-6 py-3 rounded-md font-semibold bg-primary text-white">Click me to see the effect!</a>',
-      description:
-        "Button with Material Design ripple effect and scale animation that spreads from click point",
-    },
+      description: 'Ripple expands from click with optional scale—polished interaction feedback'
+    }
   },
 
-  "pulse-button": {
-    name: "Pulse Button",
-    description:
-      "Button or link with gentle pulsing animation to draw attention. Works with both <button> and <a> elements.",
-    category: "button",
-    file: "pulseButton.js",
-    installationNotes:
-      "Use with <button>, <a>, or any element you want to draw attention to. Creates a gentle pulsing animation that can pause on hover. Great for call-to-action buttons.",
+  'pulse-button': {
+    name: 'Pulse Button',
+    description: 'Restrained pulse for CTAs that need attention without noise',
+    category: 'button',
+    file: 'pulseButton.js',
+    installationNotes: 'Use with <button>, <a>, or any element you want to draw attention to. Creates a gentle pulsing animation that can pause on hover. Great for call-to-action buttons.',
     attributes: [
       {
         name: "wb-component",
@@ -1348,19 +1314,16 @@ export const componentsMetadata = {
     example: {
       title: "Pulse Button Animation",
       code: '<a href="#" wb-component="pulse-button" class="text-md px-6 py-3 rounded-md font-semibold bg-primary text-white">Pulse Button</a>',
-      description:
-        "Button or link with gentle pulsing animation to draw attention to important actions",
-    },
+      description: 'Gentle pulse on key actions—speed and intensity configurable'
+    }
   },
 
-  "magnetic-button": {
-    name: "Magnetic Button",
-    description:
-      "Button with magnetic attraction effect that follows mouse movement",
-    category: "button",
-    file: "magnet.js",
-    installationNotes:
-      "Use with <button>, <a>, or any interactive element. Creates a magnetic effect where the element follows mouse movement within a specified radius. Great for interactive buttons and links.",
+  'magnetic-button': {
+    name: 'Magnetic Button',
+    description: 'Cursor-follow magnetism for premium button interactions',
+    category: 'button',
+    file: 'magnet.js',
+    installationNotes: 'Use with <button>, <a>, or any interactive element. Creates a magnetic effect where the element follows mouse movement within a specified radius. Great for interactive buttons and links.',
     attributes: [
       {
         name: "wb-component",
@@ -1424,20 +1387,17 @@ export const componentsMetadata = {
     example: {
       title: "Magnetic Button",
       code: '<a src="#" wb-component="magnetic-button" class="text-md bg-primary text-white rounded-md px-6 py-3 hover:bg-primary-dark transition-colors hover:cursor-pointer">Hover me!</a>',
-      description:
-        "Button that follows mouse movement with magnetic attraction - the entire button (background, text, and all styling) moves together",
-    },
+      description: 'Button eases toward the cursor within a magnetic field—refined hover feel'
+    }
   },
 
   "shimmer-button": {
     newComponent: true,
-    name: "Shimmer Button",
-    description:
-      "Button with shimmer effect on hover with customizable direction and color. Button color is inherited from Webflow CSS settings.",
-    category: "button",
-    file: "shimmerButton.js",
-    installationNotes:
-      "Use with <button>, <a>, or any clickable element. The component adds a shimmer effect on hover that moves across the button. Button background and text colors are inherited from your Webflow CSS settings.",
+    name: 'Shimmer Button',
+    description: 'Directional shimmer on hover for polished CTAs',
+    category: 'button',
+    file: 'shimmerButton.js',
+    installationNotes: 'Use with <button>, <a>, or any clickable element. The component adds a shimmer effect on hover that moves across the button. Button background and text colors are inherited from your Webflow CSS settings.',
     attributes: [
       {
         name: "wb-component",
@@ -1481,20 +1441,17 @@ export const componentsMetadata = {
     example: {
       title: "Shimmer Button Animation",
       code: '<button wb-component="shimmer-button" class="text-md px-6 py-3 rounded-md font-semibold bg-primary text-white">Shimmer Button</button>',
-      description:
-        "Button with shimmer effect on hover. Button color is inherited from Webflow CSS settings.",
-    },
+      description: 'Shimmer passes across the button—direction and accent via attributes'
+    }
   },
 
   // Effect Components
-  "smart-animate": {
-    name: "Smart Animate",
-    description:
-      "Animates the selected element and its direct children with smooth staggered transitions",
-    category: "effect",
-    file: "smartAnimate.js",
-    installationNotes:
-      "Use with any container element like <div>, <section>, <article>. The component animates the selected element first, then animates all direct children with customizable stagger timing. Perfect for revealing content sections.",
+  'smart-animate': {
+    name: 'Smart Animate',
+    description: 'Scroll-driven reveal engine for sections and card groups',
+    category: 'effect',
+    file: 'smartAnimate.js',
+    installationNotes: 'Use with any container element like <div>, <section>, <article>. The component animates the selected element first, then animates all direct children with customizable stagger timing. Perfect for revealing content sections.',
     hoverPreview: true,
     attributes: [
       {
@@ -1566,19 +1523,17 @@ export const componentsMetadata = {
     example: {
       title: "Smart Animate Effect",
       code: '<div wb-component="smart-animate" class="max-w-md mx-auto bg-card rounded-xl shadow-lg p-6 border border-border"><div class="flex items-center mb-4"><div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4"><svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></div><h3 class="text-xl font-semibold">Lightning Fast</h3></div><p class="mb-6 text-left">Experience blazing fast performance with our optimized components. Built for speed and efficiency.</p><button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">Get Started</button></div>',
-      description:
-        "Animates the container and all direct children with smooth staggered transitions from bottom to top",
-    },
+      description: 'Section and children reveal with stagger—scroll-triggered storytelling'
+    }
   },
 
   "3d-card-hover": {
     newComponent: true,
-    name: "3D Card Hover",
-    description:
-      "3D tilt on hover effect with configurable perspective and rotation sensitivity",
-    category: "effect",
-    file: "3dCardHover.js",
-    installationNotes: "Only suppoerted for <div> or <button> HTML elements.",
+    name: '3D Card Hover',
+    description: 'CSS perspective tilt for product cards and feature tiles',
+    category: 'effect',
+    file: '3dCardHover.js',
+    installationNotes: 'Only suppoerted for <div> or <button> HTML elements.',
     attributes: [
       {
         name: "wb-component",
@@ -1616,18 +1571,17 @@ export const componentsMetadata = {
           <p>Hover me</p>
           <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Placeholder" class="w-full h-[200px]">
         </div>`,
-      description: "Card smoothly follows cursor position.",
-    },
+      description: 'Card tilts toward the cursor—perspective and sensitivity tuned via attributes'
+    }
   },
 
   "outline-gradient": {
     newComponent: true,
-    name: "Outline Gradient",
-    description: "Animated rotating gradient border effect using pure CSS",
-    category: "effect",
-    file: "outlineGradientAnimate.js",
-    installationNotes:
-      "Works with any block-level element like <div>, <button>, etc. The component creates an animated gradient border that rotates smoothly using CSS @property. Make sure to apply position: relative or position: absolute to the element.",
+    name: 'Outline Gradient',
+    description: 'Animated gradient outline for frames, badges, and highlights',
+    category: 'effect',
+    file: 'outlineGradientAnimate.js',
+    installationNotes: 'Works with any block-level element like <div>, <button>, etc. The component creates an animated gradient border that rotates smoothly using CSS @property. Make sure to apply position: relative or position: absolute to the element.',
     attributes: [
       {
         name: "wb-component",
@@ -1696,20 +1650,17 @@ export const componentsMetadata = {
   >
     <h2 class="text-3xl font-bold">Gradient Border</h2>
   </div>`,
-      description:
-        "Smooth rotating gradient border that accelerates on hover. Works perfectly with rounded corners.",
-    },
+      description: 'Rotating gradient border with optional hover acceleration—pure CSS'
+    }
   },
 
   "image-trail": {
     newComponent: true,
-    name: "Image Trail",
-    description:
-      "Animated image trail effect following mouse movement with 8 different animation variants",
-    category: "effect",
-    file: "imageTrail.js",
-    installationNotes:
-      "Works with any container element. Provide image URLs via wb-image-1, wb-image-2, wb-image-3, etc. (similar to text-type). Choose from 8 stunning animation variants. Requires GSAP for animations. Perfect for creative portfolios and interactive showcases.",
+    name: 'Image Trail',
+    description: 'Mouse-following image trails—eight variants for immersive moments',
+    category: 'effect',
+    file: 'imageTrail.js',
+    installationNotes: 'Works with any container element. Provide image URLs via wb-image-1, wb-image-2, wb-image-3, etc. (similar to text-type). Choose from 8 stunning animation variants. Requires GSAP for animations. Perfect for creative portfolios and interactive showcases.',
     attributes: [
       {
         name: "wb-component",
@@ -1786,20 +1737,17 @@ export const componentsMetadata = {
     Move Your Mouse Here
   </h2>
 </div>`,
-      description:
-        "Images follow cursor with smooth animations. Add more images with wb-image-4, wb-image-5, etc. Try different variants (1-8) for unique effects.",
-    },
+      description: 'Image stack follows the cursor—eight motion variants for portfolios and heroes'
+    }
   },
 
   "hover-zoom": {
     newComponent: true,
-    name: "Hover Zoom",
-    description:
-      "Zoom effect on hover with parallax movement that follows mouse direction",
-    category: "effect",
-    file: "hoverZoom.js",
-    installationNotes:
-      "Works with img elements, divs with background images, or divs containing img elements. The image zooms on hover and moves in the opposite direction of the mouse cursor for a dynamic parallax effect.",
+    name: 'Hover Zoom',
+    description: 'Zoom with parallax on hover for editorial imagery and galleries',
+    category: 'effect',
+    file: 'hoverZoom.js',
+    installationNotes: 'Works with img elements, divs with background images, or divs containing img elements. The image zooms on hover and moves in the opposite direction of the mouse cursor for a dynamic parallax effect.',
     attributes: [
       {
         name: "wb-component",

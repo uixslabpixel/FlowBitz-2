@@ -21,6 +21,7 @@ import {
 import SEO from "../components/SEO.jsx";
 import { getFilteredComponentKeys } from "../../library/data/componentsMetadata.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { seoPages, jsonLd, uiCopy } from "../content/brandCopy.js";
 
 const ABOUT_HERO_IMAGE =
   "https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp";
@@ -37,27 +38,15 @@ const About = () => {
     window.open("https://slabpixel.com", "_blank");
   };
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    name: "About FlowBitz",
-    description:
-      "Learn about FlowBitz - the free interactive components library for Webflow. Created by SlabPixel Studio to help designers and developers create stunning web experiences.",
-    url: "https://www.flowbitz.dev/about",
-    mainEntity: {
-      "@type": "Organization",
-      name: "SlabPixel Studio",
-      url: "https://slabpixel.com",
-      description: "Creative studio specializing in web development and design",
-    },
-  };
+  const copy = uiCopy.about;
+  const structuredData = jsonLd.about;
 
   return (
     <>
       <SEO
-        title="About FlowBitz | Free GSAP Components for Webflow"
-        description="Learn how FlowBitz bridges Webflow's limited native animations with professional GSAP effects using simple HTML attributes—free for everyone, built by SlabPixel Studio."
-        keywords="FlowBitz about, free GSAP components for Webflow, Webflow animations, GSAP effects for Webflow, webflow HTML attributes, motion component library, SlabPixel Studio"
+        title={seoPages.about.title}
+        description={seoPages.about.description}
+        keywords={seoPages.about.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/about"
         structuredData={structuredData}
@@ -75,11 +64,11 @@ const About = () => {
           </div>
 
           <h1 className="inter-semi-48 w-2/3 md:w-full text-center text-foreground">
-            Solving Webflow&apos;s Animation Problem
+            {copy.headline}
           </h1>
 
           <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-            FlowBitz bridges the gap between Webflow&apos;s limited native animations and professional GSAP effects — making advanced animations accessible to everyone.
+            {copy.subhead}
           </p>
         </header>
 
@@ -90,7 +79,7 @@ const About = () => {
           <div className="mx-auto w-full flex flex-col">
             <img
               src={ABOUT_HERO_IMAGE}
-              alt="FlowBitz — free GSAP components for Webflow"
+              alt="FlowBitz — premium UI motion system for Webflow"
               className="w-full border-b border-foreground/10"
               loading="lazy"
             />
@@ -101,11 +90,7 @@ const About = () => {
                 Our Mission
               </h2>
               <p className="text-paragraph large text-text-medium col-span-2">
-                To democratize professional web animations by making advanced
-                GSAP effects accessible to Webflow users without requiring
-                coding knowledge. We believe every designer deserves access to
-                the same powerful animation tools used by top agencies and
-                developers.
+                {copy.mission}
               </p>
             </section>
 
@@ -114,11 +99,7 @@ const About = () => {
                 Our Vision
               </h2>
               <p className="text-paragraph large text-text-medium col-span-2">
-                A world where advanced web animations are accessible to
-                everyone, regardless of technical skill level. We envision a
-                future where designers can create stunning, professional
-                animations without barriers, leveling the playing field between
-                agencies and independent creators.
+                {copy.vision}
               </p>
             </section>
 
@@ -132,12 +113,10 @@ const About = () => {
                     <AlertCircle className="w-5 h-5" aria-hidden />
                   </span>
                   <p className="text-paragraph large text-text-medium min-w-0">
-                    <strong className="text-foreground">The Challenge:</strong>{" "}
-                    Webflow&apos;s native animations are limited. While perfect
-                    for basic interactions, creating professional-grade
-                    animations requires manual GSAP coding — a barrier that
-                    excludes most designers and requires expensive developer
-                    resources.
+                    <strong className="text-foreground">The challenge:</strong>{" "}
+                    Webflow&apos;s native interactions cover basics, but premium
+                    sites need motion that feels studio-made—often requiring custom
+                    GSAP, ScrollTrigger, and maintenance on every project.
                   </p>
                 </li>
                 <li className="flex gap-3 items-start">
@@ -145,12 +124,11 @@ const About = () => {
                     <Lightbulb className="w-5 h-5" aria-hidden />
                   </span>
                   <p className="text-paragraph large text-text-medium min-w-0">
-                    <strong className="text-foreground">Our Solution:</strong>{" "}
-                    FlowBitz bridges this gap with {componentCount} pre-built,
-                    GSAP-powered components that work through simple HTML
-                    attributes. No JavaScript knowledge required — just add
-                    attributes to any Webflow element and get professional
-                    animations instantly.
+                    <strong className="text-foreground">Our solution:</strong>{" "}
+                    FlowBitz is a motion system—{componentCount} crafted components
+                    you configure with wb-* attributes in Webflow. Ship
+                    sophisticated text, hover, and scroll motion without
+                    rebuilding GSAP from scratch each time.
                   </p>
                 </li>
                 <li className="flex gap-3 items-start">
@@ -158,12 +136,10 @@ const About = () => {
                     <TrendingUp className="w-5 h-5" aria-hidden />
                   </span>
                   <p className="text-paragraph large text-text-medium min-w-0">
-                    <strong className="text-foreground">The Impact:</strong>{" "}
-                    We&apos;ve democratized advanced web animations, making them
-                    accessible to designers, agencies, and independent creators
-                    worldwide. FlowBitz levels the playing field, allowing anyone
-                    to create stunning animations that previously required
-                    expensive development resources.
+                    <strong className="text-foreground">The impact:</strong>{" "}
+                    Freelancers ship client-ready polish faster. Agencies reuse a
+                    consistent motion language across projects—less reinvention,
+                    more margin, stronger quality control.
                   </p>
                 </li>
                 <li className="flex gap-3 items-start">
@@ -171,12 +147,10 @@ const About = () => {
                     <Heart className="w-5 h-5" aria-hidden />
                   </span>
                   <p className="text-paragraph large text-text-medium min-w-0">
-                    <strong className="text-foreground">Our Commitment:</strong>{" "}
-                    FlowBitz remains completely free and open-source because we
-                    believe professional web animations shouldn&apos;t be a
-                    luxury. Every designer deserves access to the same powerful
-                    tools used by top agencies, regardless of budget or
-                    technical expertise.
+                    <strong className="text-foreground">Our commitment:</strong>{" "}
+                    A free, open-source core library so serious creators can adopt
+                    FlowBitz on real client work—premium craft without a motion dev
+                    on every build. Crafted by SlabPixel Studio.
                   </p>
                 </li>
               </ul>
@@ -193,13 +167,12 @@ const About = () => {
                   </span>
                   <div className="min-w-0">
                     <h3 className="text-paragraph highlight text-foreground mb-2">
-                      100% Free Forever
+                      Free core, premium craft
                     </h3>
                     <p className="text-paragraph large text-text-medium">
-                      Unlike expensive animation libraries, FlowBitz is
-                      completely free with no premium tiers, hidden costs, or
-                      usage limits. Professional animations shouldn&apos;t be a
-                      luxury.
+                      Start with a generous free layer built for adoption on real
+                      projects—crafted defaults that feel intentional, not
+                      gimmicky.
                     </p>
                   </div>
                 </li>
@@ -209,12 +182,12 @@ const About = () => {
                   </span>
                   <div className="min-w-0">
                     <h3 className="text-paragraph highlight text-foreground mb-2">
-                      Industry-Standard GSAP
+                      GSAP-powered
                     </h3>
                     <p className="text-paragraph large text-text-medium">
-                      Built on the same GSAP engine used by top agencies and
-                      Fortune 500 companies. Get professional-grade performance
-                      without the complexity.
+                      GSAP where motion needs depth; CSS-only paths where lean
+                      bundles win. Studio-grade timing without maintaining custom
+                      plugins per site.
                     </p>
                   </div>
                 </li>
@@ -224,12 +197,11 @@ const About = () => {
                   </span>
                   <div className="min-w-0">
                     <h3 className="text-paragraph highlight text-foreground mb-2">
-                      No Coding Required
+                      No custom GSAP workflow
                     </h3>
                     <p className="text-paragraph large text-text-medium">
-                      Unlike manual GSAP coding, FlowBitz works through simple
-                      HTML attributes. Perfect for designers who want
-                      professional animations without learning JavaScript.
+                      Configure motion with wb-* attributes in Webflow—no
+                      per-project animation codebase to write, debug, and hand off.
                     </p>
                   </div>
                 </li>
@@ -328,12 +300,10 @@ const About = () => {
 
             <div className="relative flex flex-col gap-4 px-4 py-16 bg-base-medium w-full text-center items-center">
               <h2 className="relative z-[2] text-heading-small text-foreground max-w-xl">
-                Ready to solve your Webflow animation problems?
+                {copy.ctaHeadline}
               </h2>
               <p className="relative z-[2] text-paragraph text-foreground/60 max-w-xl">
-                Stop struggling with Webflow&apos;s limited animations. See how
-                easy it is to add professional GSAP effects with just HTML
-                attributes — no coding required.
+                {copy.ctaSubhead}
               </p>
               <div className="relative z-[2] flex flex-wrap gap-2 justify-center">
                 <Button

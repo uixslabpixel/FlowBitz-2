@@ -1,10 +1,11 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
+import { seoDefaults } from '../content/brandCopy.js'
 
 const SEO = ({ 
-  title = "FlowBitz - Free GSAP Animation Components for Webflow | No Coding Required",
-  description = `Transform your Webflow projects with 20+ professional animation components. Zero JavaScript knowledge needed - just add HTML attributes. GSAP-powered, mobile-responsive, and completely free.`,
-  keywords = `webflow animations, webflow components, gsap webflow, webflow text effects, webflow animation library, free webflow components, webflow split text, webflow gradient text, webflow typewriter effect, webflow interactive components, webflow animation plugins, webflow gsap integration, webflow animation tools, webflow effects library, webflow animation components, webflow text animations, webflow hover effects, webflow scroll animations, webflow animation code, webflow animation examples, 20+ components`,
+  title = seoDefaults.title,
+  description = seoDefaults.description,
+  keywords = seoDefaults.keywords,
   image = "https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp",
   url = "https://www.flowbitz.dev",
   type = "website",

@@ -6,32 +6,22 @@ import Sidebar from "../components/layout/LeftSidebar.jsx";
 import SEO from "../components/SEO.jsx";
 import { getFilteredComponentKeys } from "../../library/data/componentsMetadata.js";
 import GalleryContainer from "../components/gallery/GalleryContainer.jsx";
+import { seoPages, jsonLd, uiCopy } from "../content/brandCopy.js";
 
 const Components = () => {
   const navigate = useNavigate();
   const componentCount = getFilteredComponentKeys().length;
+  const pageSeo = seoPages.components(componentCount);
+  const copy = uiCopy.components;
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "FlowBitz Components Library",
-    description: `Explore our comprehensive library of ${componentCount}+ interactive components designed specifically for Webflow. Free, easy to use, and performance optimized.`,
-    url: "https://www.flowbitz.dev/components",
-    mainEntity: {
-      "@type": "ItemList",
-      name: "Webflow Components",
-      description:
-        "Interactive components for Webflow including text animations, effects, and interactive elements",
-      numberOfItems: componentCount,
-    },
-  };
+  const structuredData = jsonLd.components(componentCount);
 
   return (
     <>
       <SEO
-        title={`FlowBitz Components Library | Free Webflow Animation Components (${componentCount}+ )`}
-        description={`Browse ${componentCount}+ free, GSAP-powered animation components for Webflow. Build text, hover, and scroll effects using simple HTML attributes—no coding required.`}
-        keywords="FlowBitz components library, webflow animation components, webflow text effects, webflow hover effects, webflow scroll animations, GSAP for Webflow, webflow HTML attributes, free webflow components"
+        title={pageSeo.title}
+        description={pageSeo.description}
+        keywords={pageSeo.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/components"
         structuredData={structuredData}
@@ -45,11 +35,10 @@ const Components = () => {
           <main className="flex flex-col p-4 sm:p-8 lg:p-16 w-full items-center lg:overflow-y-auto lg:h-full">
             <div className="w-full max-w-[1200px] mx-auto mb-6 sm:mb-8">
               <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground">
-                Free Webflow Animation Components
+                {copy.headline}
               </h1>
               <p className="text-muted-foreground text-base sm:text-lg">
-                {componentCount}+ professional GSAP-powered components that
-                solve Webflow's animation limitations
+                {copy.subhead}
               </p>
             </div>
 

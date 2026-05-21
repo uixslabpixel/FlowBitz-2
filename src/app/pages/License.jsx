@@ -3,6 +3,7 @@ import { CheckCircle, Info, XCircle } from "lucide-react";
 import Footer from "../components/layout/Footer";
 import Logo from "../components/Logo.jsx";
 import SEO from "../components/SEO.jsx";
+import { seoPages } from "../content/brandCopy.js";
 
 const License = () => {
   const mitLicense = `MIT License
@@ -136,9 +137,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   return (
     <>
       <SEO 
-        title="MIT License - FlowBitz | Usage Rights & Guidelines"
-        description="Read FlowBitz MIT license details including usage rights, commercial use, modification permissions, and third-party dependency considerations."
-        keywords="FlowBitz license, MIT license, open source, commercial use, webflow components, terms of use"
+        title={seoPages.license.title}
+        description={seoPages.license.description}
+        keywords={seoPages.license.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/license"
         structuredData={structuredData}
@@ -156,8 +157,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             </h1>
 
             <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-              FlowBitz is released under the MIT License, one of the most permissive open-source licenses.
-              This means you have maximum freedom to use, modify, and distribute FlowBitz.
+              FlowBitz is released under the MIT License—use, modify, and distribute the motion
+              system freely in personal and commercial Webflow projects.
             </p>
           </header>
 
