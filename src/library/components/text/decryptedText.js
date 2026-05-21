@@ -1,11 +1,24 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { injectStyles } from '../../utils/core/injectStyles.js';
-import { parseElementConfig, commonAttributeMaps, mergeAttributeMaps } from '../../utils/core/attributeParser.js';
-import { ComponentClassManager, webflowBitsClasses } from '../../utils/core/classManager.js';
-import { checkCSSConflicts, componentClassSets } from '../../utils/core/conflictDetector.js';
-import { createOnceAnimationConfig } from '../../utils/animation/scrollTriggerHelper.js';
-import { AnimationStateManager, PerformanceOptimizer } from '../../utils/animation/animationStateManager.js';
+import { injectStyles } from "../../utils/core/injectStyles.js";
+import {
+  parseElementConfig,
+  commonAttributeMaps,
+  mergeAttributeMaps,
+} from "../../utils/core/attributeParser.js";
+import {
+  ComponentClassManager,
+  webflowBitsClasses,
+} from "../../utils/core/classManager.js";
+import {
+  checkCSSConflicts,
+  componentClassSets,
+} from "../../utils/core/conflictDetector.js";
+import { createOnceAnimationConfig } from "../../utils/animation/scrollTriggerHelper.js";
+import {
+  AnimationStateManager,
+  PerformanceOptimizer,
+} from "../../utils/animation/animationStateManager.js";
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -89,24 +102,25 @@ class DecryptedTextAnimator {
   constructor() {
     this.instances = new Map();
     this.stylesInjected = false;
-    this.componentName = 'DecryptedText';
-    this.componentClasses = webflowBitsClasses.forComponent('decrypt-text');
+    this.componentName = "DecryptedText";
+    this.componentClasses = webflowBitsClasses.forComponent("decrypt-text");
     this.defaultConfig = {
       speed: 50,
       maxIterations: 10,
       sequential: true,
-      revealDirection: 'start', // start | end | center
+      revealDirection: "start", // start | end | center
       useOriginalCharsOnly: false,
-      characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+',
-      animateOn: 'view', // hover | view
+      characters:
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+",
+      animateOn: "view", // hover | view
       triggerOnView: true,
       threshold: 0.1,
-      rootMargin: '100px',
+      rootMargin: "100px",
       startDelay: 0,
-      className: '',
-      encryptedClassName: 'wb-decrypt-text-scrambling'
+      className: "",
+      encryptedClassName: "wb-decrypt-text-scrambling",
     };
-    
+
     // this.injectComponentStyles();
   }
 
@@ -115,56 +129,70 @@ class DecryptedTextAnimator {
    */
   injectComponentStyles() {
     if (this.stylesInjected) return;
-    
+
     try {
-      injectStyles('wb-decrypt-text-styles', componentCSS);
+      injectStyles("wb-decrypt-text-styles", componentCSS);
       this.stylesInjected = true;
-      console.log('WebflowBits: DecryptedText styles injected');
     } catch (error) {
-      console.warn('WebflowBits: Failed to inject DecryptedText styles', error);
+      console.warn("WebflowBits: Failed to inject DecryptedText styles", error);
     }
   }
 
-    /**
+  /**
    * Ensure styles are injected when needed
    */
-    ensureStylesInjected() {
-      if (!this.stylesInjected) {
-        this.injectComponentStyles();
-      }
+  ensureStylesInjected() {
+    if (!this.stylesInjected) {
+      this.injectComponentStyles();
     }
+  }
 
   /**
    * Parse custom attributes from element using utility functions
    */
   parseConfig(element) {
-    const attributeMap = mergeAttributeMaps(
-      commonAttributeMaps.animation,
-      {
-        // DecryptedText-specific attributes
-        speed: { attribute: 'wb-speed', type: 'delay' },
-        maxIterations: { attribute: 'wb-max-iterations', type: 'number', parser: parseInt, min: 1 },
-        sequential: { attribute: 'wb-sequential', type: 'boolean' },
-        revealDirection: { 
-          attribute: 'wb-reveal-direction', 
-          type: 'string', 
-          validValues: ['start', 'end', 'center'] 
-        },
-        useOriginalCharsOnly: { attribute: 'wb-use-original-chars', type: 'boolean' },
-        characters: { attribute: 'wb-characters', type: 'string' },
-        animateOn: { 
-          attribute: 'wb-animate-on', 
-          type: 'string', 
-          validValues: ['hover', 'view'] 
-        },
-        triggerOnView: { attribute: 'wb-trigger-on-view', type: 'boolean' },
-        rootMargin: { attribute: 'wb-root-margin', type: 'string' },
-        startDelay: { attribute: 'wb-start-delay', type: 'number', parser: parseFloat, min: 0, max: 2, step: 0.1 },
-        className: { attribute: 'wb-class-name', type: 'string' },
-        encryptedClassName: { attribute: 'wb-encrypted-class-name', type: 'string' }
-      }
-    );
-    
+    const attributeMap = mergeAttributeMaps(commonAttributeMaps.animation, {
+      // DecryptedText-specific attributes
+      speed: { attribute: "wb-speed", type: "delay" },
+      maxIterations: {
+        attribute: "wb-max-iterations",
+        type: "number",
+        parser: parseInt,
+        min: 1,
+      },
+      sequential: { attribute: "wb-sequential", type: "boolean" },
+      revealDirection: {
+        attribute: "wb-reveal-direction",
+        type: "string",
+        validValues: ["start", "end", "center"],
+      },
+      useOriginalCharsOnly: {
+        attribute: "wb-use-original-chars",
+        type: "boolean",
+      },
+      characters: { attribute: "wb-characters", type: "string" },
+      animateOn: {
+        attribute: "wb-animate-on",
+        type: "string",
+        validValues: ["hover", "view"],
+      },
+      triggerOnView: { attribute: "wb-trigger-on-view", type: "boolean" },
+      rootMargin: { attribute: "wb-root-margin", type: "string" },
+      startDelay: {
+        attribute: "wb-start-delay",
+        type: "number",
+        parser: parseFloat,
+        min: 0,
+        max: 2,
+        step: 0.1,
+      },
+      className: { attribute: "wb-class-name", type: "string" },
+      encryptedClassName: {
+        attribute: "wb-encrypted-class-name",
+        type: "string",
+      },
+    });
+
     return parseElementConfig(element, this.defaultConfig, attributeMap);
   }
 
@@ -173,7 +201,7 @@ class DecryptedTextAnimator {
    */
   initElement(element) {
     this.ensureStylesInjected();
-    
+
     if (this.instances.has(element)) {
       return;
     }
@@ -181,15 +209,18 @@ class DecryptedTextAnimator {
     try {
       const config = this.parseConfig(element);
       const originalText = element.textContent.trim();
-      
+
       if (!originalText) {
-        console.warn('WebflowBits DecryptedText: Element has no text content', element);
+        console.warn(
+          "WebflowBits DecryptedText: Element has no text content",
+          element,
+        );
         return;
       }
 
       // Create wrapper structure
       this.createDecryptStructure(element, originalText, config);
-      
+
       // Create instance data
       const instance = {
         element,
@@ -202,24 +233,24 @@ class DecryptedTextAnimator {
         hasAnimated: false,
         interval: null,
         observer: null,
-        addedClasses: []
+        addedClasses: [],
       };
 
       this.instances.set(element, instance);
 
       // Apply CSS classes
       ComponentClassManager.applyClasses(
-        element, 
-        ['wb-decrypt-text'], 
-        this.instances, 
-        this.componentName
+        element,
+        ["wb-decrypt-text"],
+        this.instances,
+        this.componentName,
       );
 
       // Setup event listeners
       this.setupEventListeners(instance);
 
       // Setup intersection observer if needed
-      if (config.animateOn === 'view') {
+      if (config.animateOn === "view") {
         if (config.triggerOnView) {
           this.setupIntersectionObserver(instance);
         } else {
@@ -234,16 +265,18 @@ class DecryptedTextAnimator {
         }
       }
 
-      console.log('WebflowBits DecryptedText: Element initialized', { element, config });
-
       // Dispatch initialization event
-      element.dispatchEvent(new CustomEvent('wb-decrypt-text-init', {
-        detail: { element, config },
-        bubbles: true
-      }));
-
+      element.dispatchEvent(
+        new CustomEvent("wb-decrypt-text-init", {
+          detail: { element, config },
+          bubbles: true,
+        }),
+      );
     } catch (error) {
-      console.error('WebflowBits DecryptedText: Failed to initialize element', error);
+      console.error(
+        "WebflowBits DecryptedText: Failed to initialize element",
+        error,
+      );
     }
   }
 
@@ -252,33 +285,41 @@ class DecryptedTextAnimator {
    */
   createDecryptStructure(element, originalText, config) {
     // Store original text for screen readers
-    element.setAttribute('aria-label', originalText);
-    
+    element.setAttribute("aria-label", originalText);
+
     // Split text into words while preserving spaces
     const words = originalText.split(/(\s+)/);
     let charIndex = 0;
-    
+
     // Create wrapper structure
     element.innerHTML = `
       <span class="wb-decrypt-text__sr-only">${originalText}</span>
       <span class="wb-decrypt-text__content" aria-hidden="true">
-        ${words.map((word, wordIndex) => {
-          if (word.match(/\s+/)) {
-            // This is whitespace - render as space
-            const spaceChars = word.split('').map(() => {
-              const index = charIndex++;
-              return `<span class="wb-decrypt-text__char wb-decrypt-text__space ${config.className}" data-index="${index}">&nbsp;</span>`;
-            }).join('');
-            return spaceChars;
-          } else {
-            // This is a word - wrap in a word container
-            const wordChars = word.split('').map((char) => {
-              const index = charIndex++;
-              return `<span class="wb-decrypt-text__char ${config.className}" data-index="${index}">${char}</span>`;
-            }).join('');
-            return `<span class="wb-decrypt-text__word">${wordChars}</span>`;
-          }
-        }).join('')}
+        ${words
+          .map((word, wordIndex) => {
+            if (word.match(/\s+/)) {
+              // This is whitespace - render as space
+              const spaceChars = word
+                .split("")
+                .map(() => {
+                  const index = charIndex++;
+                  return `<span class="wb-decrypt-text__char wb-decrypt-text__space ${config.className}" data-index="${index}">&nbsp;</span>`;
+                })
+                .join("");
+              return spaceChars;
+            } else {
+              // This is a word - wrap in a word container
+              const wordChars = word
+                .split("")
+                .map((char) => {
+                  const index = charIndex++;
+                  return `<span class="wb-decrypt-text__char ${config.className}" data-index="${index}">${char}</span>`;
+                })
+                .join("");
+              return `<span class="wb-decrypt-text__word">${wordChars}</span>`;
+            }
+          })
+          .join("")}
       </span>
     `;
   }
@@ -289,12 +330,12 @@ class DecryptedTextAnimator {
   setupEventListeners(instance) {
     const { element, config } = instance;
 
-    if (config.animateOn === 'hover') {
+    if (config.animateOn === "hover") {
       const handleMouseEnter = () => this.startDecryption(instance);
       const handleMouseLeave = () => this.stopDecryption(instance);
 
-      element.addEventListener('mouseenter', handleMouseEnter);
-      element.addEventListener('mouseleave', handleMouseLeave);
+      element.addEventListener("mouseenter", handleMouseEnter);
+      element.addEventListener("mouseleave", handleMouseLeave);
 
       // Store references for cleanup
       instance.mouseEnterHandler = handleMouseEnter;
@@ -314,7 +355,7 @@ class DecryptedTextAnimator {
       config,
       (self) => {
         instance.scrollTrigger = self;
-      }
+      },
     );
 
     // Create timeline with context for cleanup
@@ -323,7 +364,7 @@ class DecryptedTextAnimator {
         scrollTrigger: scrollTriggerConfig,
         onComplete: () => {
           // Animation complete
-        }
+        },
       });
 
       // Add delay if specified
@@ -356,7 +397,7 @@ class DecryptedTextAnimator {
       {
         threshold: config.threshold,
         rootMargin: config.rootMargin,
-        markers: false
+        markers: false,
       },
       (self) => {
         // Only trigger once when element enters viewport
@@ -372,7 +413,7 @@ class DecryptedTextAnimator {
             instance.hasAnimated = true;
           }
         }
-      }
+      },
     );
 
     // Create ScrollTrigger instance
@@ -391,21 +432,23 @@ class DecryptedTextAnimator {
 
     // Apply animating state
     ComponentClassManager.setAnimationState(
-      element, 
-      'animating', 
-      'wb-decrypt-text', 
-      this.instances, 
-      this.componentName
+      element,
+      "animating",
+      "wb-decrypt-text",
+      this.instances,
+      this.componentName,
     );
 
     // Start scrambling animation
     this.startScrambling(instance);
 
     // Dispatch start event
-    element.dispatchEvent(new CustomEvent('wb-decrypt-text-start', {
-      detail: { element, config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-decrypt-text-start", {
+        detail: { element, config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
@@ -414,7 +457,7 @@ class DecryptedTextAnimator {
   stopDecryption(instance) {
     const { element, config } = instance;
 
-    if (config.animateOn === 'view') return; // Don't stop view-based animations
+    if (config.animateOn === "view") return; // Don't stop view-based animations
 
     instance.isHovering = false;
     instance.isScrambling = false;
@@ -431,18 +474,20 @@ class DecryptedTextAnimator {
 
     // Apply completed state
     ComponentClassManager.setAnimationState(
-      element, 
-      'completed', 
-      'wb-decrypt-text', 
-      this.instances, 
-      this.componentName
+      element,
+      "completed",
+      "wb-decrypt-text",
+      this.instances,
+      this.componentName,
     );
 
     // Dispatch stop event
-    element.dispatchEvent(new CustomEvent('wb-decrypt-text-stop', {
-      detail: { element, config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-decrypt-text-stop", {
+        detail: { element, config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
@@ -458,7 +503,7 @@ class DecryptedTextAnimator {
     }
 
     instance.interval = setInterval(() => {
-      if (!instance.isHovering && config.animateOn === 'hover') {
+      if (!instance.isHovering && config.animateOn === "hover") {
         clearInterval(instance.interval);
         return;
       }
@@ -477,7 +522,7 @@ class DecryptedTextAnimator {
         // Random scrambling mode
         this.updateDisplayText(instance, this.shuffleText(instance));
         currentIteration++;
-        
+
         if (currentIteration >= config.maxIterations) {
           this.completeAnimation(instance);
         }
@@ -493,20 +538,25 @@ class DecryptedTextAnimator {
     const textLength = originalText.length;
 
     switch (config.revealDirection) {
-      case 'start':
+      case "start":
         return revealedIndices.size;
-      
-      case 'end':
+
+      case "end":
         return textLength - 1 - revealedIndices.size;
-      
-      case 'center': {
+
+      case "center": {
         const middle = Math.floor(textLength / 2);
         const offset = Math.floor(revealedIndices.size / 2);
-        const nextIndex = revealedIndices.size % 2 === 0
-          ? middle + offset
-          : middle - offset - 1;
+        const nextIndex =
+          revealedIndices.size % 2 === 0
+            ? middle + offset
+            : middle - offset - 1;
 
-        if (nextIndex >= 0 && nextIndex < textLength && !revealedIndices.has(nextIndex)) {
+        if (
+          nextIndex >= 0 &&
+          nextIndex < textLength &&
+          !revealedIndices.has(nextIndex)
+        ) {
           return nextIndex;
         }
 
@@ -516,7 +566,7 @@ class DecryptedTextAnimator {
         }
         return 0;
       }
-      
+
       default:
         return revealedIndices.size;
     }
@@ -531,7 +581,11 @@ class DecryptedTextAnimator {
     if (config.useOriginalCharsOnly) {
       return this.shuffleWithOriginalChars(originalText, revealedIndices);
     } else {
-      return this.shuffleWithCustomChars(originalText, revealedIndices, config.characters);
+      return this.shuffleWithCustomChars(
+        originalText,
+        revealedIndices,
+        config.characters,
+      );
     }
   }
 
@@ -539,47 +593,52 @@ class DecryptedTextAnimator {
    * Shuffle using only original characters
    */
   shuffleWithOriginalChars(originalText, revealedIndices) {
-    const positions = originalText.split('').map((char, i) => ({
+    const positions = originalText.split("").map((char, i) => ({
       char,
-      isSpace: char === ' ',
+      isSpace: char === " ",
       index: i,
-      isRevealed: revealedIndices.has(i)
+      isRevealed: revealedIndices.has(i),
     }));
 
     const nonSpaceChars = positions
-      .filter(p => !p.isSpace && !p.isRevealed)
-      .map(p => p.char);
+      .filter((p) => !p.isSpace && !p.isRevealed)
+      .map((p) => p.char);
 
     // Shuffle array
     for (let i = nonSpaceChars.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [nonSpaceChars[i], nonSpaceChars[j]] = [nonSpaceChars[j], nonSpaceChars[i]];
+      [nonSpaceChars[i], nonSpaceChars[j]] = [
+        nonSpaceChars[j],
+        nonSpaceChars[i],
+      ];
     }
 
     let charIndex = 0;
     return positions
-      .map(p => {
-        if (p.isSpace) return ' ';
+      .map((p) => {
+        if (p.isSpace) return " ";
         if (p.isRevealed) return originalText[p.index];
         return nonSpaceChars[charIndex++];
       })
-      .join('');
+      .join("");
   }
 
   /**
    * Shuffle using custom characters
    */
   shuffleWithCustomChars(originalText, revealedIndices, characters) {
-    const availableChars = characters.split('');
-    
+    const availableChars = characters.split("");
+
     return originalText
-      .split('')
+      .split("")
       .map((char, i) => {
-        if (char === ' ') return ' ';
+        if (char === " ") return " ";
         if (revealedIndices.has(i)) return originalText[i];
-        return availableChars[Math.floor(Math.random() * availableChars.length)];
+        return availableChars[
+          Math.floor(Math.random() * availableChars.length)
+        ];
       })
-      .join('');
+      .join("");
   }
 
   /**
@@ -589,26 +648,30 @@ class DecryptedTextAnimator {
     const { element, config } = instance;
     instance.displayText = newText;
 
-    const contentElement = element.querySelector('.wb-decrypt-text__content');
+    const contentElement = element.querySelector(".wb-decrypt-text__content");
     if (!contentElement) return;
 
-    const chars = contentElement.querySelectorAll('.wb-decrypt-text__char');
-    const textChars = newText.split('');
+    const chars = contentElement.querySelectorAll(".wb-decrypt-text__char");
+    const textChars = newText.split("");
 
     chars.forEach((charElement, index) => {
       if (index < textChars.length) {
         const char = textChars[index];
-        
+
         // Handle spaces specially
-        if (char === ' ') {
-          charElement.innerHTML = '&nbsp;';
+        if (char === " ") {
+          charElement.innerHTML = "&nbsp;";
           charElement.className = `wb-decrypt-text__char wb-decrypt-text__space ${
-            instance.revealedIndices.has(index) || !instance.isScrambling ? config.className : config.encryptedClassName
+            instance.revealedIndices.has(index) || !instance.isScrambling
+              ? config.className
+              : config.encryptedClassName
           }`;
         } else {
           charElement.textContent = char;
           charElement.className = `wb-decrypt-text__char ${
-            instance.revealedIndices.has(index) || !instance.isScrambling ? config.className : config.encryptedClassName
+            instance.revealedIndices.has(index) || !instance.isScrambling
+              ? config.className
+              : config.encryptedClassName
           }`;
         }
       }
@@ -628,32 +691,36 @@ class DecryptedTextAnimator {
     }
 
     instance.isScrambling = false;
-    
+
     // Show final text
     this.updateDisplayText(instance, instance.originalText);
 
     // Apply completed state
     ComponentClassManager.setAnimationState(
-      element, 
-      'completed', 
-      'wb-decrypt-text', 
-      this.instances, 
-      this.componentName
+      element,
+      "completed",
+      "wb-decrypt-text",
+      this.instances,
+      this.componentName,
     );
 
     // Dispatch complete event
-    element.dispatchEvent(new CustomEvent('wb-decrypt-text-complete', {
-      detail: { element, config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-decrypt-text-complete", {
+        detail: { element, config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
    * Initialize all elements with wb-component="decrypted-text"
    */
   initAll() {
-    const elements = document.querySelectorAll('[wb-component="decrypted-text"]');
-    elements.forEach(element => this.initElement(element));
+    const elements = document.querySelectorAll(
+      '[wb-component="decrypted-text"]',
+    );
+    elements.forEach((element) => this.initElement(element));
   }
 
   /**
@@ -686,29 +753,33 @@ class DecryptedTextAnimator {
 
       // Remove event listeners
       if (instance.mouseEnterHandler) {
-        element.removeEventListener('mouseenter', instance.mouseEnterHandler);
-        element.removeEventListener('mouseleave', instance.mouseLeaveHandler);
+        element.removeEventListener("mouseenter", instance.mouseEnterHandler);
+        element.removeEventListener("mouseleave", instance.mouseLeaveHandler);
       }
 
       // Restore original content
       element.textContent = instance.originalText;
-      element.removeAttribute('aria-label');
+      element.removeAttribute("aria-label");
 
       // Remove CSS classes
       ComponentClassManager.removeClasses(
         element,
-        ['wb-decrypt-text', 'wb-decrypt-text-animating', 'wb-decrypt-text-completed'],
+        [
+          "wb-decrypt-text",
+          "wb-decrypt-text-animating",
+          "wb-decrypt-text-completed",
+        ],
         this.instances,
-        this.componentName
+        this.componentName,
       );
 
       // Remove instance
       this.instances.delete(element);
-
-      console.log('WebflowBits DecryptedText: Element destroyed', element);
-
     } catch (error) {
-      console.error('WebflowBits DecryptedText: Failed to destroy element', error);
+      console.error(
+        "WebflowBits DecryptedText: Failed to destroy element",
+        error,
+      );
     }
   }
 
@@ -716,7 +787,7 @@ class DecryptedTextAnimator {
    * Destroy all instances
    */
   destroyAll() {
-    Array.from(this.instances.keys()).forEach(element => {
+    Array.from(this.instances.keys()).forEach((element) => {
       this.destroyElement(element);
     });
   }
@@ -733,15 +804,17 @@ class DecryptedTextAnimator {
    * Check for CSS conflicts
    */
   checkForConflicts() {
-    const conflicts = checkCSSConflicts(componentClassSets.decryptText || [
-      'wb-decrypt-text',
-      'wb-decrypt-text__content',
-      'wb-decrypt-text__word',
-      'wb-decrypt-text__char',
-      'wb-decrypt-text__space',
-      'wb-decrypt-text-animating',
-      'wb-decrypt-text-completed'
-    ]);
+    const conflicts = checkCSSConflicts(
+      componentClassSets.decryptText || [
+        "wb-decrypt-text",
+        "wb-decrypt-text__content",
+        "wb-decrypt-text__word",
+        "wb-decrypt-text__char",
+        "wb-decrypt-text__space",
+        "wb-decrypt-text-animating",
+        "wb-decrypt-text-completed",
+      ],
+    );
 
     return conflicts.length > 0 ? conflicts : null;
   }
@@ -761,12 +834,14 @@ class DecryptedTextAnimator {
     if (!instance) return;
 
     instance.config = { ...instance.config, ...newConfig };
-    
+
     // Dispatch update event
-    element.dispatchEvent(new CustomEvent('wb-decrypt-text-update', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-decrypt-text-update", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 }
 
@@ -777,18 +852,18 @@ const decryptedTextAnimator = new DecryptedTextAnimator();
 export default decryptedTextAnimator;
 
 // Add to component class sets for conflict detection
-if (typeof componentClassSets !== 'undefined') {
+if (typeof componentClassSets !== "undefined") {
   componentClassSets.decryptText = [
-    'wb-decrypt-text',
-    'wb-decrypt-text__wrapper',
-    'wb-decrypt-text__content',
-    'wb-decrypt-text__word',
-    'wb-decrypt-text__char',
-    'wb-decrypt-text__space',
-    'wb-decrypt-text__sr-only',
-    'wb-decrypt-text-animating',
-    'wb-decrypt-text-completed',
-    'wb-decrypt-text-scrambling',
-    'wb-decrypt-text-revealed'
+    "wb-decrypt-text",
+    "wb-decrypt-text__wrapper",
+    "wb-decrypt-text__content",
+    "wb-decrypt-text__word",
+    "wb-decrypt-text__char",
+    "wb-decrypt-text__space",
+    "wb-decrypt-text__sr-only",
+    "wb-decrypt-text-animating",
+    "wb-decrypt-text-completed",
+    "wb-decrypt-text-scrambling",
+    "wb-decrypt-text-revealed",
   ];
 }

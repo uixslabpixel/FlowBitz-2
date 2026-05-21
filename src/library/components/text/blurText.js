@@ -92,7 +92,6 @@ class BlurTextAnimator {
     try {
       injectStyles("wb-blur-text-styles", componentCSS);
       this.stylesInjected = true;
-      console.log("WebflowBits: BlurText styles injected");
     } catch (error) {
       console.warn("WebflowBits: Failed to inject BlurText styles", error);
     }
@@ -152,7 +151,7 @@ class BlurTextAnimator {
       element,
       classesToApply,
       this.instances,
-      this.componentName
+      this.componentName,
     );
   }
 
@@ -170,7 +169,7 @@ class BlurTextAnimator {
       element,
       fallbackClasses,
       this.instances,
-      this.componentName
+      this.componentName,
     );
   }
 
@@ -300,7 +299,7 @@ class BlurTextAnimator {
           duration: config.stepDuration,
           ease: config.ease,
         },
-        `-=${config.stepDuration * 0.3}`
+        `-=${config.stepDuration * 0.3}`,
       ); // Overlap animations slightly
 
       timeline.add(segmentTimeline, 0);
@@ -390,7 +389,7 @@ class BlurTextAnimator {
             this.startAnimationImmediately(instance);
           }
         }
-      }
+      },
     );
 
     // Create ScrollTrigger instance
@@ -430,7 +429,7 @@ class BlurTextAnimator {
       config,
       (self) => {
         instance.scrollTrigger = self;
-      }
+      },
     );
 
     // Create timeline
@@ -470,7 +469,7 @@ class BlurTextAnimator {
           duration: config.stepDuration,
           ease: config.ease,
         },
-        `-=${config.stepDuration * 0.3}`
+        `-=${config.stepDuration * 0.3}`,
       ); // Overlap animations slightly
 
       timeline.add(segmentTimeline, 0);
@@ -505,7 +504,7 @@ class BlurTextAnimator {
       instance.element,
       "complete",
       "blur-text",
-      { instance }
+      { instance },
     );
   }
 
