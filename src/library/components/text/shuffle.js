@@ -1,12 +1,19 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { injectStyles } from '../../utils/core/injectStyles.js';
-import { parseElementConfig, commonAttributeMaps, mergeAttributeMaps } from '../../utils/core/attributeParser.js';
-import { ComponentClassManager, webflowBitsClasses } from '../../utils/core/classManager.js';
-import { checkCSSConflicts } from '../../utils/core/conflictDetector.js';
-import { calculateScrollTriggerStart } from '../../utils/animation/scrollTriggerHelper.js';
-import { AnimationStateManager } from '../../utils/animation/animationStateManager.js';
+import { injectStyles } from "../../utils/core/injectStyles.js";
+import {
+  parseElementConfig,
+  commonAttributeMaps,
+  mergeAttributeMaps,
+} from "../../utils/core/attributeParser.js";
+import {
+  ComponentClassManager,
+  webflowBitsClasses,
+} from "../../utils/core/classManager.js";
+import { checkCSSConflicts } from "../../utils/core/conflictDetector.js";
+import { calculateScrollTriggerStart } from "../../utils/animation/scrollTriggerHelper.js";
+import { AnimationStateManager } from "../../utils/animation/animationStateManager.js";
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -98,8 +105,8 @@ class ShuffleAnimator {
   constructor() {
     this.instances = new Map();
     this.stylesInjected = false;
-    this.componentName = 'Shuffle';
-    this.componentClasses = webflowBitsClasses.forComponent('shuffle');
+    this.componentName = "Shuffle";
+    this.componentClasses = webflowBitsClasses.forComponent("shuffle");
     this.defaultConfig = {
       shuffleDirection: "right",
       duration: 0.35,
@@ -118,79 +125,76 @@ class ShuffleAnimator {
       triggerOnce: true,
       respectReducedMotion: true,
       triggerOnHover: true,
-      textAlign: "center"
+      textAlign: "center",
     };
-    
+
     // Attribute mapping for configuration parsing
-    this.attributeMap = mergeAttributeMaps(
-      commonAttributeMaps.animation,
-      {
-        shuffleDirection: { 
-          attribute: 'wb-shuffle-direction', 
-          type: 'string', 
-          validValues: ['left', 'right'] 
-        },
-        shuffleTimes: { 
-          attribute: 'wb-shuffle-times', 
-          type: 'number', 
-          parser: parseInt,
-          min: 1 
-        },
-        animationMode: { 
-          attribute: 'wb-animation-mode', 
-          type: 'string', 
-          validValues: ['evenodd', 'random'] 
-        },
-        maxDelay: { 
-          attribute: 'wb-max-delay', 
-          type: 'number',
-          min: 0 
-        },
-        loop: { 
-          attribute: 'wb-loop', 
-          type: 'boolean' 
-        },
-        loopDelay: { 
-          attribute: 'wb-loop-delay', 
-          type: 'number',
-          min: 0 
-        },
-        stagger: { 
-          attribute: 'wb-stagger', 
-          type: 'number',
-          min: 0 
-        },
-        scrambleCharset: { 
-          attribute: 'wb-scramble-charset', 
-          type: 'string' 
-        },
-        colorFrom: { 
-          attribute: 'wb-color-from', 
-          type: 'color' 
-        },
-        colorTo: { 
-          attribute: 'wb-color-to', 
-          type: 'color' 
-        },
-        triggerOnce: { 
-          attribute: 'wb-trigger-once', 
-          type: 'boolean' 
-        },
-        respectReducedMotion: { 
-          attribute: 'wb-respect-reduced-motion', 
-          type: 'boolean' 
-        },
-        triggerOnHover: { 
-          attribute: 'wb-trigger-on-hover', 
-          type: 'boolean' 
-        },
-        textAlign: { 
-          attribute: 'wb-text-align', 
-          type: 'string',
-          validValues: ['left', 'center', 'right', 'justify'] 
-        }
-      }
-    );
+    this.attributeMap = mergeAttributeMaps(commonAttributeMaps.animation, {
+      shuffleDirection: {
+        attribute: "wb-shuffle-direction",
+        type: "string",
+        validValues: ["left", "right"],
+      },
+      shuffleTimes: {
+        attribute: "wb-shuffle-times",
+        type: "number",
+        parser: parseInt,
+        min: 1,
+      },
+      animationMode: {
+        attribute: "wb-animation-mode",
+        type: "string",
+        validValues: ["evenodd", "random"],
+      },
+      maxDelay: {
+        attribute: "wb-max-delay",
+        type: "number",
+        min: 0,
+      },
+      loop: {
+        attribute: "wb-loop",
+        type: "boolean",
+      },
+      loopDelay: {
+        attribute: "wb-loop-delay",
+        type: "number",
+        min: 0,
+      },
+      stagger: {
+        attribute: "wb-stagger",
+        type: "number",
+        min: 0,
+      },
+      scrambleCharset: {
+        attribute: "wb-scramble-charset",
+        type: "string",
+      },
+      colorFrom: {
+        attribute: "wb-color-from",
+        type: "color",
+      },
+      colorTo: {
+        attribute: "wb-color-to",
+        type: "color",
+      },
+      triggerOnce: {
+        attribute: "wb-trigger-once",
+        type: "boolean",
+      },
+      respectReducedMotion: {
+        attribute: "wb-respect-reduced-motion",
+        type: "boolean",
+      },
+      triggerOnHover: {
+        attribute: "wb-trigger-on-hover",
+        type: "boolean",
+      },
+      textAlign: {
+        attribute: "wb-text-align",
+        type: "string",
+        validValues: ["left", "center", "right", "justify"],
+      },
+    });
   }
 
   /**
@@ -198,13 +202,12 @@ class ShuffleAnimator {
    */
   injectComponentStyles() {
     if (this.stylesInjected) return;
-    
+
     try {
-      injectStyles('wb-shuffle-styles', componentCSS);
+      injectStyles("wb-shuffle-styles", componentCSS);
       this.stylesInjected = true;
-      console.log('WebflowBits: Shuffle styles injected');
     } catch (error) {
-      console.warn('WebflowBits: Failed to inject Shuffle styles', error);
+      console.warn("WebflowBits: Failed to inject Shuffle styles", error);
     }
   }
 
@@ -213,31 +216,37 @@ class ShuffleAnimator {
    */
   checkForConflicts() {
     const testClasses = [
-      'wb-shuffle-parent',
-      'wb-shuffle-ready',
-      'wb-shuffle-animating',
-      'wb-shuffle-completed',
-      'wb-shuffle-char-wrapper',
-      'wb-shuffle-char'
+      "wb-shuffle-parent",
+      "wb-shuffle-ready",
+      "wb-shuffle-animating",
+      "wb-shuffle-completed",
+      "wb-shuffle-char-wrapper",
+      "wb-shuffle-char",
     ];
-    
-    return checkCSSConflicts(testClasses, this.componentName, '[wb-component="shuffle"]');
+
+    return checkCSSConflicts(
+      testClasses,
+      this.componentName,
+      '[wb-component="shuffle"]',
+    );
   }
 
   /**
    * Check if reduced motion is preferred
    */
   respectsReducedMotion() {
-    return window.matchMedia && 
-           window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return (
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
   }
 
   /**
    * Wait for fonts to load
    */
   async waitForFonts() {
-    if ('fonts' in document) {
-      if (document.fonts.status === 'loaded') {
+    if ("fonts" in document) {
+      if (document.fonts.status === "loaded") {
         return Promise.resolve();
       }
       return document.fonts.ready;
@@ -253,8 +262,14 @@ class ShuffleAnimator {
     if (!parent) return null;
 
     // Add safety check to prevent processing elements with zero dimensions
-    if (!char.offsetParent && char.offsetWidth === 0 && char.offsetHeight === 0) {
-      console.warn('WebflowBits Shuffle: Character has zero dimensions, skipping');
+    if (
+      !char.offsetParent &&
+      char.offsetWidth === 0 &&
+      char.offsetHeight === 0
+    ) {
+      console.warn(
+        "WebflowBits Shuffle: Character has zero dimensions, skipping",
+      );
       return null;
     }
 
@@ -263,36 +278,39 @@ class ShuffleAnimator {
     try {
       rect = char.getBoundingClientRect();
     } catch (error) {
-      console.warn('WebflowBits Shuffle: Error getting bounding rect', error);
+      console.warn("WebflowBits Shuffle: Error getting bounding rect", error);
       return null;
     }
-    
+
     const width = rect.width;
     const height = rect.height;
-    
+
     // Skip if dimensions are invalid
     if (!width || !height || width <= 0 || height <= 0) {
-      console.warn('WebflowBits Shuffle: Invalid character dimensions', { width, height });
+      console.warn("WebflowBits Shuffle: Invalid character dimensions", {
+        width,
+        height,
+      });
       return null;
     }
 
     // Create wrapper
-    const wrapper = document.createElement('span');
-    wrapper.className = 'wb-shuffle-char-wrapper';
+    const wrapper = document.createElement("span");
+    wrapper.className = "wb-shuffle-char-wrapper";
     Object.assign(wrapper.style, {
-      display: 'inline-block',
-      overflow: 'hidden',
+      display: "inline-block",
+      overflow: "hidden",
       width: `${width}px`,
       height: `${height}px`,
-      verticalAlign: 'top'
+      verticalAlign: "top",
     });
 
     // Create inner container
-    const inner = document.createElement('span');
+    const inner = document.createElement("span");
     Object.assign(inner.style, {
-      display: 'inline-block',
-      whiteSpace: 'nowrap',
-      willChange: 'transform'
+      display: "inline-block",
+      whiteSpace: "nowrap",
+      willChange: "transform",
     });
 
     // Insert wrapper and move character
@@ -301,50 +319,50 @@ class ShuffleAnimator {
 
     // Create character copies for shuffle effect
     const rolls = Math.max(1, Math.floor(config.shuffleTimes));
-    
+
     // Original character (marked for identification)
     const firstOriginal = char.cloneNode(true);
-    firstOriginal.className = 'wb-shuffle-char';
-    firstOriginal.setAttribute('data-original', '1');
+    firstOriginal.className = "wb-shuffle-char";
+    firstOriginal.setAttribute("data-original", "1");
     Object.assign(firstOriginal.style, {
-      display: 'inline-block',
+      display: "inline-block",
       width: `${width}px`,
-      textAlign: config.textAlign
+      textAlign: config.textAlign,
     });
 
     // Style the actual character
-    char.className = 'wb-shuffle-char';
-    char.setAttribute('data-original', '1');
+    char.className = "wb-shuffle-char";
+    char.setAttribute("data-original", "1");
     Object.assign(char.style, {
-      display: 'inline-block',
+      display: "inline-block",
       width: `${width}px`,
-      textAlign: config.textAlign
+      textAlign: config.textAlign,
     });
 
     // Add copies to inner container
     inner.appendChild(firstOriginal);
-    
+
     // Create scrambled versions if charset provided
     for (let i = 0; i < rolls; i++) {
       const copy = char.cloneNode(true);
-      copy.removeAttribute('data-original');
-      
+      copy.removeAttribute("data-original");
+
       if (config.scrambleCharset) {
         const randomChar = config.scrambleCharset.charAt(
-          Math.floor(Math.random() * config.scrambleCharset.length)
+          Math.floor(Math.random() * config.scrambleCharset.length),
         );
         copy.textContent = randomChar || char.textContent;
       }
-      
+
       Object.assign(copy.style, {
-        display: 'inline-block',
+        display: "inline-block",
         width: `${width}px`,
-        textAlign: config.textAlign
+        textAlign: config.textAlign,
       });
-      
+
       inner.appendChild(copy);
     }
-    
+
     // Add final original character
     inner.appendChild(char);
 
@@ -353,14 +371,14 @@ class ShuffleAnimator {
     let startX = 0;
     let finalX = -steps * width;
 
-    if (config.shuffleDirection === 'right') {
+    if (config.shuffleDirection === "right") {
       // Reorder for right direction
       const firstCopy = inner.firstElementChild;
       const realChar = inner.lastElementChild;
-      
+
       if (realChar) inner.insertBefore(realChar, inner.firstChild);
       if (firstCopy) inner.appendChild(firstCopy);
-      
+
       startX = -steps * width;
       finalX = 0;
     }
@@ -372,15 +390,15 @@ class ShuffleAnimator {
     }
 
     // Store animation data
-    inner.setAttribute('data-final-x', String(finalX));
-    inner.setAttribute('data-start-x', String(startX));
+    inner.setAttribute("data-final-x", String(finalX));
+    inner.setAttribute("data-start-x", String(startX));
 
     return {
       wrapper,
       inner,
       width,
       startX,
-      finalX
+      finalX,
     };
   }
 
@@ -397,13 +415,13 @@ class ShuffleAnimator {
     try {
       // Split text into characters
       const splitText = new SplitText(element, {
-        type: 'chars',
-        charsClass: 'wb-shuffle-char',
-        wordsClass: 'wb-shuffle-word',
-        linesClass: 'wb-shuffle-line',
+        type: "chars",
+        charsClass: "wb-shuffle-char",
+        wordsClass: "wb-shuffle-word",
+        linesClass: "wb-shuffle-line",
         smartWrap: true,
         reduceWhiteSpace: false,
-        absolute: false
+        absolute: false,
       });
 
       instance.splitText = splitText;
@@ -412,9 +430,9 @@ class ShuffleAnimator {
       const chars = splitText.chars || [];
 
       // Convert divs to spans for better inline behavior and update the chars array
-      const convertedChars = chars.map(char => {
-        if (char.tagName === 'DIV') {
-          const span = document.createElement('span');
+      const convertedChars = chars.map((char) => {
+        if (char.tagName === "DIV") {
+          const span = document.createElement("span");
           span.className = char.className;
           span.innerHTML = char.innerHTML;
           char.parentNode.replaceChild(span, char);
@@ -426,7 +444,7 @@ class ShuffleAnimator {
       // Update the splitText.chars reference
       splitText.chars = convertedChars;
 
-      convertedChars.forEach(char => {
+      convertedChars.forEach((char) => {
         const structure = this.createCharacterStructure(char, config);
         if (structure) {
           instance.wrappers.push(structure);
@@ -437,14 +455,13 @@ class ShuffleAnimator {
       if (config.textAlign) {
         element.style.textAlign = config.textAlign;
       }
-
     } catch (error) {
-      console.error('WebflowBits Shuffle: Failed to build structure', error);
+      console.error("WebflowBits Shuffle: Failed to build structure", error);
       AnimationStateManager.dispatchLifecycleEvent(
-        element, 
-        'error', 
-        'shuffle', 
-        { error: error.message }
+        element,
+        "error",
+        "shuffle",
+        { error: error.message },
       );
     }
   }
@@ -460,7 +477,7 @@ class ShuffleAnimator {
       // Skip first and last (original characters)
       for (let i = 1; i < children.length - 1; i++) {
         const randomChar = config.scrambleCharset.charAt(
-          Math.floor(Math.random() * config.scrambleCharset.length)
+          Math.floor(Math.random() * config.scrambleCharset.length),
         );
         if (randomChar) {
           children[i].textContent = randomChar;
@@ -473,7 +490,7 @@ class ShuffleAnimator {
    * Get inner elements for animation
    */
   getInnerElements(instance) {
-    return instance.wrappers ? instance.wrappers.map(w => w.inner) : [];
+    return instance.wrappers ? instance.wrappers.map((w) => w.inner) : [];
   }
 
   /**
@@ -485,16 +502,16 @@ class ShuffleAnimator {
 
     const config = instance.config;
     const inners = this.getInnerElements(instance);
-    
+
     if (!inners.length) return;
 
     instance.isPlaying = true;
-    AnimationStateManager.setAnimatingState(element, 'wb-shuffle');
+    AnimationStateManager.setAnimatingState(element, "wb-shuffle");
 
     // Dispatch start event
-    AnimationStateManager.dispatchLifecycleEvent(element, 'start', 'shuffle', {
+    AnimationStateManager.dispatchLifecycleEvent(element, "start", "shuffle", {
       config,
-      characterCount: inners.length
+      characterCount: inners.length,
     });
 
     const timeline = gsap.timeline({
@@ -507,28 +524,38 @@ class ShuffleAnimator {
         }
         // Reset positions for repeat
         gsap.set(inners, {
-          x: (i, target) => parseFloat(target.getAttribute('data-start-x') || '0')
+          x: (i, target) =>
+            parseFloat(target.getAttribute("data-start-x") || "0"),
         });
-        
-        AnimationStateManager.dispatchLifecycleEvent(element, 'repeat', 'shuffle');
+
+        AnimationStateManager.dispatchLifecycleEvent(
+          element,
+          "repeat",
+          "shuffle",
+        );
       },
       onComplete: () => {
         instance.isPlaying = false;
-        
+
         if (!config.loop) {
           this.cleanupToStatic(instance, config);
-          AnimationStateManager.setCompletedState(element, 'wb-shuffle');
-          
+          AnimationStateManager.setCompletedState(element, "wb-shuffle");
+
           // Setup hover trigger if enabled
           if (config.triggerOnHover) {
             this.setupHoverTrigger(element);
           }
         }
-        
-        AnimationStateManager.dispatchLifecycleEvent(element, 'complete', 'shuffle', {
-          looped: config.loop
-        });
-      }
+
+        AnimationStateManager.dispatchLifecycleEvent(
+          element,
+          "complete",
+          "shuffle",
+          {
+            looped: config.loop,
+          },
+        );
+      },
     });
 
     // Add animation tweens based on mode
@@ -541,12 +568,13 @@ class ShuffleAnimator {
    * Add animation tweens to timeline
    */
   addAnimationTweens(timeline, inners, config) {
-    if (config.animationMode === 'evenodd') {
+    if (config.animationMode === "evenodd") {
       // Separate odd and even characters
       const odd = inners.filter((_, i) => i % 2 === 1);
       const even = inners.filter((_, i) => i % 2 === 0);
-      
-      const oddDuration = config.duration + Math.max(0, odd.length - 1) * config.stagger;
+
+      const oddDuration =
+        config.duration + Math.max(0, odd.length - 1) * config.stagger;
       const evenStart = odd.length ? oddDuration * 0.7 : 0;
 
       // Animate odd characters first
@@ -558,9 +586,9 @@ class ShuffleAnimator {
       if (even.length) {
         this.addCharacterTween(timeline, even, config, evenStart);
       }
-    } else if (config.animationMode === 'random') {
+    } else if (config.animationMode === "random") {
       // Random delays for each character
-      inners.forEach(inner => {
+      inners.forEach((inner) => {
         const delay = Math.random() * config.maxDelay;
         this.addCharacterTween(timeline, [inner], config, delay);
       });
@@ -571,21 +599,30 @@ class ShuffleAnimator {
    * Add character animation tween
    */
   addCharacterTween(timeline, targets, config, startTime) {
-    timeline.to(targets, {
-      x: (i, target) => parseFloat(target.getAttribute('data-final-x') || '0'),
-      duration: config.duration,
-      ease: config.ease,
-      force3D: true,
-      stagger: config.animationMode === 'evenodd' ? config.stagger : 0
-    }, startTime);
+    timeline.to(
+      targets,
+      {
+        x: (i, target) =>
+          parseFloat(target.getAttribute("data-final-x") || "0"),
+        duration: config.duration,
+        ease: config.ease,
+        force3D: true,
+        stagger: config.animationMode === "evenodd" ? config.stagger : 0,
+      },
+      startTime,
+    );
 
     // Add color animation if specified
     if (config.colorFrom && config.colorTo) {
-      timeline.to(targets, {
-        color: config.colorTo,
-        duration: config.duration,
-        ease: config.ease
-      }, startTime);
+      timeline.to(
+        targets,
+        {
+          color: config.colorTo,
+          duration: config.duration,
+          ease: config.ease,
+        },
+        startTime,
+      );
     }
   }
 
@@ -600,18 +637,18 @@ class ShuffleAnimator {
       if (originalChar && wrapper.parentNode) {
         // Ensure consistent styling for the restored character
         Object.assign(originalChar.style, {
-          display: 'inline-block',
-          verticalAlign: 'top',
-          lineHeight: '1',
-          textAlign: config.textAlign || 'center',
-          position: 'static'
+          display: "inline-block",
+          verticalAlign: "top",
+          lineHeight: "1",
+          textAlign: config.textAlign || "center",
+          position: "static",
         });
-        
+
         // Apply final color if specified
         if (config.colorTo) {
           originalChar.style.color = config.colorTo;
         }
-        
+
         // Replace wrapper with original character
         wrapper.parentNode.replaceChild(originalChar, wrapper);
       }
@@ -632,7 +669,7 @@ class ShuffleAnimator {
 
     const hoverHandler = () => {
       if (instance.isPlaying) return;
-      
+
       this.buildShuffleStructure(element, instance.config);
       if (instance.config.scrambleCharset) {
         this.randomizeScrambles(instance, instance.config);
@@ -641,7 +678,7 @@ class ShuffleAnimator {
     };
 
     instance.hoverHandler = hoverHandler;
-    element.addEventListener('mouseenter', hoverHandler);
+    element.addEventListener("mouseenter", hoverHandler);
   }
 
   /**
@@ -651,7 +688,7 @@ class ShuffleAnimator {
     const instance = this.instances.get(element);
     if (!instance || !instance.hoverHandler) return;
 
-    element.removeEventListener('mouseenter', instance.hoverHandler);
+    element.removeEventListener("mouseenter", instance.hoverHandler);
     instance.hoverHandler = null;
   }
 
@@ -686,7 +723,7 @@ class ShuffleAnimator {
         instance.splitText = null;
       }
     } catch (error) {
-      console.warn('WebflowBits Shuffle: Error reverting SplitText', error);
+      console.warn("WebflowBits Shuffle: Error reverting SplitText", error);
     }
 
     // Remove hover trigger
@@ -700,19 +737,24 @@ class ShuffleAnimator {
    */
   async initElement(element) {
     // Add safety check to ensure this is actually a shuffle element
-    if (element.getAttribute('wb-component') !== 'shuffle') {
-      console.warn('WebflowBits Shuffle: Element does not have wb-component="shuffle"', element);
+    if (element.getAttribute("wb-component") !== "shuffle") {
+      console.warn(
+        'WebflowBits Shuffle: Element does not have wb-component="shuffle"',
+        element,
+      );
       return;
     }
 
     if (this.instances.has(element)) {
-      console.warn('WebflowBits Shuffle: Element already initialized');
+      console.warn("WebflowBits Shuffle: Element already initialized");
       return;
     }
 
     // Additional safety check to prevent multiple initializations
-    if (element.classList.contains('wb-shuffle-parent')) {
-      console.warn('WebflowBits Shuffle: Element already has shuffle classes, skipping initialization');
+    if (element.classList.contains("wb-shuffle-parent")) {
+      console.warn(
+        "WebflowBits Shuffle: Element already has shuffle classes, skipping initialization",
+      );
       return;
     }
 
@@ -721,22 +763,30 @@ class ShuffleAnimator {
 
     try {
       // Parse configuration from attributes
-      const config = parseElementConfig(element, this.defaultConfig, this.attributeMap);
-      
+      const config = parseElementConfig(
+        element,
+        this.defaultConfig,
+        this.attributeMap,
+      );
+
       // Check for reduced motion preference
       if (config.respectReducedMotion && this.respectsReducedMotion()) {
-        console.log('WebflowBits Shuffle: Respecting reduced motion preference');
-        element.classList.add('wb-shuffle-ready');
-        AnimationStateManager.dispatchLifecycleEvent(element, 'complete', 'shuffle', {
-          reducedMotion: true
-        });
+        element.classList.add("wb-shuffle-ready");
+        AnimationStateManager.dispatchLifecycleEvent(
+          element,
+          "complete",
+          "shuffle",
+          {
+            reducedMotion: true,
+          },
+        );
         return;
       }
 
       // Wait for fonts to load with timeout to prevent hanging
       await Promise.race([
         this.waitForFonts(),
-        new Promise(resolve => setTimeout(resolve, 1000)) // 1 second timeout
+        new Promise((resolve) => setTimeout(resolve, 1000)), // 1 second timeout
       ]);
 
       // Create instance
@@ -748,24 +798,24 @@ class ShuffleAnimator {
         timeline: null,
         scrollTrigger: null,
         hoverHandler: null,
-        isPlaying: false
+        isPlaying: false,
       };
 
       this.instances.set(element, instance);
 
       // Add parent class
       ComponentClassManager.applyClasses(
-        element, 
-        'wb-shuffle-parent', 
-        this.instances, 
-        this.componentName
+        element,
+        "wb-shuffle-parent",
+        this.instances,
+        this.componentName,
       );
 
       // Calculate ScrollTrigger start position
       const scrollTriggerStart = calculateScrollTriggerStart(
-        config.threshold, 
+        config.threshold,
         config.rootMargin,
-        element
+        element,
       );
 
       // Create ScrollTrigger
@@ -779,23 +829,20 @@ class ShuffleAnimator {
             this.randomizeScrambles(instance, config);
           }
           this.playShuffle(element);
-          
+
           // Mark as ready
           ComponentClassManager.applyClasses(
-            element, 
-            'wb-shuffle-ready', 
-            this.instances, 
-            this.componentName
+            element,
+            "wb-shuffle-ready",
+            this.instances,
+            this.componentName,
           );
-        }
+        },
       });
 
       instance.scrollTrigger = scrollTrigger;
-
-      console.log('WebflowBits Shuffle: Element initialized', element);
-
     } catch (error) {
-      console.error('WebflowBits Shuffle: Failed to initialize element', error);
+      console.error("WebflowBits Shuffle: Failed to initialize element", error);
       this.instances.delete(element);
     }
   }
@@ -805,7 +852,7 @@ class ShuffleAnimator {
    */
   initAll() {
     const elements = document.querySelectorAll('[wb-component="shuffle"]');
-    elements.forEach(element => this.initElement(element));
+    elements.forEach((element) => this.initElement(element));
   }
 
   /**
@@ -826,16 +873,20 @@ class ShuffleAnimator {
     // Remove classes
     ComponentClassManager.removeClasses(
       element,
-      ['wb-shuffle-parent', 'wb-shuffle-ready', 'wb-shuffle-animating', 'wb-shuffle-completed'],
+      [
+        "wb-shuffle-parent",
+        "wb-shuffle-ready",
+        "wb-shuffle-animating",
+        "wb-shuffle-completed",
+      ],
       this.instances,
-      this.componentName
+      this.componentName,
     );
 
     // Remove instance
     this.instances.delete(element);
 
-    AnimationStateManager.dispatchLifecycleEvent(element, 'destroy', 'shuffle');
-    console.log('WebflowBits Shuffle: Element destroyed', element);
+    AnimationStateManager.dispatchLifecycleEvent(element, "destroy", "shuffle");
   }
 
   /**
@@ -843,7 +894,7 @@ class ShuffleAnimator {
    */
   destroyAll() {
     const elements = Array.from(this.instances.keys());
-    elements.forEach(element => this.destroy(element));
+    elements.forEach((element) => this.destroy(element));
   }
 
   /**
@@ -873,9 +924,9 @@ class ShuffleAnimator {
     // Restart animation with new config
     this.teardownShuffle(element);
     this.buildShuffleStructure(element, instance.config);
-    
-    AnimationStateManager.dispatchLifecycleEvent(element, 'update', 'shuffle', {
-      newConfig: instance.config
+
+    AnimationStateManager.dispatchLifecycleEvent(element, "update", "shuffle", {
+      newConfig: instance.config,
     });
   }
 
@@ -901,8 +952,8 @@ class ShuffleAnimator {
     if (!instance || !instance.timeline) return;
 
     instance.timeline.pause();
-    AnimationStateManager.setPausedState(element, 'wb-shuffle');
-    AnimationStateManager.dispatchLifecycleEvent(element, 'pause', 'shuffle');
+    AnimationStateManager.setPausedState(element, "wb-shuffle");
+    AnimationStateManager.dispatchLifecycleEvent(element, "pause", "shuffle");
   }
 
   /**
@@ -913,8 +964,8 @@ class ShuffleAnimator {
     if (!instance || !instance.timeline) return;
 
     instance.timeline.resume();
-    AnimationStateManager.setAnimatingState(element, 'wb-shuffle');
-    AnimationStateManager.dispatchLifecycleEvent(element, 'resume', 'shuffle');
+    AnimationStateManager.setAnimatingState(element, "wb-shuffle");
+    AnimationStateManager.dispatchLifecycleEvent(element, "resume", "shuffle");
   }
 }
 

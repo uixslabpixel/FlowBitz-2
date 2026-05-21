@@ -1,9 +1,16 @@
 import { gsap } from "gsap";
-import { injectStyles } from '../../utils/core/injectStyles.js';
-import { parseElementConfig, commonAttributeMaps, mergeAttributeMaps } from '../../utils/core/attributeParser.js';
-import { ComponentClassManager, webflowBitsClasses } from '../../utils/core/classManager.js';
-import { checkCSSConflicts } from '../../utils/core/conflictDetector.js';
-import { AnimationStateManager } from '../../utils/animation/animationStateManager.js';
+import { injectStyles } from "../../utils/core/injectStyles.js";
+import {
+  parseElementConfig,
+  commonAttributeMaps,
+  mergeAttributeMaps,
+} from "../../utils/core/attributeParser.js";
+import {
+  ComponentClassManager,
+  webflowBitsClasses,
+} from "../../utils/core/classManager.js";
+import { checkCSSConflicts } from "../../utils/core/conflictDetector.js";
+import { AnimationStateManager } from "../../utils/animation/animationStateManager.js";
 
 // Inject component-specific CSS with unique namespace
 const componentCSS = `
@@ -65,7 +72,8 @@ function lerp(a, b, n) {
 
 // Get local pointer position relative to element
 function getLocalPointerPos(e, rect) {
-  let clientX = 0, clientY = 0;
+  let clientX = 0,
+    clientY = 0;
   if (e.touches && e.touches.length > 0) {
     clientX = e.touches[0].clientX;
     clientY = e.touches[0].clientY;
@@ -75,7 +83,7 @@ function getLocalPointerPos(e, rect) {
   }
   return {
     x: clientX - rect.left,
-    y: clientY - rect.top
+    y: clientY - rect.top,
   };
 }
 
@@ -93,7 +101,7 @@ class MagnetEffect {
   constructor(element, config) {
     this.element = element;
     this.config = config;
-    
+
     this.isActive = false;
     this.currentX = 0;
     this.currentY = 0;
@@ -101,10 +109,13 @@ class MagnetEffect {
     this.targetY = 0;
     this.rect = null;
     this.animationId = null;
-    
+
     // Throttle mouse move for better performance
-    this.throttledMouseMove = this.throttle(this.handleMouseMove.bind(this), 16); // ~60fps
-    
+    this.throttledMouseMove = this.throttle(
+      this.handleMouseMove.bind(this),
+      16,
+    ); // ~60fps
+
     this.init();
   }
 
@@ -120,20 +131,29 @@ class MagnetEffect {
 
   initEvents() {
     // Mouse events
-    this.element.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
-    this.element.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
-    this.element.addEventListener('mousemove', this.throttledMouseMove);
-    
+    this.element.addEventListener(
+      "mouseenter",
+      this.handleMouseEnter.bind(this),
+    );
+    this.element.addEventListener(
+      "mouseleave",
+      this.handleMouseLeave.bind(this),
+    );
+    this.element.addEventListener("mousemove", this.throttledMouseMove);
+
     // Touch events
-    this.element.addEventListener('touchstart', this.handleTouchStart.bind(this));
-    this.element.addEventListener('touchmove', this.handleTouchMove.bind(this));
-    this.element.addEventListener('touchend', this.handleTouchEnd.bind(this));
-    
+    this.element.addEventListener(
+      "touchstart",
+      this.handleTouchStart.bind(this),
+    );
+    this.element.addEventListener("touchmove", this.handleTouchMove.bind(this));
+    this.element.addEventListener("touchend", this.handleTouchEnd.bind(this));
+
     // Resize event
     this.handleResize = this.throttle(() => {
       this.updateRect();
     }, 100);
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
   }
 
   handleMouseEnter() {
@@ -141,7 +161,7 @@ class MagnetEffect {
     this.isActive = true;
     this.updateRect();
     if (this.config.debug) {
-      console.log('Magnetic Button: Mouse entered');
+      console.log("Magnetic Button: Mouse entered");
     }
   }
 
@@ -151,7 +171,7 @@ class MagnetEffect {
     this.targetX = 0;
     this.targetY = 0;
     if (this.config.debug) {
-      console.log('Magnetic Button: Mouse left');
+      console.log("Magnetic Button: Mouse left");
     }
   }
 
@@ -184,22 +204,23 @@ class MagnetEffect {
 
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    
+
     const centerX = this.rect.left + this.rect.width / 2;
     const centerY = this.rect.top + this.rect.height / 2;
-    
+
     const deltaX = clientX - centerX;
     const deltaY = clientY - centerY;
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    
+
     // Check if pointer is within magnet area
-    const maxDistance = Math.max(this.rect.width, this.rect.height) / 2 + this.config.padding;
-    
+    const maxDistance =
+      Math.max(this.rect.width, this.rect.height) / 2 + this.config.padding;
+
     if (distance < maxDistance) {
       // Calculate magnetic force (stronger when closer)
       const force = Math.max(0, 1 - distance / maxDistance);
       const strength = this.config.magnetStrength;
-      
+
       this.targetX = (deltaX * force) / strength;
       this.targetY = (deltaY * force) / strength;
     } else {
@@ -226,26 +247,26 @@ class MagnetEffect {
   // Throttle function for better performance
   throttle(func, limit) {
     let inThrottle;
-    return function() {
+    return function () {
       const args = arguments;
       const context = this;
       if (!inThrottle) {
         func.apply(context, args);
         inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
+        setTimeout(() => (inThrottle = false), limit);
       }
-    }
+    };
   }
 
   destroy() {
     // Remove event listeners
-    this.element.removeEventListener('mouseenter', this.handleMouseEnter);
-    this.element.removeEventListener('mouseleave', this.handleMouseLeave);
-    this.element.removeEventListener('mousemove', this.throttledMouseMove);
-    this.element.removeEventListener('touchstart', this.handleTouchStart);
-    this.element.removeEventListener('touchmove', this.handleTouchMove);
-    this.element.removeEventListener('touchend', this.handleTouchEnd);
-    window.removeEventListener('resize', this.handleResize);
+    this.element.removeEventListener("mouseenter", this.handleMouseEnter);
+    this.element.removeEventListener("mouseleave", this.handleMouseLeave);
+    this.element.removeEventListener("mousemove", this.throttledMouseMove);
+    this.element.removeEventListener("touchstart", this.handleTouchStart);
+    this.element.removeEventListener("touchmove", this.handleTouchMove);
+    this.element.removeEventListener("touchend", this.handleTouchEnd);
+    window.removeEventListener("resize", this.handleResize);
 
     // Cancel animation loop
     if (this.animationId) {
@@ -258,7 +279,7 @@ class MagnetEffect {
     this.currentY = 0;
     this.targetX = 0;
     this.targetY = 0;
-    this.element.style.transform = 'translate3d(0px, 0px, 0)';
+    this.element.style.transform = "translate3d(0px, 0px, 0)";
   }
 }
 
@@ -269,15 +290,15 @@ class MagnetAnimator {
   constructor() {
     this.instances = new Map();
     this.stylesInjected = false;
-    this.componentName = 'MagneticButton';
-    this.componentClasses = webflowBitsClasses.forComponent('magnetic-button');
+    this.componentName = "MagneticButton";
+    this.componentClasses = webflowBitsClasses.forComponent("magnetic-button");
     this.defaultConfig = {
       padding: 100,
       disabled: false,
       magnetStrength: 2,
-      activeTransition: 'transform 0.3s ease-out',
-      inactiveTransition: 'transform 0.5s ease-in-out',
-      debug: false
+      activeTransition: "transform 0.3s ease-out",
+      inactiveTransition: "transform 0.5s ease-in-out",
+      debug: false,
     };
   }
 
@@ -286,13 +307,15 @@ class MagnetAnimator {
    */
   injectComponentStyles() {
     if (this.stylesInjected) return;
-    
+
     try {
-      injectStyles('wb-magnetic-button-styles', componentCSS);
+      injectStyles("wb-magnetic-button-styles", componentCSS);
       this.stylesInjected = true;
-      console.log('WebflowBits: Magnetic Button styles injected');
     } catch (error) {
-      console.warn('WebflowBits: Failed to inject Magnetic Button styles', error);
+      console.warn(
+        "WebflowBits: Failed to inject Magnetic Button styles",
+        error,
+      );
     }
   }
 
@@ -309,19 +332,31 @@ class MagnetAnimator {
    * Parse custom attributes from element using utility functions
    */
   parseConfig(element) {
-    const attributeMap = mergeAttributeMaps(
-      commonAttributeMaps.animation,
-      {
-        // Magnet-specific attributes
-        padding: { attribute: 'wb-padding', type: 'number', parser: parseInt },
-        disabled: { attribute: 'wb-disabled', type: 'boolean', parser: (val) => val === 'true' || val === '' },
-        magnetStrength: { attribute: 'wb-strength', type: 'number', parser: parseFloat },
-        activeTransition: { attribute: 'wb-active-transition', type: 'string' },
-        inactiveTransition: { attribute: 'wb-inactive-transition', type: 'string' },
-        debug: { attribute: 'wb-debug', type: 'boolean', parser: (val) => val === 'true' || val === '' }
-      }
-    );
-    
+    const attributeMap = mergeAttributeMaps(commonAttributeMaps.animation, {
+      // Magnet-specific attributes
+      padding: { attribute: "wb-padding", type: "number", parser: parseInt },
+      disabled: {
+        attribute: "wb-disabled",
+        type: "boolean",
+        parser: (val) => val === "true" || val === "",
+      },
+      magnetStrength: {
+        attribute: "wb-strength",
+        type: "number",
+        parser: parseFloat,
+      },
+      activeTransition: { attribute: "wb-active-transition", type: "string" },
+      inactiveTransition: {
+        attribute: "wb-inactive-transition",
+        type: "string",
+      },
+      debug: {
+        attribute: "wb-debug",
+        type: "boolean",
+        parser: (val) => val === "true" || val === "",
+      },
+    });
+
     return parseElementConfig(element, this.defaultConfig, attributeMap);
   }
 
@@ -330,18 +365,18 @@ class MagnetAnimator {
    */
   applyComponentClasses(element, config) {
     const classesToApply = [
-      this.componentClasses.parent || 'wb-magnetic-button'
+      this.componentClasses.parent || "wb-magnetic-button",
     ];
-    
+
     if (config.disabled) {
-      classesToApply.push('wb-magnetic-button-disabled');
+      classesToApply.push("wb-magnetic-button-disabled");
     }
-    
+
     ComponentClassManager.applyClasses(
-      element, 
-      classesToApply, 
-      this.instances, 
-      this.componentName
+      element,
+      classesToApply,
+      this.instances,
+      this.componentName,
     );
   }
 
@@ -350,17 +385,17 @@ class MagnetAnimator {
    */
   removeComponentClasses(element) {
     const fallbackClasses = [
-      this.componentClasses.parent || 'wb-magnetic-button',
-      this.componentClasses.animating || 'wb-magnetic-button-animating',
-      this.componentClasses.completed || 'wb-magnetic-button-completed',
-      'wb-magnetic-button-disabled'
+      this.componentClasses.parent || "wb-magnetic-button",
+      this.componentClasses.animating || "wb-magnetic-button-animating",
+      this.componentClasses.completed || "wb-magnetic-button-completed",
+      "wb-magnetic-button-disabled",
     ];
-    
+
     ComponentClassManager.removeClasses(
-      element, 
-      fallbackClasses, 
-      this.instances, 
-      this.componentName
+      element,
+      fallbackClasses,
+      this.instances,
+      this.componentName,
     );
   }
 
@@ -372,7 +407,7 @@ class MagnetAnimator {
     // Store original content and classes
     const originalContent = element.innerHTML;
     const originalClasses = Array.from(element.classList);
-    
+
     // Get computed styles before any modifications
     const computedStyle = window.getComputedStyle(element);
     const originalDisplay = computedStyle.display;
@@ -380,45 +415,47 @@ class MagnetAnimator {
     const originalAlignItems = computedStyle.alignItems;
     const originalJustifyContent = computedStyle.justifyContent;
     const originalGap = computedStyle.gap;
-    
+
     // Create inner wrapper
-    const innerWrapper = document.createElement('div');
-    innerWrapper.className = 'wb-magnetic-button__inner';
+    const innerWrapper = document.createElement("div");
+    innerWrapper.className = "wb-magnetic-button__inner";
     innerWrapper.innerHTML = originalContent;
-    
+
     // Clear element and add wrapper
-    element.innerHTML = '';
+    element.innerHTML = "";
     element.appendChild(innerWrapper);
-    
+
     // Preserve original classes (excluding wb- classes)
-    originalClasses.forEach(cls => {
-      if (!cls.startsWith('wb-')) {
+    originalClasses.forEach((cls) => {
+      if (!cls.startsWith("wb-")) {
         element.classList.add(cls);
       }
     });
-    
+
     // DON'T modify the parent element's display property IF it's already set
     // Only apply minimal fallback for browser defaults (inline) that would break the effect
     // Check if display is explicitly set via inline styles or classes
-    const hasExplicitDisplay = element.style.display || 
-                               originalDisplay !== 'inline';
-    
+    const hasExplicitDisplay =
+      element.style.display || originalDisplay !== "inline";
+
     // For pure inline elements (browser default), we need at least inline-block
     // for the magnetic effect to work properly, but ONLY if not explicitly set
-    if (!hasExplicitDisplay && originalDisplay === 'inline') {
-      element.style.display = 'inline-block';
+    if (!hasExplicitDisplay && originalDisplay === "inline") {
+      element.style.display = "inline-block";
       if (config.debug) {
-        console.log('WebflowBits Magnet: Applied inline-block fallback for inline element');
+        console.log(
+          "WebflowBits Magnet: Applied inline-block fallback for inline element",
+        );
       }
     }
-    
+
     // Set up inner wrapper to inherit parent's layout properties
-    innerWrapper.style.width = '100%';
-    innerWrapper.style.height = '100%';
-    innerWrapper.style.pointerEvents = 'none'; // Prevent interference with mouse events
-    
+    innerWrapper.style.width = "100%";
+    innerWrapper.style.height = "100%";
+    innerWrapper.style.pointerEvents = "none"; // Prevent interference with mouse events
+
     // If parent has flex display, inherit those properties
-    if (originalDisplay === 'flex' || originalDisplay === 'inline-flex') {
+    if (originalDisplay === "flex" || originalDisplay === "inline-flex") {
       innerWrapper.style.display = originalDisplay;
       innerWrapper.style.flexDirection = originalFlexDirection;
       innerWrapper.style.alignItems = originalAlignItems;
@@ -426,15 +463,15 @@ class MagnetAnimator {
       innerWrapper.style.gap = originalGap;
     } else {
       // For non-flex displays, use flex to center content as fallback
-      innerWrapper.style.display = 'flex';
-      innerWrapper.style.alignItems = 'center';
-      innerWrapper.style.justifyContent = 'center';
+      innerWrapper.style.display = "flex";
+      innerWrapper.style.alignItems = "center";
+      innerWrapper.style.justifyContent = "center";
     }
-    
+
     return {
       innerWrapper,
       originalContent,
-      originalClasses
+      originalClasses,
     };
   }
 
@@ -443,57 +480,59 @@ class MagnetAnimator {
    */
   initElement(element) {
     this.ensureStylesInjected();
-    
+
     if (!element) {
-      console.warn('WebflowBits Magnet: Element is invalid');
+      console.warn("WebflowBits Magnet: Element is invalid");
       return;
     }
 
     if (this.instances.has(element)) {
-      console.warn('WebflowBits Magnet: Element already initialized');
+      console.warn("WebflowBits Magnet: Element already initialized");
       return;
     }
 
     const config = this.parseConfig(element);
-    
+
     // Create instance object to track this animation
     const instance = {
       element,
       config,
       domStructure: null,
       effect: null,
-      addedClasses: []
+      addedClasses: [],
     };
 
     this.instances.set(element, instance);
-    
+
     try {
       // Apply component classes using utility
       this.applyComponentClasses(element, config);
-      
+
       // Create DOM structure
       instance.domStructure = this.createDOMStructure(element, config);
-      
+
       if (!instance.domStructure) {
-        throw new Error('Failed to create DOM structure');
+        throw new Error("Failed to create DOM structure");
       }
-      
+
       // Initialize the magnet effect
       instance.effect = new MagnetEffect(element, config);
-      
+
       // Mark as animating
-      element.classList.add('wb-magnetic-button-animating');
-      
+      element.classList.add("wb-magnetic-button-animating");
+
       // Dispatch initialization event using utility
       AnimationStateManager.dispatchLifecycleEvent(
-        element, 
-        'init', 
-        'magnetic-button',
-        { instance }
+        element,
+        "init",
+        "magnetic-button",
+        { instance },
       );
-      
     } catch (error) {
-      console.error('WebflowBits Magnetic Button: Failed to setup animation', error);
+      console.error(
+        "WebflowBits Magnetic Button: Failed to setup animation",
+        error,
+      );
       this.removeComponentClasses(element);
       this.instances.delete(element);
     }
@@ -503,8 +542,10 @@ class MagnetAnimator {
    * Initialize all elements with wb-component="magnetic-button"
    */
   initAll() {
-    const elements = document.querySelectorAll('[wb-component="magnetic-button"]');
-    elements.forEach(element => this.initElement(element));
+    const elements = document.querySelectorAll(
+      '[wb-component="magnetic-button"]',
+    );
+    elements.forEach((element) => this.initElement(element));
   }
 
   /**
@@ -533,11 +574,9 @@ class MagnetAnimator {
     this.instances.delete(element);
 
     // Dispatch destroy event using utility
-    AnimationStateManager.dispatchEvent(
+    AnimationStateManager.dispatchEvent(element, "wb-magnetic-button-destroy", {
       element,
-      'wb-magnetic-button-destroy',
-      { element }
-    );
+    });
   }
 
   /**
@@ -561,12 +600,9 @@ class MagnetAnimator {
    * Check for potential CSS conflicts using utility
    */
   checkForConflicts() {
-    const conflictClasses = [
-      'magnetic-button',
-      'magnetic-button__inner'
-    ];
-    
-    return checkCSSConflicts('MagneticButton', conflictClasses);
+    const conflictClasses = ["magnetic-button", "magnetic-button__inner"];
+
+    return checkCSSConflicts("MagneticButton", conflictClasses);
   }
 
   /**
@@ -592,7 +628,7 @@ class MagnetAnimator {
 
     // Update config
     instance.config = { ...instance.config, ...newConfig };
-    
+
     // Reinitialize effect with new config
     if (instance.effect) {
       instance.effect.destroy();

@@ -1,8 +1,17 @@
-import { injectStyles } from '../../utils/core/injectStyles.js';
-import { parseElementConfig, mergeAttributeMaps } from '../../utils/core/attributeParser.js';
-import { ComponentClassManager, webflowBitsClasses } from '../../utils/core/classManager.js';
-import { checkCSSConflicts, componentClassSets } from '../../utils/core/conflictDetector.js';
-import { AnimationStateManager } from '../../utils/animation/animationStateManager.js';
+import { injectStyles } from "../../utils/core/injectStyles.js";
+import {
+  parseElementConfig,
+  mergeAttributeMaps,
+} from "../../utils/core/attributeParser.js";
+import {
+  ComponentClassManager,
+  webflowBitsClasses,
+} from "../../utils/core/classManager.js";
+import {
+  checkCSSConflicts,
+  componentClassSets,
+} from "../../utils/core/conflictDetector.js";
+import { AnimationStateManager } from "../../utils/animation/animationStateManager.js";
 
 // Inject component-specific CSS with unique namespace
 const componentCSS = `
@@ -44,15 +53,15 @@ class ShinyTextAnimator {
   constructor() {
     this.instances = new Map();
     this.stylesInjected = false;
-    this.componentName = 'ShinyText';
-    this.componentClasses = webflowBitsClasses.forComponent('shiny-text');
+    this.componentName = "ShinyText";
+    this.componentClasses = webflowBitsClasses.forComponent("shiny-text");
     this.defaultConfig = {
-      speed: 5,        // animation speed in seconds
+      speed: 5, // animation speed in seconds
       disabled: false, // whether animation is disabled
       textColor: null, // base text color - will inherit from Webflow element
-      shineColor: '#0a70ff' // shine color
+      shineColor: "#0a70ff", // shine color
     };
-    
+
     // this.injectComponentStyles();
   }
 
@@ -61,24 +70,23 @@ class ShinyTextAnimator {
    */
   injectComponentStyles() {
     if (this.stylesInjected) return;
-    
+
     try {
-      injectStyles('wb-shiny-text-styles', componentCSS);
+      injectStyles("wb-shiny-text-styles", componentCSS);
       this.stylesInjected = true;
-      console.log('WebflowBits: ShinyText styles injected');
     } catch (error) {
-      console.warn('WebflowBits: Failed to inject ShinyText styles', error);
+      console.warn("WebflowBits: Failed to inject ShinyText styles", error);
     }
   }
 
-    /**
+  /**
    * Ensure styles are injected when needed
    */
-    ensureStylesInjected() {
-      if (!this.stylesInjected) {
-        this.injectComponentStyles();
-      }
+  ensureStylesInjected() {
+    if (!this.stylesInjected) {
+      this.injectComponentStyles();
     }
+  }
 
   /**
    * Parse custom attributes from element using utility functions
@@ -86,12 +94,12 @@ class ShinyTextAnimator {
   parseConfig(element) {
     const attributeMap = {
       // ShinyText-specific attributes
-      speed: { attribute: 'wb-speed', type: 'duration' },
-      disabled: { attribute: 'wb-disable', type: 'boolean' },
-      textColor: { attribute: 'wb-text-color', type: 'color' },
-      shineColor: { attribute: 'wb-shine-color', type: 'color' }
+      speed: { attribute: "wb-speed", type: "duration" },
+      disabled: { attribute: "wb-disable", type: "boolean" },
+      textColor: { attribute: "wb-text-color", type: "color" },
+      shineColor: { attribute: "wb-shine-color", type: "color" },
     };
-    
+
     return parseElementConfig(element, this.defaultConfig, attributeMap);
   }
 
@@ -100,16 +108,16 @@ class ShinyTextAnimator {
    */
   applyComponentClasses(element, config) {
     const classesToApply = [this.componentClasses.parent];
-    
+
     if (config.disabled) {
       classesToApply.push(`${this.componentClasses.parent}--disabled`);
     }
-    
+
     ComponentClassManager.applyClasses(
-      element, 
-      classesToApply, 
-      this.instances, 
-      this.componentName
+      element,
+      classesToApply,
+      this.instances,
+      this.componentName,
     );
   }
 
@@ -119,14 +127,14 @@ class ShinyTextAnimator {
   removeComponentClasses(element) {
     const fallbackClasses = [
       this.componentClasses.parent,
-      `${this.componentClasses.parent}--disabled`
+      `${this.componentClasses.parent}--disabled`,
     ];
-    
+
     ComponentClassManager.removeClasses(
-      element, 
-      fallbackClasses, 
-      this.instances, 
-      this.componentName
+      element,
+      fallbackClasses,
+      this.instances,
+      this.componentName,
     );
   }
 
@@ -136,9 +144,12 @@ class ShinyTextAnimator {
   applyCustomStyles(element, config) {
     // Set animation duration
     element.style.animationDuration = `${config.speed}s`;
-    
+
     // Only apply custom gradient if custom colors are specified
-    if (config.textColor !== null || config.shineColor !== this.defaultConfig.shineColor) {
+    if (
+      config.textColor !== null ||
+      config.shineColor !== this.defaultConfig.shineColor
+    ) {
       // If textColor is null, get the computed color from the element
       let baseColor = config.textColor;
       if (!baseColor) {
@@ -146,20 +157,20 @@ class ShinyTextAnimator {
         const computedStyle = window.getComputedStyle(element);
         baseColor = computedStyle.color;
       }
-      
+
       const gradient = `linear-gradient(
         120deg,
         ${baseColor} 40%,
         ${config.shineColor} 50%,
         ${baseColor} 60%
       )`;
-      
+
       // Use the gradient as the text color, not as background
-      element.style.color = 'transparent';
+      element.style.color = "transparent";
       element.style.background = gradient;
-      element.style.backgroundSize = '200% 120%';
-      element.style.webkitBackgroundClip = 'text';
-      element.style.backgroundClip = 'text';
+      element.style.backgroundSize = "200% 120%";
+      element.style.webkitBackgroundClip = "text";
+      element.style.backgroundClip = "text";
     }
   }
 
@@ -168,19 +179,19 @@ class ShinyTextAnimator {
    */
   initElement(element) {
     this.ensureStylesInjected();
-    
+
     if (!element || !element.textContent.trim()) {
-      console.warn('WebflowBits ShinyText: Element is empty or invalid');
+      console.warn("WebflowBits ShinyText: Element is empty or invalid");
       return;
     }
 
     if (this.instances.has(element)) {
-      console.warn('WebflowBits ShinyText: Element already initialized');
+      console.warn("WebflowBits ShinyText: Element already initialized");
       return;
     }
 
     const config = this.parseConfig(element);
-    
+
     // Create instance object to track this animation
     const instance = {
       element,
@@ -191,30 +202,29 @@ class ShinyTextAnimator {
         backgroundSize: element.style.backgroundSize,
         webkitBackgroundClip: element.style.webkitBackgroundClip,
         backgroundClip: element.style.backgroundClip,
-        animationDuration: element.style.animationDuration
+        animationDuration: element.style.animationDuration,
       },
-      addedClasses: []
+      addedClasses: [],
     };
 
     this.instances.set(element, instance);
-    
+
     try {
       // Apply component classes using utility
       this.applyComponentClasses(element, config);
-      
+
       // Apply custom styles
       this.applyCustomStyles(element, config);
-      
+
       // Dispatch initialization event using utility
       AnimationStateManager.dispatchLifecycleEvent(
-        element, 
-        'init', 
-        'shiny-text',
-        { instance }
+        element,
+        "init",
+        "shiny-text",
+        { instance },
       );
-      
     } catch (error) {
-      console.error('WebflowBits ShinyText: Failed to setup animation', error);
+      console.error("WebflowBits ShinyText: Failed to setup animation", error);
       this.removeComponentClasses(element);
       this.instances.delete(element);
     }
@@ -226,7 +236,7 @@ class ShinyTextAnimator {
   updateElement(element, newConfig = {}) {
     const instance = this.instances.get(element);
     if (!instance) {
-      console.warn('WebflowBits ShinyText: Element not initialized');
+      console.warn("WebflowBits ShinyText: Element not initialized");
       return;
     }
 
@@ -236,17 +246,16 @@ class ShinyTextAnimator {
 
     // Remove old classes
     this.removeComponentClasses(element);
-    
+
     // Apply updated classes and styles
     this.applyComponentClasses(element, updatedConfig);
     this.applyCustomStyles(element, updatedConfig);
 
     // Dispatch update event using utility
-    AnimationStateManager.dispatchEvent(
-      element,
-      'wb-shiny-text-update',
-      { instance, newConfig }
-    );
+    AnimationStateManager.dispatchEvent(element, "wb-shiny-text-update", {
+      instance,
+      newConfig,
+    });
   }
 
   /**
@@ -275,7 +284,7 @@ class ShinyTextAnimator {
    */
   initAll() {
     const elements = document.querySelectorAll('[wb-component="shiny-text"]');
-    elements.forEach(element => this.initElement(element));
+    elements.forEach((element) => this.initElement(element));
   }
 
   /**
@@ -288,7 +297,7 @@ class ShinyTextAnimator {
     const { originalStyles } = instance;
 
     // Restore original styles
-    Object.keys(originalStyles).forEach(property => {
+    Object.keys(originalStyles).forEach((property) => {
       if (originalStyles[property]) {
         element.style[property] = originalStyles[property];
       } else {
@@ -303,11 +312,9 @@ class ShinyTextAnimator {
     this.instances.delete(element);
 
     // Dispatch destroy event using utility
-    AnimationStateManager.dispatchEvent(
+    AnimationStateManager.dispatchEvent(element, "wb-shiny-text-destroy", {
       element,
-      'wb-shiny-text-destroy',
-      { element }
-    );
+    });
   }
 
   /**
@@ -330,10 +337,7 @@ class ShinyTextAnimator {
    * Check for potential CSS conflicts using utility
    */
   checkForConflicts() {
-    return checkCSSConflicts(
-      componentClassSets.shinyText, 
-      this.componentName
-    );
+    return checkCSSConflicts(componentClassSets.shinyText, this.componentName);
   }
 
   /**

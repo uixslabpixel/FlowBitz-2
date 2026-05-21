@@ -1,11 +1,24 @@
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
-import { injectStyles } from '../../utils/core/injectStyles.js';
-import { parseElementConfig, commonAttributeMaps, mergeAttributeMaps } from '../../utils/core/attributeParser.js';
-import { ComponentClassManager, webflowBitsClasses } from '../../utils/core/classManager.js';
-import { checkCSSConflicts, componentClassSets } from '../../utils/core/conflictDetector.js';
-import { AnimationStateManager, PerformanceOptimizer } from '../../utils/animation/animationStateManager.js';
+import { injectStyles } from "../../utils/core/injectStyles.js";
+import {
+  parseElementConfig,
+  commonAttributeMaps,
+  mergeAttributeMaps,
+} from "../../utils/core/attributeParser.js";
+import {
+  ComponentClassManager,
+  webflowBitsClasses,
+} from "../../utils/core/classManager.js";
+import {
+  checkCSSConflicts,
+  componentClassSets,
+} from "../../utils/core/conflictDetector.js";
+import {
+  AnimationStateManager,
+  PerformanceOptimizer,
+} from "../../utils/animation/animationStateManager.js";
 
 // Register GSAP plugins
 gsap.registerPlugin(SplitText, ScrambleTextPlugin);
@@ -54,18 +67,18 @@ class ScrambleTextAnimator {
   constructor() {
     this.instances = new Map();
     this.stylesInjected = false;
-    this.componentName = 'ScrambleText';
-    this.componentClasses = webflowBitsClasses.forComponent('scramble-text');
+    this.componentName = "ScrambleText";
+    this.componentClasses = webflowBitsClasses.forComponent("scramble-text");
     this.defaultConfig = {
       radius: 100,
       duration: 1.2,
       speed: 0.5,
       scrambleChars: ".:",
       threshold: 0.1,
-      rootMargin: '0px',
-      font: 'monospace'
+      rootMargin: "0px",
+      font: "monospace",
     };
-    
+
     // this.injectComponentStyles();
   }
 
@@ -74,41 +87,48 @@ class ScrambleTextAnimator {
    */
   injectComponentStyles() {
     if (this.stylesInjected) return;
-    
+
     try {
-      injectStyles('wb-scramble-text-styles', componentCSS);
+      injectStyles("wb-scramble-text-styles", componentCSS);
       this.stylesInjected = true;
-      console.log('WebflowBits: ScrambleText styles injected');
     } catch (error) {
-      console.warn('WebflowBits: Failed to inject ScrambleText styles', error);
+      console.warn("WebflowBits: Failed to inject ScrambleText styles", error);
     }
   }
 
-    /**
+  /**
    * Ensure styles are injected when needed
    */
-    ensureStylesInjected() {
-      if (!this.stylesInjected) {
-        this.injectComponentStyles();
-      }
+  ensureStylesInjected() {
+    if (!this.stylesInjected) {
+      this.injectComponentStyles();
     }
+  }
 
   /**
    * Parse custom attributes from element using utility functions
    */
   parseConfig(element) {
-    const attributeMap = mergeAttributeMaps(
-      commonAttributeMaps.animation,
-      {
-        // ScrambleText-specific attributes
-        radius: { attribute: 'wb-radius', type: 'number', parser: parseInt, min: 10 },
-        duration: { attribute: 'wb-duration', type: 'duration' },
-        speed: { attribute: 'wb-speed', type: 'number', parser: parseFloat, min: 0.1, max: 2 },
-        scrambleChars: { attribute: 'wb-scramble-chars', type: 'string' },
-        font: { attribute: 'wb-font', type: 'string' }
-      }
-    );
-    
+    const attributeMap = mergeAttributeMaps(commonAttributeMaps.animation, {
+      // ScrambleText-specific attributes
+      radius: {
+        attribute: "wb-radius",
+        type: "number",
+        parser: parseInt,
+        min: 10,
+      },
+      duration: { attribute: "wb-duration", type: "duration" },
+      speed: {
+        attribute: "wb-speed",
+        type: "number",
+        parser: parseFloat,
+        min: 0.1,
+        max: 2,
+      },
+      scrambleChars: { attribute: "wb-scramble-chars", type: "string" },
+      font: { attribute: "wb-font", type: "string" },
+    });
+
     return parseElementConfig(element, this.defaultConfig, attributeMap);
   }
 
@@ -117,7 +137,7 @@ class ScrambleTextAnimator {
    */
   initElement(element) {
     this.ensureStylesInjected();
-    
+
     if (this.instances.has(element)) {
       return;
     }
@@ -126,15 +146,18 @@ class ScrambleTextAnimator {
       const config = this.parseConfig(element);
       const originalContent = element.innerHTML;
       const originalText = element.textContent.trim();
-      
+
       if (!originalText) {
-        console.warn('WebflowBits ScrambleText: Element has no text content', element);
+        console.warn(
+          "WebflowBits ScrambleText: Element has no text content",
+          element,
+        );
         return;
       }
 
       // Create wrapper structure
       this.createScrambleStructure(element, originalContent, config);
-      
+
       // Create instance data
       const instance = {
         element,
@@ -144,17 +167,17 @@ class ScrambleTextAnimator {
         splitText: null,
         chars: [],
         isActive: false,
-        addedClasses: []
+        addedClasses: [],
       };
 
       this.instances.set(element, instance);
 
       // Apply CSS classes
       ComponentClassManager.applyClasses(
-        element, 
-        ['wb-scramble-text'], 
-        this.instances, 
-        this.componentName
+        element,
+        ["wb-scramble-text"],
+        this.instances,
+        this.componentName,
       );
 
       // Initialize SplitText
@@ -163,16 +186,18 @@ class ScrambleTextAnimator {
       // Setup event listeners
       this.setupEventListeners(instance);
 
-      console.log('WebflowBits ScrambleText: Element initialized', { element, config });
-
       // Dispatch initialization event
-      element.dispatchEvent(new CustomEvent('wb-scramble-text-init', {
-        detail: { element, config },
-        bubbles: true
-      }));
-
+      element.dispatchEvent(
+        new CustomEvent("wb-scramble-text-init", {
+          detail: { element, config },
+          bubbles: true,
+        }),
+      );
     } catch (error) {
-      console.error('WebflowBits ScrambleText: Failed to initialize element', error);
+      console.error(
+        "WebflowBits ScrambleText: Failed to initialize element",
+        error,
+      );
     }
   }
 
@@ -181,8 +206,8 @@ class ScrambleTextAnimator {
    */
   createScrambleStructure(element, originalContent, config) {
     // Store original text for screen readers
-    element.setAttribute('aria-label', element.textContent.trim());
-    
+    element.setAttribute("aria-label", element.textContent.trim());
+
     // Don't create wrapper - let SplitText work directly on the element
     // This preserves the Webflow element's original styling and layout
   }
@@ -193,15 +218,25 @@ class ScrambleTextAnimator {
   isMonospaceFont(element) {
     const computedStyle = window.getComputedStyle(element);
     const fontFamily = computedStyle.fontFamily.toLowerCase();
-    
+
     // Common monospace font families
     const monospaceFonts = [
-      'monospace', 'mono', 'courier', 'courier new', 'consolas', 
-      'menlo', 'monaco', 'lucida console', 'dejavu sans mono',
-      'source code pro', 'fira code', 'jetbrains mono', 'cascadia code'
+      "monospace",
+      "mono",
+      "courier",
+      "courier new",
+      "consolas",
+      "menlo",
+      "monaco",
+      "lucida console",
+      "dejavu sans mono",
+      "source code pro",
+      "fira code",
+      "jetbrains mono",
+      "cascadia code",
     ];
-    
-    return monospaceFonts.some(font => fontFamily.includes(font));
+
+    return monospaceFonts.some((font) => fontFamily.includes(font));
   }
 
   /**
@@ -209,28 +244,28 @@ class ScrambleTextAnimator {
    */
   getFontFamily(config) {
     const fontMap = {
-      'monospace': 'monospace',
-      'Courier New': '"Courier New", monospace',
-      'Consolas': '"Consolas", monospace',
-      'Menlo': '"Menlo", monospace',
-      'Monaco': '"Monaco", monospace',
-      'Lucida Console': '"Lucida Console", monospace',
-      'DejaVu Sans Mono': '"DejaVu Sans Mono", monospace',
-      'Source Code Pro': '"Source Code Pro", monospace',
-      'Fira Code': '"Fira Code", monospace',
-      'JetBrains Mono': '"JetBrains Mono", monospace',
-      'Cascadia Code': '"Cascadia Code", monospace',
-      'inherit (use existing font)': 'inherit'
+      monospace: "monospace",
+      "Courier New": '"Courier New", monospace',
+      Consolas: '"Consolas", monospace',
+      Menlo: '"Menlo", monospace',
+      Monaco: '"Monaco", monospace',
+      "Lucida Console": '"Lucida Console", monospace',
+      "DejaVu Sans Mono": '"DejaVu Sans Mono", monospace',
+      "Source Code Pro": '"Source Code Pro", monospace',
+      "Fira Code": '"Fira Code", monospace',
+      "JetBrains Mono": '"JetBrains Mono", monospace',
+      "Cascadia Code": '"Cascadia Code", monospace',
+      "inherit (use existing font)": "inherit",
     };
-    
-    return fontMap[config.font] || 'monospace';
+
+    return fontMap[config.font] || "monospace";
   }
 
   /**
    * Check if the selected font is monospace
    */
   isSelectedFontMonospace(config) {
-    return config.font !== 'inherit (use existing font)';
+    return config.font !== "inherit (use existing font)";
   }
 
   /**
@@ -253,17 +288,17 @@ class ScrambleTextAnimator {
     }
 
     // Create a temporary element to measure character width
-    const tempElement = document.createElement('span');
-    tempElement.style.visibility = 'hidden';
-    tempElement.style.position = 'absolute';
-    tempElement.style.whiteSpace = 'nowrap';
+    const tempElement = document.createElement("span");
+    tempElement.style.visibility = "hidden";
+    tempElement.style.position = "absolute";
+    tempElement.style.whiteSpace = "nowrap";
     tempElement.style.font = window.getComputedStyle(element).font;
-    tempElement.textContent = 'o'; // Use 'o' as reference for average character width
-    
+    tempElement.textContent = "o"; // Use 'o' as reference for average character width
+
     document.body.appendChild(tempElement);
     const charWidth = tempElement.getBoundingClientRect().width;
     document.body.removeChild(tempElement);
-    
+
     return charWidth;
   }
 
@@ -280,7 +315,7 @@ class ScrambleTextAnimator {
         charsClass: "wb-scramble-text__char",
         smartWrap: true,
         reduceWhiteSpace: false,
-        absolute: false
+        absolute: false,
       });
 
       instance.chars = instance.splitText.chars;
@@ -291,28 +326,29 @@ class ScrambleTextAnimator {
       instance.isMonospace = minCharWidth === null;
 
       // Show warning if using inherit font
-      if (config.font === 'inherit (use existing font)') {
-        console.warn('WebflowBits ScrambleText: Using "inherit" font. Scramble characters may have inconsistent widths. Consider using a monospace font option for better results.');
+      if (config.font === "inherit (use existing font)") {
+        console.warn(
+          'WebflowBits ScrambleText: Using "inherit" font. Scramble characters may have inconsistent widths. Consider using a monospace font option for better results.',
+        );
       }
 
       // Set up character data and initial state
       instance.chars.forEach((char) => {
         // Skip <br> tags - they don't need scrambling
-        if (char.tagName === 'BR') {
+        if (char.tagName === "BR") {
           return;
         }
-        
+
         gsap.set(char, {
-          display: 'inline-block',
-          attr: { 'data-content': char.innerHTML }
+          display: "inline-block",
+          attr: { "data-content": char.innerHTML },
         });
       });
-
-      console.log('WebflowBits ScrambleText: SplitText initialized', instance.chars.length, 'characters', 
-        instance.isMonospace ? 'monospace font (no width constraint)' : `minWidth: ${minCharWidth}px`);
-
     } catch (error) {
-      console.error('WebflowBits ScrambleText: Failed to initialize SplitText', error);
+      console.error(
+        "WebflowBits ScrambleText: Failed to initialize SplitText",
+        error,
+      );
     }
   }
 
@@ -326,17 +362,15 @@ class ScrambleTextAnimator {
     const handlePointerEnter = () => this.startScrambling(instance);
     const handlePointerLeave = () => this.stopScrambling(instance);
 
-    element.addEventListener('pointermove', handlePointerMove);
-    element.addEventListener('pointerenter', handlePointerEnter);
-    element.addEventListener('pointerleave', handlePointerLeave);
+    element.addEventListener("pointermove", handlePointerMove);
+    element.addEventListener("pointerenter", handlePointerEnter);
+    element.addEventListener("pointerleave", handlePointerLeave);
 
     // Store references for cleanup
     instance.pointerMoveHandler = handlePointerMove;
     instance.pointerEnterHandler = handlePointerEnter;
     instance.pointerLeaveHandler = handlePointerLeave;
   }
-
-
 
   /**
    * Handle pointer movement for scramble effect
@@ -348,7 +382,7 @@ class ScrambleTextAnimator {
 
     instance.chars.forEach((char) => {
       // Skip <br> tags - they don't need scrambling
-      if (char.tagName === 'BR') {
+      if (char.tagName === "BR") {
         return;
       }
 
@@ -360,9 +394,9 @@ class ScrambleTextAnimator {
       const distance = Math.hypot(dx, dy);
 
       if (distance < config.radius) {
-        const proximity = 1 - (distance / config.radius);
+        const proximity = 1 - distance / config.radius;
         const scrambleDuration = config.duration * proximity;
-        
+
         gsap.to(char, {
           overwrite: true,
           duration: scrambleDuration,
@@ -381,9 +415,9 @@ class ScrambleTextAnimator {
           onComplete: () => {
             // Remove minWidth when scrambling completes (only if it was applied)
             if (!instance.isMonospace && instance.minCharWidth) {
-              gsap.set(char, { minWidth: 'auto' });
+              gsap.set(char, { minWidth: "auto" });
             }
-          }
+          },
         });
       }
     });
@@ -399,18 +433,20 @@ class ScrambleTextAnimator {
 
     // Apply animating state
     ComponentClassManager.setAnimationState(
-      element, 
-      'animating', 
-      'wb-scramble-text', 
-      this.instances, 
-      this.componentName
+      element,
+      "animating",
+      "wb-scramble-text",
+      this.instances,
+      this.componentName,
     );
 
     // Dispatch start event
-    element.dispatchEvent(new CustomEvent('wb-scramble-text-start', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-scramble-text-start", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
@@ -425,7 +461,7 @@ class ScrambleTextAnimator {
     if (chars && chars.length) {
       chars.forEach((char) => {
         // Skip <br> tags - they don't need scrambling
-        if (char.tagName === 'BR') {
+        if (char.tagName === "BR") {
           return;
         }
 
@@ -435,32 +471,36 @@ class ScrambleTextAnimator {
           char.innerHTML = char.dataset.content;
         }
         // Remove minWidth to restore normal spacing
-        gsap.set(char, { minWidth: 'auto' });
+        gsap.set(char, { minWidth: "auto" });
       });
     }
 
     // Apply completed state
     ComponentClassManager.setAnimationState(
-      element, 
-      'completed', 
-      'wb-scramble-text', 
-      this.instances, 
-      this.componentName
+      element,
+      "completed",
+      "wb-scramble-text",
+      this.instances,
+      this.componentName,
     );
 
     // Dispatch stop event
-    element.dispatchEvent(new CustomEvent('wb-scramble-text-stop', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-scramble-text-stop", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
    * Initialize all elements with wb-component="scramble-text"
    */
   initAll() {
-    const elements = document.querySelectorAll('[wb-component="scramble-text"]');
-    elements.forEach(element => this.initElement(element));
+    const elements = document.querySelectorAll(
+      '[wb-component="scramble-text"]',
+    );
+    elements.forEach((element) => this.initElement(element));
   }
 
   /**
@@ -476,11 +516,17 @@ class ScrambleTextAnimator {
 
       // Remove event listeners
       if (instance.pointerMoveHandler) {
-        element.removeEventListener('pointermove', instance.pointerMoveHandler);
+        element.removeEventListener("pointermove", instance.pointerMoveHandler);
       }
       if (instance.pointerEnterHandler) {
-        element.removeEventListener('pointerenter', instance.pointerEnterHandler);
-        element.removeEventListener('pointerleave', instance.pointerLeaveHandler);
+        element.removeEventListener(
+          "pointerenter",
+          instance.pointerEnterHandler,
+        );
+        element.removeEventListener(
+          "pointerleave",
+          instance.pointerLeaveHandler,
+        );
       }
 
       // Revert SplitText
@@ -490,23 +536,27 @@ class ScrambleTextAnimator {
 
       // Restore original content
       element.innerHTML = instance.originalContent;
-      element.removeAttribute('aria-label');
+      element.removeAttribute("aria-label");
 
       // Remove CSS classes
       ComponentClassManager.removeClasses(
         element,
-        ['wb-scramble-text', 'wb-scramble-text-animating', 'wb-scramble-text-completed'],
+        [
+          "wb-scramble-text",
+          "wb-scramble-text-animating",
+          "wb-scramble-text-completed",
+        ],
         this.instances,
-        this.componentName
+        this.componentName,
       );
 
       // Remove instance
       this.instances.delete(element);
-
-      console.log('WebflowBits ScrambleText: Element destroyed', element);
-
     } catch (error) {
-      console.error('WebflowBits ScrambleText: Failed to destroy element', error);
+      console.error(
+        "WebflowBits ScrambleText: Failed to destroy element",
+        error,
+      );
     }
   }
 
@@ -514,7 +564,7 @@ class ScrambleTextAnimator {
    * Destroy all instances
    */
   destroyAll() {
-    Array.from(this.instances.keys()).forEach(element => {
+    Array.from(this.instances.keys()).forEach((element) => {
       this.destroyElement(element);
     });
   }
@@ -531,13 +581,15 @@ class ScrambleTextAnimator {
    * Check for CSS conflicts
    */
   checkForConflicts() {
-    const conflicts = checkCSSConflicts(componentClassSets.scrambleText || [
-      'wb-scramble-text',
-      'wb-scramble-text__content',
-      'wb-scramble-text__char',
-      'wb-scramble-text-animating',
-      'wb-scramble-text-completed'
-    ]);
+    const conflicts = checkCSSConflicts(
+      componentClassSets.scrambleText || [
+        "wb-scramble-text",
+        "wb-scramble-text__content",
+        "wb-scramble-text__char",
+        "wb-scramble-text-animating",
+        "wb-scramble-text-completed",
+      ],
+    );
 
     return conflicts.length > 0 ? conflicts : null;
   }
@@ -557,12 +609,14 @@ class ScrambleTextAnimator {
     if (!instance) return;
 
     instance.config = { ...instance.config, ...newConfig };
-    
+
     // Dispatch update event
-    element.dispatchEvent(new CustomEvent('wb-scramble-text-update', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-scramble-text-update", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
@@ -581,7 +635,7 @@ class ScrambleTextAnimator {
     // Trigger scramble for all characters
     instance.chars.forEach((char) => {
       // Skip <br> tags - they don't need scrambling
-      if (char.tagName === 'BR') {
+      if (char.tagName === "BR") {
         return;
       }
 
@@ -602,9 +656,9 @@ class ScrambleTextAnimator {
         onComplete: () => {
           // Remove minWidth when scrambling completes (only if it was applied)
           if (!instance.isMonospace && instance.minCharWidth) {
-            gsap.set(char, { minWidth: 'auto' });
+            gsap.set(char, { minWidth: "auto" });
           }
-        }
+        },
       });
     });
 
@@ -620,12 +674,12 @@ const scrambleTextAnimator = new ScrambleTextAnimator();
 export default scrambleTextAnimator;
 
 // Add to component class sets for conflict detection
-if (typeof componentClassSets !== 'undefined') {
+if (typeof componentClassSets !== "undefined") {
   componentClassSets.scrambleText = [
-    'wb-scramble-text',
-    'wb-scramble-text__content',
-    'wb-scramble-text__char',
-    'wb-scramble-text-animating',
-    'wb-scramble-text-completed'
+    "wb-scramble-text",
+    "wb-scramble-text__content",
+    "wb-scramble-text__char",
+    "wb-scramble-text-animating",
+    "wb-scramble-text-completed",
   ];
 }

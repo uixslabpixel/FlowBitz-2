@@ -107,7 +107,7 @@ class SplitTextAnimator {
       from: { autoAlpha: 0, y: 40 },
       to: { autoAlpha: 1, y: 0 },
     };
-    
+
     // Setup page visibility listener to restore completed states
     this.setupVisibilityListener();
   }
@@ -117,9 +117,9 @@ class SplitTextAnimator {
    * when tab regains focus
    */
   setupVisibilityListener() {
-    if (typeof document === 'undefined') return;
-    
-    document.addEventListener('visibilitychange', () => {
+    if (typeof document === "undefined") return;
+
+    document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
         // Tab regained focus - restore all completed animations
         // Use requestAnimationFrame to ensure DOM is ready
@@ -152,7 +152,7 @@ class SplitTextAnimator {
           default:
             targets = instance.splitter.chars;
         }
-        
+
         if (targets && targets.length > 0) {
           this.restoreCompletedState(instance, targets);
         }
@@ -169,7 +169,6 @@ class SplitTextAnimator {
     try {
       injectStyles("wb-split-text-styles", componentCSS);
       this.stylesInjected = true;
-      console.log("WebflowBits: SplitText styles injected");
     } catch (error) {
       console.warn("WebflowBits: Failed to inject SplitText styles", error);
     }
@@ -208,7 +207,7 @@ class SplitTextAnimator {
           max: 2,
           step: 0.1,
         },
-      }
+      },
     );
 
     return parseElementConfig(element, this.defaultConfig, attributeMap);
@@ -227,7 +226,7 @@ class SplitTextAnimator {
       element,
       classesToApply,
       this.instances,
-      this.componentName
+      this.componentName,
     );
   }
 
@@ -245,7 +244,7 @@ class SplitTextAnimator {
       element,
       fallbackClasses,
       this.instances,
-      this.componentName
+      this.componentName,
     );
   }
 
@@ -404,7 +403,7 @@ class SplitTextAnimator {
         requestAnimationFrame(() => {
           this.restoreCompletedState(instance, targets);
         });
-      }
+      },
     );
 
     // Add onRefresh callback to restore state if animation is completed
@@ -434,7 +433,7 @@ class SplitTextAnimator {
     instance.timeline = timeline;
 
     // Ensure visibility is restored before animating; opacity still animates from config
-    gsap.set(targets, { visibility: 'visible' });
+    gsap.set(targets, { visibility: "visible" });
 
     timeline.to(targets, {
       ...config.to,
@@ -459,7 +458,7 @@ class SplitTextAnimator {
 
     // Clear performance properties
     gsap.set(targets, {
-      visibility: 'visible',
+      visibility: "visible",
       ...instance.config.to,
       clearProps: "willChange",
       immediateRender: true,
@@ -470,7 +469,7 @@ class SplitTextAnimator {
       instance.element,
       "complete",
       "split-text",
-      { instance, targets }
+      { instance, targets },
     );
   }
 
@@ -483,12 +482,12 @@ class SplitTextAnimator {
 
     // Force set the final state with immediate render and clear any conflicting props
     gsap.set(targets, {
-      visibility: 'visible',
+      visibility: "visible",
       opacity: 1,
       y: 0,
       autoAlpha: 1,
       force3D: true,
-      clearProps: 'willChange',
+      clearProps: "willChange",
       immediateRender: true,
       overwrite: true, // Overwrite any existing animations
     });
@@ -496,18 +495,18 @@ class SplitTextAnimator {
     // Also set inline styles directly as backup (CSS will handle it, but this ensures it)
     // This is critical for cases where GSAP resets styles during ScrollTrigger refresh
     if (targets && targets.length > 0) {
-      targets.forEach(target => {
+      targets.forEach((target) => {
         if (target && target.style) {
-          target.style.setProperty('visibility', 'visible', 'important');
-          target.style.setProperty('opacity', '1', 'important');
+          target.style.setProperty("visibility", "visible", "important");
+          target.style.setProperty("opacity", "1", "important");
           // Ensure transform is set to final state
-          const finalTransform = 'translate3d(0, 0, 0)';
-          target.style.setProperty('transform', finalTransform, 'important');
+          const finalTransform = "translate3d(0, 0, 0)";
+          target.style.setProperty("transform", finalTransform, "important");
         }
       });
     }
 
-    AnimationStateManager.setCompletedState(instance.element, 'wb-split');
+    AnimationStateManager.setCompletedState(instance.element, "wb-split");
   }
 
   /**
@@ -568,7 +567,7 @@ class SplitTextAnimator {
    */
   refresh() {
     ScrollTrigger.refresh();
-    
+
     // After refresh, restore all completed states to ensure they stay visible
     requestAnimationFrame(() => {
       this.restoreAllCompletedStates();

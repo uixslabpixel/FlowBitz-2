@@ -1,12 +1,14 @@
 import { gsap } from "gsap";
-import { injectStyles } from '../../utils/core/injectStyles.js';
-import { parseElementConfig } from '../../utils/core/attributeParser.js';
-import { ComponentClassManager, webflowBitsClasses } from '../../utils/core/classManager.js';
-import { checkCSSConflicts } from '../../utils/core/conflictDetector.js';
-import { AnimationStateManager } from '../../utils/animation/animationStateManager.js';
+import { injectStyles } from "../../utils/core/injectStyles.js";
+import { parseElementConfig } from "../../utils/core/attributeParser.js";
+import {
+  ComponentClassManager,
+  webflowBitsClasses,
+} from "../../utils/core/classManager.js";
+import { checkCSSConflicts } from "../../utils/core/conflictDetector.js";
+import { AnimationStateManager } from "../../utils/animation/animationStateManager.js";
 
 gsap.registerPlugin();
-
 
 const componentCSS = `
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
@@ -109,13 +111,13 @@ class TextPressureAnimator {
   constructor() {
     this.instances = new Map();
     this.stylesInjected = false;
-    this.componentName = 'TextPressure';
-    this.componentClasses = webflowBitsClasses.forComponent('text-pressure');
+    this.componentName = "TextPressure";
+    this.componentClasses = webflowBitsClasses.forComponent("text-pressure");
     this.animationFrameId = null;
     this.fontFamilyCache = new Map(); // Cache for font family detection
     this.defaultConfig = {
-      text: 'PRESSURE', // Fallback text if no content is found
-      fontFamily: 'inherit',
+      text: "PRESSURE", // Fallback text if no content is found
+      fontFamily: "inherit",
       width: true,
       weight: true,
       italic: true,
@@ -124,44 +126,44 @@ class TextPressureAnimator {
       stroke: false,
       scale: false,
       autoFontSize: true, // Whether to automatically calculate font size
-      textColor: 'currentColor', // Use current color for theme compatibility
-      strokeColor: '#FF0000',
+      textColor: "currentColor", // Use current color for theme compatibility
+      strokeColor: "#FF0000",
       minFontSize: 24,
       minFontWeight: 100, // Minimal font weight (thin)
       maxFontWeight: 900, // Maximal font weight (black)
       threshold: 0.1,
-      rootMargin: '0px',
+      rootMargin: "0px",
       alwaysActive: false,
-      debug: false
+      debug: false,
     };
-    
+
     this.mousePosition = { x: 0, y: 0 };
     this.cursorPosition = { x: 0, y: 0 };
     this.activeInstances = new Set();
-    
+
     // this.injectComponentStyles();
     this.setupGlobalMouseTracking();
   }
 
   injectComponentStyles() {
     if (this.stylesInjected) return;
-    
+
     try {
-      injectStyles('wb-text-pressure-styles', componentCSS);
+      injectStyles("wb-text-pressure-styles", componentCSS);
       this.stylesInjected = true;
     } catch (error) {
       // Silent fail for production
     }
   }
 
-    /**
+  /**
    * Ensure styles are injected when needed
    */
-    ensureStylesInjected() {
-      if (!this.stylesInjected) {
-        this.injectComponentStyles();
-      }
+  ensureStylesInjected() {
+    if (!this.stylesInjected) {
+      this.injectComponentStyles();
     }
+  }
 
   setupGlobalMouseTracking() {
     const updateMousePosition = (event) => {
@@ -183,8 +185,12 @@ class TextPressureAnimator {
     this.mousePosition.x = this.cursorPosition.x;
     this.mousePosition.y = this.cursorPosition.y;
 
-    window.addEventListener('mousemove', updateMousePosition, { passive: true });
-    window.addEventListener('touchmove', updateTouchPosition, { passive: true });
+    window.addEventListener("mousemove", updateMousePosition, {
+      passive: true,
+    });
+    window.addEventListener("touchmove", updateTouchPosition, {
+      passive: true,
+    });
   }
 
   startAnimationLoop() {
@@ -193,19 +199,21 @@ class TextPressureAnimator {
     const animate = () => {
       try {
         // Smooth mouse position interpolation
-      this.mousePosition.x += (this.cursorPosition.x - this.mousePosition.x) / 15;
-      this.mousePosition.y += (this.cursorPosition.y - this.mousePosition.y) / 15;
+        this.mousePosition.x +=
+          (this.cursorPosition.x - this.mousePosition.x) / 15;
+        this.mousePosition.y +=
+          (this.cursorPosition.y - this.mousePosition.y) / 15;
 
         // Update all active instances
-      this.activeInstances.forEach(instance => {
+        this.activeInstances.forEach((instance) => {
           if (instance && instance.element && instance.element.isConnected) {
-        this.updatePressureEffect(instance);
+            this.updatePressureEffect(instance);
           }
-      });
+        });
 
-      this.animationFrameId = requestAnimationFrame(animate);
+        this.animationFrameId = requestAnimationFrame(animate);
       } catch (error) {
-        console.warn('TextPressure: Animation loop error', error);
+        console.warn("TextPressure: Animation loop error", error);
         this.stopAnimationLoop();
       }
     };
@@ -222,217 +230,219 @@ class TextPressureAnimator {
 
   parseConfig(element) {
     const attributeMap = {
-      text: { attribute: 'wb-text', type: 'string' },
-      fontFamily: { attribute: 'wb-font-family', type: 'string' },
-      width: { attribute: 'wb-width', type: 'boolean' },
-      weight: { attribute: 'wb-weight', type: 'boolean' },
-      italic: { attribute: 'wb-italic', type: 'boolean' },
-      alpha: { attribute: 'wb-alpha', type: 'boolean' },
-      flex: { attribute: 'wb-flex', type: 'boolean' },
-      stroke: { attribute: 'wb-stroke', type: 'boolean' },
-      scale: { attribute: 'wb-scale', type: 'boolean' },
-      autoFontSize: { attribute: 'wb-auto-font-size', type: 'boolean' },
-      textColor: { attribute: 'wb-text-color', type: 'color' },
-      strokeColor: { attribute: 'wb-stroke-color', type: 'color' },
-      minFontSize: { attribute: 'wb-min-font-size', type: 'number', min: 8, max: 200 },
-      minFontWeight: { attribute: 'wb-min-font-weight', type: 'number', min: 100, max: 500 },
-      maxFontWeight: { attribute: 'wb-max-font-weight', type: 'number', min: 500, max: 900 },
-      threshold: { attribute: 'wb-threshold', type: 'threshold' },
-      rootMargin: { attribute: 'wb-root-margin', type: 'string' },
-      alwaysActive: { attribute: 'wb-always-active', type: 'boolean' },
-      debug: { attribute: 'wb-debug', type: 'boolean' }
+      text: { attribute: "wb-text", type: "string" },
+      fontFamily: { attribute: "wb-font-family", type: "string" },
+      width: { attribute: "wb-width", type: "boolean" },
+      weight: { attribute: "wb-weight", type: "boolean" },
+      italic: { attribute: "wb-italic", type: "boolean" },
+      alpha: { attribute: "wb-alpha", type: "boolean" },
+      flex: { attribute: "wb-flex", type: "boolean" },
+      stroke: { attribute: "wb-stroke", type: "boolean" },
+      scale: { attribute: "wb-scale", type: "boolean" },
+      autoFontSize: { attribute: "wb-auto-font-size", type: "boolean" },
+      textColor: { attribute: "wb-text-color", type: "color" },
+      strokeColor: { attribute: "wb-stroke-color", type: "color" },
+      minFontSize: {
+        attribute: "wb-min-font-size",
+        type: "number",
+        min: 8,
+        max: 200,
+      },
+      minFontWeight: {
+        attribute: "wb-min-font-weight",
+        type: "number",
+        min: 100,
+        max: 500,
+      },
+      maxFontWeight: {
+        attribute: "wb-max-font-weight",
+        type: "number",
+        min: 500,
+        max: 900,
+      },
+      threshold: { attribute: "wb-threshold", type: "threshold" },
+      rootMargin: { attribute: "wb-root-margin", type: "string" },
+      alwaysActive: { attribute: "wb-always-active", type: "boolean" },
+      debug: { attribute: "wb-debug", type: "boolean" },
     };
 
-    const config = parseElementConfig(element, this.defaultConfig, attributeMap);
-    
+    const config = parseElementConfig(
+      element,
+      this.defaultConfig,
+      attributeMap,
+    );
+
     // Use the text content from the HTML element if no wb-text attribute is provided
-    if (!element.hasAttribute('wb-text')) {
+    if (!element.hasAttribute("wb-text")) {
       config.text = element.textContent.trim() || this.defaultConfig.text;
     }
-    
+
     // Use currentColor for theme compatibility if no wb-text-color attribute is provided
-    if (!element.hasAttribute('wb-text-color')) {
-      config.textColor = 'currentColor';
+    if (!element.hasAttribute("wb-text-color")) {
+      config.textColor = "currentColor";
     }
-    
+
     return config;
   }
 
   applyComponentClasses(element, config) {
-    const classesToApply = [
-      this.componentClasses.parent
-    ];
-    
+    const classesToApply = [this.componentClasses.parent];
+
     // Always apply flex for full width spanning
-    classesToApply.push('wb-text-pressure--flex');
-    if (config.stroke) classesToApply.push('wb-text-pressure--stroke');
-    
+    classesToApply.push("wb-text-pressure--flex");
+    if (config.stroke) classesToApply.push("wb-text-pressure--stroke");
+
     ComponentClassManager.applyClasses(
-      element, 
-      classesToApply, 
-      this.instances, 
-      this.componentName
+      element,
+      classesToApply,
+      this.instances,
+      this.componentName,
     );
-    
+
     // Only set CSS custom properties if they're explicitly provided via attributes
-    if (element.hasAttribute('wb-text-color')) {
-      element.style.setProperty('--wb-text-color', config.textColor);
+    if (element.hasAttribute("wb-text-color")) {
+      element.style.setProperty("--wb-text-color", config.textColor);
     } else {
       // Remove the custom property if it exists
-      element.style.removeProperty('--wb-text-color');
+      element.style.removeProperty("--wb-text-color");
     }
-    if (element.hasAttribute('wb-stroke-color')) {
-      element.style.setProperty('--wb-stroke-color', config.strokeColor);
+    if (element.hasAttribute("wb-stroke-color")) {
+      element.style.setProperty("--wb-stroke-color", config.strokeColor);
     } else {
       // Remove the custom property if it exists
-      element.style.removeProperty('--wb-stroke-color');
+      element.style.removeProperty("--wb-stroke-color");
     }
   }
 
   removeComponentClasses(element) {
     const fallbackClasses = [
       this.componentClasses.parent,
-      'wb-text-pressure--flex',
-      'wb-text-pressure--stroke'
+      "wb-text-pressure--flex",
+      "wb-text-pressure--stroke",
     ];
-    
+
     ComponentClassManager.removeClasses(
-      element, 
-      fallbackClasses, 
-      this.instances, 
-      this.componentName
+      element,
+      fallbackClasses,
+      this.instances,
+      this.componentName,
     );
   }
 
   initElement(element) {
     try {
-    this.ensureStylesInjected();
-    
-    if (this.instances.has(element)) {
-      return;
-    }
+      this.ensureStylesInjected();
 
-      if (!element || !element.nodeType) {
-        console.warn('TextPressure: Invalid element provided');
-      return;
-    }
-
-    const config = this.parseConfig(element);
-    const chars = config.text.split('');
-
-      if (chars.length === 0) {
-        console.warn('TextPressure: No text content found');
+      if (this.instances.has(element)) {
         return;
       }
 
-    const instance = {
-      element,
-      config,
-      chars,
-      titleElement: null,
-      charSpans: [],
-      fontSize: config.minFontSize,
-      scaleY: 1,
-      lineHeight: 1,
+      if (!element || !element.nodeType) {
+        console.warn("TextPressure: Invalid element provided");
+        return;
+      }
+
+      const config = this.parseConfig(element);
+      const chars = config.text.split("");
+
+      if (chars.length === 0) {
+        console.warn("TextPressure: No text content found");
+        return;
+      }
+
+      const instance = {
+        element,
+        config,
+        chars,
+        titleElement: null,
+        charSpans: [],
+        fontSize: config.minFontSize,
+        scaleY: 1,
+        lineHeight: 1,
         isActive: false,
-        originalFontWeight: 400 // Will be set during initialization
-    };
+        originalFontWeight: 400, // Will be set during initialization
+      };
 
-    this.applyComponentClasses(element, config);
-    this.createPressureStructure(instance);
-    this.setupEventListeners(instance);
-    this.instances.set(element, instance);
+      this.applyComponentClasses(element, config);
+      this.createPressureStructure(instance);
+      this.setupEventListeners(instance);
+      this.instances.set(element, instance);
 
-    // Dispatch initialization event
-    AnimationStateManager.dispatchLifecycleEvent(element, 'init', 'text-pressure', {
-      config,
-      chars: chars.length
-    });
+      // Dispatch initialization event
+      AnimationStateManager.dispatchLifecycleEvent(
+        element,
+        "init",
+        "text-pressure",
+        {
+          config,
+          chars: chars.length,
+        },
+      );
 
-    // Auto-activate if alwaysActive is enabled
-    if (config.alwaysActive) {
-      this.activateInstance(instance);
+      // Auto-activate if alwaysActive is enabled
+      if (config.alwaysActive) {
+        this.activateInstance(instance);
       }
     } catch (error) {
-      console.error('TextPressure: Failed to initialize element', error);
+      console.error("TextPressure: Failed to initialize element", error);
     }
   }
 
   createPressureStructure(instance) {
     try {
-    const { element, config, chars } = instance;
+      const { element, config, chars } = instance;
 
       // Capture original font weight BEFORE replacing innerHTML
       const originalComputedStyle = window.getComputedStyle(element);
       const detectedFontWeight = parseFloat(originalComputedStyle.fontWeight);
-      
+
       // Always use the configured min font weight as the baseline
       instance.originalFontWeight = config.minFontWeight;
-      
-      // Debug logging
-      if (config.debug) {
-        console.log('TextPressure Original Font Weight:', {
-          elementClass: element.className,
-          detectedFontWeight: detectedFontWeight,
-          originalFontWeight: instance.originalFontWeight,
-          computedFontWeight: originalComputedStyle.fontWeight,
-          hasFontWeightClass: !!element.className.match(/\bfont-(thin|light|normal|medium|semibold|bold|extrabold|black)\b/)
-        });
-        console.log('All computed styles:', {
-          fontWeight: originalComputedStyle.fontWeight,
-          fontFamily: originalComputedStyle.fontFamily,
-          fontSize: originalComputedStyle.fontSize,
-          fontStyle: originalComputedStyle.fontStyle,
-          letterSpacing: originalComputedStyle.letterSpacing,
-          textTransform: originalComputedStyle.textTransform,
-          lineHeight: originalComputedStyle.lineHeight
-        });
+
+      element.innerHTML = "";
+
+      const titleElement = document.createElement("h1");
+      titleElement.className = "wb-text-pressure__title";
+
+      // Only set font family if it's not inherit
+      if (config.fontFamily !== "inherit") {
+        titleElement.style.fontFamily = config.fontFamily;
       }
 
-    element.innerHTML = '';
-
-    const titleElement = document.createElement('h1');
-    titleElement.className = 'wb-text-pressure__title';
-      
-    // Only set font family if it's not inherit
-    if (config.fontFamily !== 'inherit') {
-      titleElement.style.fontFamily = config.fontFamily;
-    }
-      
-    // Don't set color if it's currentColor - let it inherit from parent
-    if (config.textColor !== 'currentColor') {
-      titleElement.style.color = config.textColor;
-    }
-
-    chars.forEach((char, index) => {
-      const span = document.createElement('span');
-      span.className = 'wb-text-pressure__char';
-      span.textContent = char;
-      span.setAttribute('data-char', char);
-        
       // Don't set color if it's currentColor - let it inherit from parent
-      if (config.stroke) {
-        span.style.color = undefined;
-      } else if (config.textColor !== 'currentColor') {
-        span.style.color = config.textColor;
+      if (config.textColor !== "currentColor") {
+        titleElement.style.color = config.textColor;
       }
-        
-      titleElement.appendChild(span);
-      instance.charSpans.push(span);
-    });
 
-    element.appendChild(titleElement);
-    instance.titleElement = titleElement;
+      chars.forEach((char, index) => {
+        const span = document.createElement("span");
+        span.className = "wb-text-pressure__char";
+        span.textContent = char;
+        span.setAttribute("data-char", char);
 
-    this.setSize(instance);
+        // Don't set color if it's currentColor - let it inherit from parent
+        if (config.stroke) {
+          span.style.color = undefined;
+        } else if (config.textColor !== "currentColor") {
+          span.style.color = config.textColor;
+        }
+
+        titleElement.appendChild(span);
+        instance.charSpans.push(span);
+      });
+
+      element.appendChild(titleElement);
+      instance.titleElement = titleElement;
+
+      this.setSize(instance);
     } catch (error) {
-      console.error('TextPressure: Failed to create pressure structure', error);
+      console.error("TextPressure: Failed to create pressure structure", error);
     }
   }
 
   setSize(instance) {
     const { element, titleElement, config, chars } = instance;
-    
+
     if (!element || !titleElement) return;
 
     const containerRect = element.getBoundingClientRect();
@@ -446,74 +456,81 @@ class TextPressureAnimator {
     // Check if element has existing font size (like text-7xl class)
     const computedStyle = window.getComputedStyle(element);
     const existingFontSize = computedStyle.fontSize;
-    
+
     // Check if element has Tailwind text size classes (including arbitrary values like text-[160px])
-    const hasTextSizeClass = element.className.match(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)\b/) || 
-                            element.className.match(/\btext-\[[^\]]+\]/);
-    
+    const hasTextSizeClass =
+      element.className.match(
+        /\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)\b/,
+      ) || element.className.match(/\btext-\[[^\]]+\]/);
+
     // Only calculate font size if autoFontSize is enabled and no existing font size is set or if it's very small
     const existingFontSizeValue = parseFloat(existingFontSize);
-    const shouldCalculateFontSize = config.autoFontSize && !hasTextSizeClass && (!existingFontSize || existingFontSizeValue < 20);
-    
-    // Debug logging (can be removed in production)
-    if (config.debug) {
-      console.log('TextPressure Font Size Debug:', {
-        elementClass: element.className,
-        hasTextSizeClass: !!hasTextSizeClass,
-        existingFontSize: existingFontSize,
-        existingFontSizeValue: existingFontSizeValue,
-        shouldCalculateFontSize: shouldCalculateFontSize,
-        autoFontSize: config.autoFontSize,
-        originalFontWeight: instance.originalFontWeight
-      });
-      console.log('Tailwind class detection:', {
-        standardClasses: element.className.match(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)\b/),
-        arbitraryClasses: element.className.match(/\btext-\[[^\]]+\]/),
-        hasTextSizeClass: hasTextSizeClass
-      });
-    }
+    const shouldCalculateFontSize =
+      config.autoFontSize &&
+      !hasTextSizeClass &&
+      (!existingFontSize || existingFontSizeValue < 20);
 
     if (shouldCalculateFontSize) {
       // Calculate font size to span full width
       // This ensures the first character is on the left and last character is on the right
-      let newFontSize = Math.min(containerWidth / (chars.length * 0.6), containerHeight * 0.8);
+      let newFontSize = Math.min(
+        containerWidth / (chars.length * 0.6),
+        containerHeight * 0.8,
+      );
       newFontSize = Math.max(newFontSize, config.minFontSize);
 
       instance.fontSize = newFontSize;
       titleElement.style.fontSize = `${newFontSize}px`;
-      
+
       // Apply initial font variation settings with min font weight
       const fontFamily = this.getDetectedFontFamily(titleElement, config);
-      titleElement.style.fontVariationSettings = this.getFontVariationSettings(fontFamily, config.minFontWeight, 100, 0);
+      titleElement.style.fontVariationSettings = this.getFontVariationSettings(
+        fontFamily,
+        config.minFontWeight,
+        100,
+        0,
+      );
     } else {
       // Use existing font size from CSS classes (including Tailwind classes)
       if (existingFontSizeValue > 0) {
         instance.fontSize = existingFontSizeValue;
         titleElement.style.fontSize = existingFontSize;
-        
+
         // Also copy other text-related styles from the parent element
         const parentComputedStyle = window.getComputedStyle(element);
         titleElement.style.fontWeight = config.minFontWeight; // Use min font weight instead of parent's weight
         titleElement.style.fontStyle = parentComputedStyle.fontStyle;
         titleElement.style.letterSpacing = parentComputedStyle.letterSpacing;
         titleElement.style.textTransform = parentComputedStyle.textTransform;
-        
+
         // If Tailwind text size class is detected, also copy the line height
         if (hasTextSizeClass) {
           titleElement.style.lineHeight = parentComputedStyle.lineHeight;
         }
-        
+
         // Apply initial font variation settings with min font weight
         const fontFamily = this.getDetectedFontFamily(titleElement, config);
-        titleElement.style.fontVariationSettings = this.getFontVariationSettings(fontFamily, config.minFontWeight, 100, 0);
+        titleElement.style.fontVariationSettings =
+          this.getFontVariationSettings(
+            fontFamily,
+            config.minFontWeight,
+            100,
+            0,
+          );
       } else {
         // Fallback to minFontSize if no valid font size found
         instance.fontSize = config.minFontSize;
         titleElement.style.fontSize = `${config.minFontSize}px`;
-        
+
         // Apply initial font variation settings with min font weight
         const fontFamily = this.getDetectedFontFamily(titleElement, config);
-        titleElement.style.fontVariationSettings = this.getFontVariationSettings(fontFamily, config.minFontWeight, 100, 0);
+        titleElement.style.fontVariationSettings =
+          this.getFontVariationSettings(
+            fontFamily,
+            config.minFontWeight,
+            100,
+            0,
+          );
       }
     }
 
@@ -522,9 +539,9 @@ class TextPressureAnimator {
 
     // Only set line height if we didn't copy it from parent
     if (!hasTextSizeClass) {
-    titleElement.style.lineHeight = instance.lineHeight;
+      titleElement.style.lineHeight = instance.lineHeight;
     }
-    
+
     titleElement.style.transform = `scale(1, ${instance.scaleY})`;
 
     // Fine-tune to ensure text spans full width (only if we calculated the font size)
@@ -538,7 +555,7 @@ class TextPressureAnimator {
           const scaleFactor = (containerWidth * 0.95) / textRect.width;
           let newFontSize = instance.fontSize * scaleFactor;
           newFontSize = Math.min(newFontSize, containerHeight * 0.9);
-          
+
           titleElement.style.fontSize = `${newFontSize}px`;
           instance.fontSize = newFontSize;
         }
@@ -560,9 +577,9 @@ class TextPressureAnimator {
     const handlePointerLeave = () => this.deactivateInstance(instance);
     const handleResize = () => this.setSize(instance);
 
-    element.addEventListener('pointerenter', handlePointerEnter);
-    element.addEventListener('pointerleave', handlePointerLeave);
-    window.addEventListener('resize', handleResize);
+    element.addEventListener("pointerenter", handlePointerEnter);
+    element.addEventListener("pointerleave", handlePointerLeave);
+    window.addEventListener("resize", handleResize);
 
     if (window.ResizeObserver) {
       const resizeObserver = new ResizeObserver(() => {
@@ -575,7 +592,7 @@ class TextPressureAnimator {
     instance.eventListeners = {
       pointerenter: handlePointerEnter,
       pointerleave: handlePointerLeave,
-      resize: handleResize
+      resize: handleResize,
     };
   }
 
@@ -590,10 +607,18 @@ class TextPressureAnimator {
     }
 
     // Set animating state
-    AnimationStateManager.setAnimatingState(instance.element, 'wb-text-pressure');
-    AnimationStateManager.dispatchLifecycleEvent(instance.element, 'start', 'text-pressure', {
-      config: instance.config
-    });
+    AnimationStateManager.setAnimatingState(
+      instance.element,
+      "wb-text-pressure",
+    );
+    AnimationStateManager.dispatchLifecycleEvent(
+      instance.element,
+      "start",
+      "text-pressure",
+      {
+        config: instance.config,
+      },
+    );
   }
 
   deactivateInstance(instance) {
@@ -606,35 +631,35 @@ class TextPressureAnimator {
       this.stopAnimationLoop();
     }
 
-    instance.charSpans.forEach(span => {
-      span.style.opacity = '1';
-      
+    instance.charSpans.forEach((span) => {
+      span.style.opacity = "1";
+
       // Reset font variations based on detected font family, using stored original font weight
       const fontFamily = this.getDetectedFontFamily(span, instance.config);
-      
-      // Debug logging
-      if (instance.config.debug) {
-        console.log('TextPressure Deactivation:', {
-          originalFontWeight: instance.originalFontWeight,
-          fontFamily: fontFamily,
-          fontVariationSettings: this.getFontVariationSettings(fontFamily, instance.config.minFontWeight, 100, 0)
-        });
-        console.log('Font Weight Range:', {
-          minFontWeight: instance.config.minFontWeight,
-          maxFontWeight: instance.config.maxFontWeight
-        });
-      }
-      
+
       // Reset to min font weight (baseline state) with smooth transition
       // The CSS transition will handle the smooth animation
-      span.style.fontVariationSettings = this.getFontVariationSettings(fontFamily, instance.config.minFontWeight, 100, 0);
+      span.style.fontVariationSettings = this.getFontVariationSettings(
+        fontFamily,
+        instance.config.minFontWeight,
+        100,
+        0,
+      );
     });
 
     // Set completed state
-    AnimationStateManager.setCompletedState(instance.element, 'wb-text-pressure');
-    AnimationStateManager.dispatchLifecycleEvent(instance.element, 'stop', 'text-pressure', {
-      config: instance.config
-    });
+    AnimationStateManager.setCompletedState(
+      instance.element,
+      "wb-text-pressure",
+    );
+    AnimationStateManager.dispatchLifecycleEvent(
+      instance.element,
+      "stop",
+      "text-pressure",
+      {
+        config: instance.config,
+      },
+    );
   }
 
   getDetectedFontFamily(span, config) {
@@ -642,14 +667,14 @@ class TextPressureAnimator {
     if (this.fontFamilyCache.has(span)) {
       return this.fontFamilyCache.get(span);
     }
-    
+
     let fontFamily = config.fontFamily;
-    
-    if (config.fontFamily === 'inherit' || !config.fontFamily) {
+
+    if (config.fontFamily === "inherit" || !config.fontFamily) {
       const computedStyle = window.getComputedStyle(span);
       fontFamily = computedStyle.fontFamily;
     }
-    
+
     // Cache the result
     this.fontFamilyCache.set(span, fontFamily);
     return fontFamily;
@@ -658,22 +683,25 @@ class TextPressureAnimator {
   getFontVariationSettings(fontFamily, weight, width, italic) {
     // Normalize font family name for consistent matching
     const normalizedFont = fontFamily.toLowerCase();
-    
+
     // Enhanced font family detection with better fallbacks
-    if (normalizedFont.includes('recursive')) {
+    if (normalizedFont.includes("recursive")) {
       return `'wght' ${weight}`;
-    } else if (normalizedFont.includes('roboto flex')) {
+    } else if (normalizedFont.includes("roboto flex")) {
       return `'wght' ${weight}, 'opsz' ${Math.max(8, Math.min(144, width))}, 'slnt' ${italic}`;
-    } else if (normalizedFont.includes('source sans 3')) {
+    } else if (normalizedFont.includes("source sans 3")) {
       return `'wght' ${weight}, 'opsz' ${Math.max(8, Math.min(300, width))}, 'ital' ${italic > 0 ? 1 : 0}`;
-    } else if (normalizedFont.includes('space grotesk')) {
+    } else if (normalizedFont.includes("space grotesk")) {
       return `'wght' ${weight}`;
-    } else if (normalizedFont.includes('inter')) {
+    } else if (normalizedFont.includes("inter")) {
       return `'wght' ${weight}`;
-    } else if (normalizedFont.includes('compressa')) {
+    } else if (normalizedFont.includes("compressa")) {
       // Support for Compressa VF font from the React example
       return `'wght' ${weight}, 'wdth' ${width}, 'ital' ${italic}`;
-    } else if (normalizedFont.includes('variable') || normalizedFont.includes('vf')) {
+    } else if (
+      normalizedFont.includes("variable") ||
+      normalizedFont.includes("vf")
+    ) {
       // Generic variable font support
       return `'wght' ${weight}, 'wdth' ${width}, 'ital' ${italic}`;
     } else {
@@ -684,7 +712,7 @@ class TextPressureAnimator {
 
   updatePressureEffect(instance) {
     const { titleElement, charSpans, config } = instance;
-    
+
     if (!titleElement) return;
 
     const titleRect = titleElement.getBoundingClientRect();
@@ -707,16 +735,29 @@ class TextPressureAnimator {
         return Math.max(minVal, val + minVal);
       };
 
-      const width = config.width ? Math.floor(getAttribute(distance, 5, 200)) : 100;
-      const weight = config.weight ? Math.floor(getAttribute(distance, config.minFontWeight, config.maxFontWeight)) : 400;
-      const italic = config.italic ? getAttribute(distance, 0, 1).toFixed(2) : 0;
+      const width = config.width
+        ? Math.floor(getAttribute(distance, 5, 200))
+        : 100;
+      const weight = config.weight
+        ? Math.floor(
+            getAttribute(distance, config.minFontWeight, config.maxFontWeight),
+          )
+        : 400;
+      const italic = config.italic
+        ? getAttribute(distance, 0, 1).toFixed(2)
+        : 0;
       const alpha = config.alpha ? getAttribute(distance, 0, 1).toFixed(2) : 1;
 
       span.style.opacity = alpha;
-      
+
       // Apply font variations based on detected font family
       const fontFamily = this.getDetectedFontFamily(span, config);
-      span.style.fontVariationSettings = this.getFontVariationSettings(fontFamily, weight, width, italic);
+      span.style.fontVariationSettings = this.getFontVariationSettings(
+        fontFamily,
+        weight,
+        width,
+        italic,
+      );
     });
   }
 
@@ -727,41 +768,49 @@ class TextPressureAnimator {
   }
 
   initAll() {
-    const elements = document.querySelectorAll('[wb-component="text-pressure"]');
-    elements.forEach(element => this.initElement(element));
+    const elements = document.querySelectorAll(
+      '[wb-component="text-pressure"]',
+    );
+    elements.forEach((element) => this.initElement(element));
   }
 
   destroyElement(element) {
     try {
-    const instance = this.instances.get(element);
-    if (!instance) return;
+      const instance = this.instances.get(element);
+      if (!instance) return;
 
-    if (instance.eventListeners) {
-      element.removeEventListener('pointerenter', instance.eventListeners.pointerenter);
-      element.removeEventListener('pointerleave', instance.eventListeners.pointerleave);
-      window.removeEventListener('resize', instance.eventListeners.resize);
-    }
+      if (instance.eventListeners) {
+        element.removeEventListener(
+          "pointerenter",
+          instance.eventListeners.pointerenter,
+        );
+        element.removeEventListener(
+          "pointerleave",
+          instance.eventListeners.pointerleave,
+        );
+        window.removeEventListener("resize", instance.eventListeners.resize);
+      }
 
-    if (instance.resizeObserver) {
-      instance.resizeObserver.disconnect();
-    }
+      if (instance.resizeObserver) {
+        instance.resizeObserver.disconnect();
+      }
 
-    if (instance.isActive) {
-      this.deactivateInstance(instance);
-    }
+      if (instance.isActive) {
+        this.deactivateInstance(instance);
+      }
 
       // Clear font family cache for this element's spans
       if (instance.charSpans) {
-        instance.charSpans.forEach(span => {
+        instance.charSpans.forEach((span) => {
           this.fontFamilyCache.delete(span);
         });
-    }
+      }
 
-    this.removeComponentClasses(element);
-    element.innerHTML = '';
-    this.instances.delete(element);
+      this.removeComponentClasses(element);
+      element.innerHTML = "";
+      this.instances.delete(element);
     } catch (error) {
-      console.error('TextPressure: Failed to destroy element', error);
+      console.error("TextPressure: Failed to destroy element", error);
     }
   }
 
@@ -769,7 +818,7 @@ class TextPressureAnimator {
     this.instances.forEach((instance, element) => {
       this.destroyElement(element);
     });
-    
+
     // Clear all font family cache
     this.fontFamilyCache.clear();
   }
@@ -783,7 +832,7 @@ class TextPressureAnimator {
   checkForConflicts() {
     return checkCSSConflicts(
       this.componentClasses.getAllClasses(),
-      this.componentName
+      this.componentName,
     );
   }
 
@@ -801,34 +850,29 @@ class TextPressureAnimator {
       this.createPressureStructure(instance);
     }
 
-    if (newConfig.textColor && element.hasAttribute('wb-text-color')) {
-      element.style.setProperty('--wb-text-color', newConfig.textColor);
-    } else if (newConfig.textColor === 'currentColor') {
-      element.style.removeProperty('--wb-text-color');
+    if (newConfig.textColor && element.hasAttribute("wb-text-color")) {
+      element.style.setProperty("--wb-text-color", newConfig.textColor);
+    } else if (newConfig.textColor === "currentColor") {
+      element.style.removeProperty("--wb-text-color");
     }
-    if (newConfig.strokeColor && element.hasAttribute('wb-stroke-color')) {
-      element.style.setProperty('--wb-stroke-color', newConfig.strokeColor);
-    } else if (newConfig.strokeColor === '#FF0000') {
-      element.style.removeProperty('--wb-stroke-color');
+    if (newConfig.strokeColor && element.hasAttribute("wb-stroke-color")) {
+      element.style.setProperty("--wb-stroke-color", newConfig.strokeColor);
+    } else if (newConfig.strokeColor === "#FF0000") {
+      element.style.removeProperty("--wb-stroke-color");
     }
 
     this.removeComponentClasses(element);
     this.applyComponentClasses(element, instance.config);
 
-    AnimationStateManager.dispatchLifecycleEvent(element, 'update', 'text-pressure', {
-      config: instance.config
-    });
+    AnimationStateManager.dispatchLifecycleEvent(
+      element,
+      "update",
+      "text-pressure",
+      {
+        config: instance.config,
+      },
+    );
   }
-
-
-
-
-
-
-
-
-
-
 }
 
 const textPressureAnimator = new TextPressureAnimator();
