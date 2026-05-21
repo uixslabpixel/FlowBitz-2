@@ -1,11 +1,24 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { injectStyles } from '../../utils/core/injectStyles.js';
-import { parseElementConfig, commonAttributeMaps, mergeAttributeMaps } from '../../utils/core/attributeParser.js';
-import { ComponentClassManager, webflowBitsClasses } from '../../utils/core/classManager.js';
-import { checkCSSConflicts, componentClassSets } from '../../utils/core/conflictDetector.js';
-import { createOnceAnimationConfig } from '../../utils/animation/scrollTriggerHelper.js';
-import { AnimationStateManager, PerformanceOptimizer } from '../../utils/animation/animationStateManager.js';
+import { injectStyles } from "../../utils/core/injectStyles.js";
+import {
+  parseElementConfig,
+  commonAttributeMaps,
+  mergeAttributeMaps,
+} from "../../utils/core/attributeParser.js";
+import {
+  ComponentClassManager,
+  webflowBitsClasses,
+} from "../../utils/core/classManager.js";
+import {
+  checkCSSConflicts,
+  componentClassSets,
+} from "../../utils/core/conflictDetector.js";
+import { createOnceAnimationConfig } from "../../utils/animation/scrollTriggerHelper.js";
+import {
+  AnimationStateManager,
+  PerformanceOptimizer,
+} from "../../utils/animation/animationStateManager.js";
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -49,25 +62,25 @@ class CountUpAnimator {
   constructor() {
     this.instances = new Map();
     this.stylesInjected = false;
-    this.componentName = 'CountUp';
-    this.componentClasses = webflowBitsClasses.forComponent('count-up');
+    this.componentName = "CountUp";
+    this.componentClasses = webflowBitsClasses.forComponent("count-up");
     this.defaultConfig = {
       to: 100,
       from: 0,
-      direction: 'up', // 'up' or 'down'
+      direction: "up", // 'up' or 'down'
       delay: 0,
       duration: 2,
-      separator: '', // e.g., ',' for thousands separator
+      separator: "", // e.g., ',' for thousands separator
       startWhen: true,
       triggerOnView: true,
-      ease: 'power2.out',
+      ease: "power2.out",
       threshold: 0.1,
-      rootMargin: '100px',
+      rootMargin: "100px",
       startDelay: 0,
       loop: false,
-      precision: null // auto-detect decimal places
+      precision: null, // auto-detect decimal places
     };
-    
+
     // this.injectComponentStyles();
   }
 
@@ -76,24 +89,23 @@ class CountUpAnimator {
    */
   injectComponentStyles() {
     if (this.stylesInjected) return;
-    
+
     try {
-      injectStyles('wb-count-up-styles', componentCSS);
+      injectStyles("wb-count-up-styles", componentCSS);
       this.stylesInjected = true;
-      console.log('WebflowBits: CountUp styles injected');
     } catch (error) {
-      console.warn('WebflowBits: Failed to inject CountUp styles', error);
+      console.warn("WebflowBits: Failed to inject CountUp styles", error);
     }
   }
 
-    /**
+  /**
    * Ensure styles are injected when needed
    */
-    ensureStylesInjected() {
-      if (!this.stylesInjected) {
-        this.injectComponentStyles();
-      }
+  ensureStylesInjected() {
+    if (!this.stylesInjected) {
+      this.injectComponentStyles();
     }
+  }
 
   /**
    * Parse custom attributes from element
@@ -104,23 +116,40 @@ class CountUpAnimator {
       commonAttributeMaps.timing,
       {
         // CountUp-specific attributes
-        to: { attribute: 'wb-count-to', type: 'number', parser: parseFloat },
-        from: { attribute: 'wb-count-from', type: 'number', parser: parseFloat },
-        direction: { 
-          attribute: 'wb-count-direction', 
-          type: 'string', 
-          validValues: ['up', 'down'] 
+        to: { attribute: "wb-count-to", type: "number", parser: parseFloat },
+        from: {
+          attribute: "wb-count-from",
+          type: "number",
+          parser: parseFloat,
         },
-        separator: { attribute: 'wb-count-separator', type: 'string' },
-        startWhen: { attribute: 'wb-count-start', type: 'boolean' },
-        loop: { attribute: 'wb-count-loop', type: 'boolean' },
-        precision: { attribute: 'wb-count-precision', type: 'number', parser: parseInt, min: 0, max: 2 },
-        triggerOnView: { attribute: 'wb-trigger-on-view', type: 'boolean' },
-        rootMargin: { attribute: 'wb-root-margin', type: 'string' },
-        startDelay: { attribute: 'wb-start-delay', type: 'number', parser: parseFloat, min: 0, max: 2, step: 0.1 }
-      }
+        direction: {
+          attribute: "wb-count-direction",
+          type: "string",
+          validValues: ["up", "down"],
+        },
+        separator: { attribute: "wb-count-separator", type: "string" },
+        startWhen: { attribute: "wb-count-start", type: "boolean" },
+        loop: { attribute: "wb-count-loop", type: "boolean" },
+        precision: {
+          attribute: "wb-count-precision",
+          type: "number",
+          parser: parseInt,
+          min: 0,
+          max: 2,
+        },
+        triggerOnView: { attribute: "wb-trigger-on-view", type: "boolean" },
+        rootMargin: { attribute: "wb-root-margin", type: "string" },
+        startDelay: {
+          attribute: "wb-start-delay",
+          type: "number",
+          parser: parseFloat,
+          min: 0,
+          max: 2,
+          step: 0.1,
+        },
+      },
     );
-    
+
     return parseElementConfig(element, this.defaultConfig, attributeMap);
   }
 
@@ -129,8 +158,8 @@ class CountUpAnimator {
    */
   getDecimalPlaces(num) {
     const str = num.toString();
-    if (str.includes('.')) {
-      const decimals = str.split('.')[1];
+    if (str.includes(".")) {
+      const decimals = str.split(".")[1];
       if (parseInt(decimals) !== 0) {
         return decimals.length;
       }
@@ -143,16 +172,18 @@ class CountUpAnimator {
    */
   formatNumber(value, separator, maxDecimals) {
     const hasDecimals = maxDecimals > 0;
-    
+
     const options = {
       useGrouping: !!separator,
       minimumFractionDigits: hasDecimals ? maxDecimals : 0,
       maximumFractionDigits: hasDecimals ? maxDecimals : 0,
     };
 
-    const formattedNumber = Intl.NumberFormat('en-US', options).format(value);
-    
-    return separator ? formattedNumber.replace(/,/g, separator) : formattedNumber;
+    const formattedNumber = Intl.NumberFormat("en-US", options).format(value);
+
+    return separator
+      ? formattedNumber.replace(/,/g, separator)
+      : formattedNumber;
   }
 
   /**
@@ -167,11 +198,11 @@ class CountUpAnimator {
 
     try {
       const config = this.parseConfig(element);
-      
+
       // Extract numbers from text content if not specified in attributes
-      if (!element.hasAttribute('wb-count-to')) {
+      if (!element.hasAttribute("wb-count-to")) {
         const textContent = element.textContent.trim();
-        const extractedNumber = parseFloat(textContent.replace(/[^\d.-]/g, ''));
+        const extractedNumber = parseFloat(textContent.replace(/[^\d.-]/g, ""));
         if (!isNaN(extractedNumber)) {
           config.to = extractedNumber;
         }
@@ -183,40 +214,40 @@ class CountUpAnimator {
         maxDecimals = config.precision;
       } else {
         maxDecimals = Math.max(
-          this.getDecimalPlaces(config.from), 
-          this.getDecimalPlaces(config.to)
+          this.getDecimalPlaces(config.from),
+          this.getDecimalPlaces(config.to),
         );
       }
 
       // Create wrapper structure
       this.createCountUpStructure(element, config, maxDecimals);
-      
+
       // Create instance data
       const instance = {
         element,
         config,
         maxDecimals,
         numberElement: null,
-        currentValue: config.direction === 'down' ? config.to : config.from,
+        currentValue: config.direction === "down" ? config.to : config.from,
         isAnimating: false,
         observer: null,
         scrollTrigger: null,
         tween: null,
-        addedClasses: []
+        addedClasses: [],
       };
 
       this.instances.set(element, instance);
 
       // Apply CSS classes
       ComponentClassManager.applyClasses(
-        element, 
-        ['wb-count-up'], 
-        this.instances, 
-        this.componentName
+        element,
+        ["wb-count-up"],
+        this.instances,
+        this.componentName,
       );
 
       // Find number element
-      instance.numberElement = element.querySelector('.wb-count-up__number');
+      instance.numberElement = element.querySelector(".wb-count-up__number");
 
       // Set initial value
       this.updateDisplayValue(instance, instance.currentValue);
@@ -239,25 +270,24 @@ class CountUpAnimator {
           }
         }
       }
-      
+
       // Dispatch initialization event using utility
       AnimationStateManager.dispatchLifecycleEvent(
-        element, 
-        'init', 
-        'count-up',
-        { instance }
+        element,
+        "init",
+        "count-up",
+        { instance },
       );
 
-      console.log('WebflowBits CountUp: Element initialized', { element, config });
-
       // Dispatch initialization event
-      element.dispatchEvent(new CustomEvent('wb-count-up-init', {
-        detail: { element, config },
-        bubbles: true
-      }));
-
+      element.dispatchEvent(
+        new CustomEvent("wb-count-up-init", {
+          detail: { element, config },
+          bubbles: true,
+        }),
+      );
     } catch (error) {
-      console.error('WebflowBits CountUp: Failed to initialize element', error);
+      console.error("WebflowBits CountUp: Failed to initialize element", error);
     }
   }
 
@@ -265,9 +295,13 @@ class CountUpAnimator {
    * Create the HTML structure for count up animation
    */
   createCountUpStructure(element, config, maxDecimals) {
-    const initialValue = config.direction === 'down' ? config.to : config.from;
-    const formattedValue = this.formatNumber(initialValue, config.separator, maxDecimals);
-    
+    const initialValue = config.direction === "down" ? config.to : config.from;
+    const formattedValue = this.formatNumber(
+      initialValue,
+      config.separator,
+      maxDecimals,
+    );
+
     element.innerHTML = `<span class="wb-count-up__number">${formattedValue}</span>`;
   }
 
@@ -276,9 +310,13 @@ class CountUpAnimator {
    */
   updateDisplayValue(instance, value) {
     if (!instance.numberElement) return;
-    
+
     const { config, maxDecimals } = instance;
-    const formattedValue = this.formatNumber(value, config.separator, maxDecimals);
+    const formattedValue = this.formatNumber(
+      value,
+      config.separator,
+      maxDecimals,
+    );
     instance.numberElement.textContent = formattedValue;
     instance.currentValue = value;
   }
@@ -308,7 +346,7 @@ class CountUpAnimator {
       {
         threshold: config.threshold,
         rootMargin: config.rootMargin,
-        markers: false
+        markers: false,
       },
       (self) => {
         // Only trigger once when element enters viewport
@@ -321,7 +359,7 @@ class CountUpAnimator {
             this.startAnimation(instance);
           }
         }
-      }
+      },
     );
 
     // Create ScrollTrigger instance
@@ -340,21 +378,23 @@ class CountUpAnimator {
 
     // Apply animating state
     ComponentClassManager.setAnimationState(
-      element, 
-      'animating', 
-      'wb-count-up', 
-      this.instances, 
-      this.componentName
+      element,
+      "animating",
+      "wb-count-up",
+      this.instances,
+      this.componentName,
     );
 
     // Dispatch start event
-    element.dispatchEvent(new CustomEvent('wb-count-up-start', {
-      detail: { element, config, from: instance.currentValue },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-count-up-start", {
+        detail: { element, config, from: instance.currentValue },
+        bubbles: true,
+      }),
+    );
 
     // Calculate target value
-    const targetValue = config.direction === 'down' ? config.from : config.to;
+    const targetValue = config.direction === "down" ? config.from : config.to;
 
     // Create GSAP animation
     instance.tween = gsap.to(instance, {
@@ -367,7 +407,7 @@ class CountUpAnimator {
       },
       onComplete: () => {
         this.onAnimationComplete(instance);
-      }
+      },
     });
   }
 
@@ -381,22 +421,24 @@ class CountUpAnimator {
 
     // Apply completed state
     ComponentClassManager.setAnimationState(
-      element, 
-      'completed', 
-      'wb-count-up', 
-      this.instances, 
-      this.componentName
+      element,
+      "completed",
+      "wb-count-up",
+      this.instances,
+      this.componentName,
     );
 
     // Dispatch completion event
-    element.dispatchEvent(new CustomEvent('wb-count-up-complete', {
-      detail: { 
-        element, 
-        config, 
-        finalValue: instance.currentValue 
-      },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-count-up-complete", {
+        detail: {
+          element,
+          config,
+          finalValue: instance.currentValue,
+        },
+        bubbles: true,
+      }),
+    );
 
     // Handle looping
     if (config.loop) {
@@ -426,7 +468,8 @@ class CountUpAnimator {
     }
 
     // Reset current value
-    instance.currentValue = config.direction === 'down' ? config.to : config.from;
+    instance.currentValue =
+      config.direction === "down" ? config.to : config.from;
     instance.isAnimating = false;
 
     // Update display
@@ -434,11 +477,11 @@ class CountUpAnimator {
 
     // Apply reset state
     ComponentClassManager.setAnimationState(
-      instance.element, 
-      'reset', 
-      'wb-count-up', 
-      this.instances, 
-      this.componentName
+      instance.element,
+      "reset",
+      "wb-count-up",
+      this.instances,
+      this.componentName,
     );
   }
 
@@ -447,7 +490,7 @@ class CountUpAnimator {
    */
   initAll() {
     const elements = document.querySelectorAll('[wb-component="count-up"]');
-    elements.forEach(element => this.initElement(element));
+    elements.forEach((element) => this.initElement(element));
   }
 
   /**
@@ -478,27 +521,29 @@ class CountUpAnimator {
 
       // Restore original content
       const finalValue = this.formatNumber(
-        instance.currentValue, 
-        instance.config.separator, 
-        instance.maxDecimals
+        instance.currentValue,
+        instance.config.separator,
+        instance.maxDecimals,
       );
       element.textContent = finalValue;
 
       // Remove CSS classes
       ComponentClassManager.removeClasses(
         element,
-        ['wb-count-up', 'wb-count-up-animating', 'wb-count-up-completed', 'wb-count-up-reset'],
+        [
+          "wb-count-up",
+          "wb-count-up-animating",
+          "wb-count-up-completed",
+          "wb-count-up-reset",
+        ],
         this.instances,
-        this.componentName
+        this.componentName,
       );
 
       // Remove instance
       this.instances.delete(element);
-
-      console.log('WebflowBits CountUp: Element destroyed', element);
-
     } catch (error) {
-      console.error('WebflowBits CountUp: Failed to destroy element', error);
+      console.error("WebflowBits CountUp: Failed to destroy element", error);
     }
   }
 
@@ -506,7 +551,7 @@ class CountUpAnimator {
    * Destroy all instances
    */
   destroyAll() {
-    Array.from(this.instances.keys()).forEach(element => {
+    Array.from(this.instances.keys()).forEach((element) => {
       this.destroyElement(element);
     });
   }
@@ -523,14 +568,16 @@ class CountUpAnimator {
    * Check for CSS conflicts
    */
   checkForConflicts() {
-    const conflicts = checkCSSConflicts(componentClassSets.countUp || [
-      'wb-count-up',
-      'wb-count-up__number',
-      'wb-count-up-animating',
-      'wb-count-up-completed',
-      'wb-count-up-paused',
-      'wb-count-up-reset'
-    ]);
+    const conflicts = checkCSSConflicts(
+      componentClassSets.countUp || [
+        "wb-count-up",
+        "wb-count-up__number",
+        "wb-count-up-animating",
+        "wb-count-up-completed",
+        "wb-count-up-paused",
+        "wb-count-up-reset",
+      ],
+    );
 
     return conflicts.length > 0 ? conflicts : null;
   }
@@ -550,27 +597,30 @@ class CountUpAnimator {
     if (!instance) return;
 
     instance.config = { ...instance.config, ...newConfig };
-    
+
     // Re-calculate decimal places if precision changed
     if (newConfig.precision !== undefined) {
-      instance.maxDecimals = newConfig.precision !== null ? 
-        newConfig.precision : 
-        Math.max(
-          this.getDecimalPlaces(instance.config.from), 
-          this.getDecimalPlaces(instance.config.to)
-        );
+      instance.maxDecimals =
+        newConfig.precision !== null
+          ? newConfig.precision
+          : Math.max(
+              this.getDecimalPlaces(instance.config.from),
+              this.getDecimalPlaces(instance.config.to),
+            );
     }
 
     // Update display if not animating
     if (!instance.isAnimating) {
       this.updateDisplayValue(instance, instance.currentValue);
     }
-    
+
     // Dispatch update event
-    element.dispatchEvent(new CustomEvent('wb-count-up-update', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-count-up-update", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
@@ -592,19 +642,21 @@ class CountUpAnimator {
     if (!instance || !instance.tween) return;
 
     instance.tween.pause();
-    
+
     ComponentClassManager.setAnimationState(
-      element, 
-      'paused', 
-      'wb-count-up', 
-      this.instances, 
-      this.componentName
+      element,
+      "paused",
+      "wb-count-up",
+      this.instances,
+      this.componentName,
     );
 
-    element.dispatchEvent(new CustomEvent('wb-count-up-pause', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-count-up-pause", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
@@ -615,19 +667,21 @@ class CountUpAnimator {
     if (!instance || !instance.tween) return;
 
     instance.tween.resume();
-    
+
     ComponentClassManager.setAnimationState(
-      element, 
-      'animating', 
-      'wb-count-up', 
-      this.instances, 
-      this.componentName
+      element,
+      "animating",
+      "wb-count-up",
+      this.instances,
+      this.componentName,
     );
 
-    element.dispatchEvent(new CustomEvent('wb-count-up-resume', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-count-up-resume", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 
   /**
@@ -639,10 +693,12 @@ class CountUpAnimator {
 
     this.resetAnimation(instance);
 
-    element.dispatchEvent(new CustomEvent('wb-count-up-reset', {
-      detail: { element, config: instance.config },
-      bubbles: true
-    }));
+    element.dispatchEvent(
+      new CustomEvent("wb-count-up-reset", {
+        detail: { element, config: instance.config },
+        bubbles: true,
+      }),
+    );
   }
 }
 
@@ -653,13 +709,13 @@ const countUpAnimator = new CountUpAnimator();
 export default countUpAnimator;
 
 // Add to component class sets for conflict detection
-if (typeof componentClassSets !== 'undefined') {
+if (typeof componentClassSets !== "undefined") {
   componentClassSets.countUp = [
-    'wb-count-up',
-    'wb-count-up__number',
-    'wb-count-up-animating',
-    'wb-count-up-completed',
-    'wb-count-up-paused',
-    'wb-count-up-reset'
+    "wb-count-up",
+    "wb-count-up__number",
+    "wb-count-up-animating",
+    "wb-count-up-completed",
+    "wb-count-up-paused",
+    "wb-count-up-reset",
   ];
 }
