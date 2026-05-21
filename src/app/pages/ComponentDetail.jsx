@@ -199,7 +199,10 @@ const ComponentDetail = () => {
     const wbAttributes = extractWbAttributes(currentCode);
 
     return (
-      <div className="relative px-2 md:p-4 sm:p-8 lg:p-12 overflow-hidden min-h-[300px] sm:min-h-[400px] lg:min-h-[470px] h-full flex items-center justify-center">
+      <div
+        className={`relative px-2 md:p-4 sm:p-8 overflow-hidden min-h-[300px] sm:min-h-[400px] lg:min-h-[470px] h-full flex items-center justify-center
+        ${component.category === "background" ? "lg:px-4" : "lg:p-12"}`}
+      >
         {/* Attributes Pills - Bottom Left */}
         {wbAttributes.length > 0 && (
           <div className="absolute bottom-0 left-0 flex flex-wrap gap-2 p-2 sm:p-4  z-10 max-w-none">
@@ -256,7 +259,7 @@ const ComponentDetail = () => {
 
         <div
           key={reloadKey}
-          className="text-center [&_*]:font-medium"
+          className={`text-center [&_*]:font-medium ${component.category === "background" ? "h-full w-full" : ""}`}
           dangerouslySetInnerHTML={{ __html: currentCode }}
         />
       </div>
@@ -337,9 +340,7 @@ const ComponentDetail = () => {
                     size="custom"
                     className="py-[0.625rem] text-link font-medium text-foreground hover:text-primary-blue"
                   >
-                    <Code
-                      className="w-4 h-4 opacity-60"
-                    />
+                    <Code className="w-4 h-4 opacity-60" />
                     <p className="hidden md:block">Installation guide</p>
                   </Button>
 
@@ -350,9 +351,7 @@ const ComponentDetail = () => {
                     onClick={reloadPreview}
                     title="Reload animation"
                   >
-                    <RotateCw
-                      className="w-4 h-4 opacity-60"
-                    />
+                    <RotateCw className="w-4 h-4 opacity-60" />
                   </Button>
                 </div>
               </div>

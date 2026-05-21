@@ -3,7 +3,7 @@
  * Dynamic loading system for FlowBitz components
  */
 
-import { getAllComponentKeys } from './componentsMetadata.js'
+import { getAllComponentKeys } from "./componentsMetadata.js";
 
 /**
  * Load a component dynamically
@@ -14,50 +14,54 @@ export const loadComponent = async (componentName) => {
   try {
     // Map component name to file name
     const componentMap = {
-      'split-text': 'splitText',
-      'gradient-text': 'gradientText',
-      'text-type': 'textType',
-      'blur-text': 'blurText',
-      'shiny-text': 'shinyText',
-      'count-up': 'countUp',
-      'decrypted-text': 'decryptedText',
-      'scramble-text': 'scrambleText',
-      'variable-proximity': 'variableProximity',
-      'rotating-text': 'rotatingText',
-      'text-pressure': 'textPressure',
-      'gradient-button': 'gradientButton',
-      'ripple-button': 'rippleButton',
-      'pulse-button': 'pulseButton',
-      'shimmer-button': 'shimmerButton',
-      'magnetic-button': 'magnet',
-      'shuffle': 'shuffle',
-      'tooltip-text': 'tooltipText',
-      'roll-text': 'rollText',
-      'smart-animate': 'effect/smartAnimate',
-      'outline-gradient-animate': 'effect/outlineGradientAnimate',
-      'image-trail': 'effect/imageTrail',
-    }
+      "split-text": "splitText",
+      "gradient-text": "gradientText",
+      "text-type": "textType",
+      "blur-text": "blurText",
+      "shiny-text": "shinyText",
+      "count-up": "countUp",
+      "decrypted-text": "decryptedText",
+      "scramble-text": "scrambleText",
+      "variable-proximity": "variableProximity",
+      "rotating-text": "rotatingText",
+      "text-pressure": "textPressure",
+      "gradient-button": "gradientButton",
+      "ripple-button": "rippleButton",
+      "pulse-button": "pulseButton",
+      "shimmer-button": "shimmerButton",
+      "magnetic-button": "magnet",
+      shuffle: "shuffle",
+      "tooltip-text": "tooltipText",
+      "roll-text": "rollText",
+      "smart-animate": "effect/smartAnimate",
+      "outline-gradient-animate": "effect/outlineGradientAnimate",
+      "image-trail": "effect/imageTrail",
+      "firefly-background": "background/fireflyBackground",
+      "dot-grid": "background/dotGrid",
+      "star-field": "background/starField",
+      "particles-network": "background/particlesNetwork",
+    };
 
-    const fileName = componentMap[componentName]
+    const fileName = componentMap[componentName];
     if (!fileName) {
-      throw new Error(`Component ${componentName} not found in component map`)
+      throw new Error(`Component ${componentName} not found in component map`);
     }
 
-    const component = await import(`../components/${fileName}.js`)
-    return component.default || component
+    const component = await import(`../components/${fileName}.js`);
+    return component.default || component;
   } catch (error) {
-    console.error(`Failed to load component ${componentName}:`, error)
-    return null
+    console.error(`Failed to load component ${componentName}:`, error);
+    return null;
   }
-}
+};
 
 /**
  * Get all available component names
  * @returns {string[]} Array of component names
  */
 export const getAvailableComponents = () => {
-  return getAllComponentKeys()
-}
+  return getAllComponentKeys();
+};
 
 /**
  * Check if a component exists
@@ -65,8 +69,8 @@ export const getAvailableComponents = () => {
  * @returns {boolean} True if component exists
  */
 export const componentExists = (componentName) => {
-  return getAvailableComponents().includes(componentName)
-}
+  return getAvailableComponents().includes(componentName);
+};
 
 /**
  * Get component file name from component name
@@ -75,29 +79,34 @@ export const componentExists = (componentName) => {
  */
 export const getComponentFileName = (componentName) => {
   const componentMap = {
-    'split-text': 'splitText',
-    'gradient-text': 'gradientText',
-    'text-type': 'textType',
-    'blur-text': 'blurText',
-    'shiny-text': 'shinyText',
-    'count-up': 'countUp',
-    'decrypted-text': 'decryptedText',
-    'scramble-text': 'scrambleText',
-    'variable-proximity': 'variableProximity',
-    'rotating-text': 'rotatingText',
-    'text-pressure': 'textPressure',
-    'gradient-button': 'gradientButton',
-    'ripple-button': 'rippleButton',
-    'pulse-button': 'pulseButton',
-    'shimmer-button': 'shimmerButton',
-    'magnetic-button': 'magnet',
-    'shuffle': 'shuffle',
-    'tooltip-text': 'tooltipText',
-    'roll-text': 'rollText',
-    'smart-animate': 'effect/smartAnimate',
-    'outline-gradient': 'effect/outlineGradientAnimate',
-    'image-trail': 'effect/imageTrail',
-  }
+    "split-text": "splitText",
+    "gradient-text": "gradientText",
+    "text-type": "textType",
+    "blur-text": "blurText",
+    "shiny-text": "shinyText",
+    "count-up": "countUp",
+    "decrypted-text": "decryptedText",
+    "scramble-text": "scrambleText",
+    "variable-proximity": "variableProximity",
+    "rotating-text": "rotatingText",
+    "text-pressure": "textPressure",
+    "gradient-button": "gradientButton",
+    "ripple-button": "rippleButton",
+    "pulse-button": "pulseButton",
+    "shimmer-button": "shimmerButton",
+    "magnetic-button": "magnet",
+    shuffle: "shuffle",
+    "tooltip-text": "tooltipText",
+    "roll-text": "rollText",
+    "smart-animate": "effect/smartAnimate",
+    "outline-gradient": "effect/outlineGradientAnimate",
+    "image-trail": "effect/imageTrail",
+    "firefly-background": "background/fireflyBackground",
+    "dot-grid": "background/dotGrid",
+    "star-field": "background/starField",
+    "particles-network": "background/particlesNetwork",
+    "flow-field": "background/flowField",
+  };
 
-  return componentMap[componentName] || null
-}
+  return componentMap[componentName] || null;
+};

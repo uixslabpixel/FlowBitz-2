@@ -37,6 +37,14 @@ import outlineGradientAnimator from '../components/effect/outlineGradientAnimate
 import imageTrailAnimator from '../components/effect/imageTrail.js';
 import hoverZoomAnimator from '../components/effect/hoverZoom.js';
 
+/* Background Components */
+import matrixRainAnimator from '../components/background/matrixRain.js';
+import fireflyAnimator from '../components/background/fireflyBackground.js';
+import dotGridAnimator from '../components/background/dotGrid.js';
+import starFieldAnimator from '../components/background/starField.js';
+import particlesNetworkAnimator from '../components/background/particlesNetwork.js';
+import flowFieldAnimator from '../components/background/flowField.js';
+
 /* Utils */
 import { setupScrollTriggerResize } from '../utils/animation/scrollTriggerHelper.js';
 
@@ -74,6 +82,12 @@ class WebflowBits {
       outlineGradient: outlineGradientAnimator,
       imageTrail: imageTrailAnimator,
       hoverZoom: hoverZoomAnimator,
+      matrixRain: matrixRainAnimator,
+      fireflyBackground: fireflyAnimator,
+      dotGrid: dotGridAnimator,
+      starField: starFieldAnimator,
+      particlesNetwork: particlesNetworkAnimator,
+      flowField: flowFieldAnimator,
     };
   }
 
@@ -90,7 +104,7 @@ class WebflowBits {
     const config = {
       autoInit: true,
       debug: false,
-      components: ['splitText', 'textType', 'blurText', 'shinyText', 'gradientText', 'gradientButton', 'rippleButton', 'pulseButton', 'shimmerButton', 'decryptedText', 'scrambleText', 'variableProximity', 'countUp', 'rotatingText', 'textPressure', 'magnet', 'shuffle', 'tooltipText', 'rollText', 'cardHover3d', 'outlineGradient', 'imageTrail', 'hoverZoom'],
+      components: ['splitText', 'textType', 'blurText', 'shinyText', 'gradientText', 'gradientButton', 'rippleButton', 'pulseButton', 'shimmerButton', 'decryptedText', 'scrambleText', 'variableProximity', 'countUp', 'rotatingText', 'textPressure', 'magnet', 'shuffle', 'tooltipText', 'rollText', 'cardHover3d', 'outlineGradient', 'imageTrail', 'hoverZoom', 'matrixRain', 'fireflyBackground', 'dotGrid', 'starField', 'particlesNetwork', 'flowField'],
       ...options
     };
 
@@ -215,6 +229,30 @@ class WebflowBits {
 
       if (config.components.includes('hoverZoom')) {
         this.initHoverZoom(config.debug);
+      }
+
+      if (config.components.includes('matrixRain')) {
+        this.initMatrixRain(config.debug);
+      }
+
+      if (config.components.includes('fireflyBackground')) {
+        this.initFireflyBackground(config.debug);
+      }
+
+      if (config.components.includes('dotGrid')) {
+        this.initDotGrid(config.debug);
+      }
+
+      if (config.components.includes('starField')) {
+        this.initStarField(config.debug);
+      }
+
+      if (config.components.includes('particlesNetwork')) {
+        this.initParticlesNetwork(config.debug);
+      }
+
+      if (config.components.includes('flowField')) {
+        this.initFlowField(config.debug);
       }
 
       // Setup mutation observer for dynamic content if autoInit is enabled
@@ -660,6 +698,205 @@ class WebflowBits {
   }
 
   /**
+   * Initialize MatrixRain component
+   */
+  initMatrixRain(debug = false) {
+    try {
+      matrixRainAnimator.initAll();
+      if (debug) {
+        console.log('WebflowBits: MatrixRain initialized');
+      }
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize MatrixRain', error);
+    }
+  }
+
+  /**
+   * Initialize FireflyBackground on all matching elements.
+   * @param {boolean} debug
+   */
+  initFireflyBackground(debug = false) {
+    try {
+      fireflyAnimator.initAll();
+      if (debug) {
+        console.log('WebflowBits: FireflyBackground initialized');
+      }
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize FireflyBackground', error);
+    }
+  }
+
+  /**
+   * Initialize DotGrid on all matching elements.
+   * @param {boolean} debug
+   */
+  initDotGrid(debug = false) {
+    try {
+      dotGridAnimator.initAll();
+      if (debug) {
+        console.log('WebflowBits: DotGrid initialized');
+      }
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize DotGrid', error);
+    }
+  }
+
+  /**
+   * Initialize StarField on all matching elements.
+   * @param {boolean} debug
+   */
+  initStarField(debug = false) {
+    try {
+      starFieldAnimator.initAll();
+      if (debug) {
+        console.log('WebflowBits: StarField initialized');
+      }
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize StarField', error);
+    }
+  }
+
+  /**
+   * Initialize StarField on specific elements.
+   * @param {string|NodeList|Element} selector
+   */
+  initStarFieldOn(selector) {
+    try {
+      if (!selector) return this;
+
+      const elements =
+        typeof selector === 'string'
+          ? document.querySelectorAll(selector)
+          : selector.nodeType
+            ? [selector]
+            : selector;
+
+      Array.from(elements).forEach((element) => {
+        if (element?.getAttribute?.('wb-component') === 'star-field') {
+          starFieldAnimator.initElement(element);
+        }
+      });
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize StarField on elements', error);
+    }
+
+    return this;
+  }
+
+  /**
+   * Initialize ParticlesNetwork on all matching elements.
+   * @param {boolean} debug
+   */
+  initParticlesNetwork(debug = false) {
+    try {
+      particlesNetworkAnimator.initAll();
+      if (debug) {
+        console.log('WebflowBits: ParticlesNetwork initialized');
+      }
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize ParticlesNetwork', error);
+    }
+  }
+
+  /**
+   * Initialize FlowField on all matching elements.
+   * @param {boolean} debug
+   */
+  initFlowField(debug = false) {
+    try {
+      flowFieldAnimator.initAll();
+      if (debug) {
+        console.log('WebflowBits: FlowField initialized');
+      }
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize FlowField', error);
+    }
+  }
+
+  /**
+   * Initialize FlowField on specific elements.
+   * @param {string|NodeList|Element} selector
+   */
+  initFlowFieldOn(selector) {
+    try {
+      if (!selector) return this;
+
+      const elements =
+        typeof selector === 'string'
+          ? document.querySelectorAll(selector)
+          : selector.nodeType
+            ? [selector]
+            : selector;
+
+      Array.from(elements).forEach((element) => {
+        if (element?.getAttribute?.('wb-component') === 'flow-field') {
+          flowFieldAnimator.initElement(element);
+        }
+      });
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize FlowField on elements', error);
+    }
+
+    return this;
+  }
+
+  /**
+   * Initialize ParticlesNetwork on specific elements.
+   * @param {string|NodeList|Element} selector
+   */
+  initParticlesNetworkOn(selector) {
+    try {
+      if (!selector) return this;
+
+      const elements =
+        typeof selector === 'string'
+          ? document.querySelectorAll(selector)
+          : selector.nodeType
+            ? [selector]
+            : selector;
+
+      Array.from(elements).forEach((element) => {
+        if (element?.getAttribute?.('wb-component') === 'particles-network') {
+          particlesNetworkAnimator.initElement(element);
+        }
+      });
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize ParticlesNetwork on elements', error);
+    }
+
+    return this;
+  }
+
+  /**
+   * Initialize MatrixRain on specific elements
+   * @param {string|NodeList|Element} selector
+   */
+  initMatrixRainOn(selector) {
+    try {
+      if (!selector) return this;
+
+      // matrixRainAnimator exposes initAll/initElement only.
+      // For selective init, just call initElement for matching nodes.
+      const elements =
+        typeof selector === 'string'
+          ? document.querySelectorAll(selector)
+          : selector.nodeType
+            ? [selector]
+            : selector;
+
+      Array.from(elements).forEach((element) => {
+        if (element?.getAttribute?.('wb-component') === 'matrix-rain') {
+          matrixRainAnimator.initElement(element);
+        }
+      });
+    } catch (error) {
+      console.error('WebflowBits: Failed to initialize MatrixRain on elements', error);
+    }
+
+    return this;
+  }
+
+  /**
    * Setup mutation observer to handle dynamically added content
    */
   setupMutationObserver(debug = false) {
@@ -926,6 +1163,56 @@ class WebflowBits {
                 hoverZoomAnimator.initElement(element);
                 shouldRefresh = true;
               });
+
+              // Check for wb-component="matrix-rain" elements
+              const matrixRainElements = node.matches?.('[wb-component="matrix-rain"]')
+                ? [node]
+                : Array.from(node.querySelectorAll?.('[wb-component="matrix-rain"]') || []);
+
+              matrixRainElements.forEach(element => {
+                matrixRainAnimator.initElement(element);
+                shouldRefresh = true;
+              });
+
+              // Check for wb-component="dot-grid" elements
+              const dotGridElements = node.matches?.('[wb-component="dot-grid"]')
+                ? [node]
+                : Array.from(node.querySelectorAll?.('[wb-component="dot-grid"]') || []);
+
+              dotGridElements.forEach(element => {
+                dotGridAnimator.initElement(element);
+                shouldRefresh = true;
+              });
+
+              // Check for wb-component="star-field" elements
+              const starFieldElements = node.matches?.('[wb-component="star-field"]')
+                ? [node]
+                : Array.from(node.querySelectorAll?.('[wb-component="star-field"]') || []);
+
+              starFieldElements.forEach(element => {
+                starFieldAnimator.initElement(element);
+                shouldRefresh = true;
+              });
+
+              // Check for wb-component="particles-network" elements
+              const particlesNetworkElements = node.matches?.('[wb-component="particles-network"]')
+                ? [node]
+                : Array.from(node.querySelectorAll?.('[wb-component="particles-network"]') || []);
+
+              particlesNetworkElements.forEach(element => {
+                particlesNetworkAnimator.initElement(element);
+                shouldRefresh = true;
+              });
+
+              // Check for wb-component="flow-field" elements
+              const flowFieldElements = node.matches?.('[wb-component="flow-field"]')
+                ? [node]
+                : Array.from(node.querySelectorAll?.('[wb-component="flow-field"]') || []);
+
+              flowFieldElements.forEach(element => {
+                flowFieldAnimator.initElement(element);
+                shouldRefresh = true;
+              });
             }
           });
         }
@@ -953,6 +1240,11 @@ class WebflowBits {
           outlineGradientAnimator.refresh();
           imageTrailAnimator.refresh();
           hoverZoomAnimator.refresh();
+          matrixRainAnimator.refresh();
+          dotGridAnimator.refresh();
+          starFieldAnimator.refresh();
+          particlesNetworkAnimator.refresh();
+          flowFieldAnimator.refresh();
         }, 100);
       }
     });
@@ -1475,6 +1767,21 @@ class WebflowBits {
     // Destroy HoverZoom animations
     hoverZoomAnimator.destroyAll();
 
+    // Destroy MatrixRain animations
+    matrixRainAnimator.destroyAll();
+
+    // Destroy DotGrid animations
+    dotGridAnimator.destroyAll();
+
+    // Destroy StarField animations
+    starFieldAnimator.destroyAll();
+
+    // Destroy ParticlesNetwork animations
+    particlesNetworkAnimator.destroyAll();
+
+    // Destroy FlowField animations
+    flowFieldAnimator.destroyAll();
+
     // Disconnect observers
     this.observers.forEach(observer => observer.disconnect());
     this.observers = [];
@@ -1514,6 +1821,12 @@ class WebflowBits {
     outlineGradientAnimator.refresh();
     imageTrailAnimator.refresh();
     hoverZoomAnimator.refresh();
+
+    matrixRainAnimator.refresh();
+    dotGridAnimator.refresh();
+    starFieldAnimator.refresh();
+    particlesNetworkAnimator.refresh();
+    flowFieldAnimator.refresh();
     return this;
   }
 
