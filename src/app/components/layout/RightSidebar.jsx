@@ -187,8 +187,8 @@ const ConfigSidebar = ({
   };
 
   return (
-    <aside className="lg:w-full mx-4 my-4 px-0 py-0 max-w-none w-auto lg:max-w-[300px] lg:min-w-[300px] bg-background lg:overflow-y-auto lg:h-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/30">
-      <div className="flex flex-col gap-4 px-0 py-0">
+    <aside className="lg:w-full mx-4 my-4 p-0 max-w-none w-full lg:max-w-[300px] lg:min-w-[300px] bg-background lg:overflow-y-auto overflow-x-hidden lg:overflow-x-hidden lg:h-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/30">
+      <div className="flex flex-col gap-4 p-0 w-full">
         {/* ── Installation Notes ── */}
         {component.installationNotes && (
           <>
