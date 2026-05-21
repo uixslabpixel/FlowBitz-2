@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs.jsx'
 import { CheckCircle, AlertCircle, Send, Bug, Lightbulb, Mail } from 'lucide-react'
 import SEO from '../components/SEO.jsx'
+import { seoPages } from '../content/brandCopy.js'
 import Footer from '../components/layout/Footer.jsx'
 
 const Contact = () => {
@@ -152,22 +153,22 @@ const Contact = () => {
   const getFormDescription = () => {
     switch (activeTab) {
       case 'contact':
-        return 'Get in touch with our team. We\'d love to hear from you!'
+        return 'Questions about FlowBitz, partnerships, or your Webflow motion workflow.'
       case 'bug-report':
-        return 'Found a bug? Help us fix it by providing detailed information.'
+        return 'Report a motion bug—steps to reproduce and project context help us fix it faster.'
       case 'feature-request':
-        return 'Have an idea for a new feature? We\'d love to hear your suggestions!'
+        return 'Suggest motion patterns or components that would help your client work.'
       default:
-        return 'Get in touch with our team.'
+        return 'Reach the FlowBitz team—we respond to serious creators and agencies.'
     }
   }
 
   return (
     <>
       <SEO 
-        title="Contact FlowBitz | Support, Bug Reports & Feature Requests"
-        description="Contact the FlowBitz team for support, bug reports, or feature requests. Get help with your Webflow animations."
-        keywords="FlowBitz contact, webflow support, bug report, feature request, animation help, FlowBitz team"
+        title={seoPages.contact.title}
+        description={seoPages.contact.description}
+        keywords={seoPages.contact.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/contact"
         structuredData={structuredData}

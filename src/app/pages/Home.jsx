@@ -5,46 +5,22 @@ import { getFilteredComponentKeys } from "../../library/data/componentsMetadata.
 import Logo from "../components/Logo.jsx";
 import { BookOpen, Bug, Lightbulb } from "lucide-react";
 import { GalleryContainer } from "../components/gallery";
+import { seoPages, jsonLd, uiCopy } from "../content/brandCopy.js";
 
 const Home = () => {
   const navigate = useNavigate();
   const componentCount = getFilteredComponentKeys().length;
+  const homeSeo = seoPages.home(componentCount);
+  const copy = uiCopy.home;
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "FlowBitz - Free GSAP Animation Components for Webflow",
-    description: `Transform your Webflow projects with ${componentCount}+ professional animation components. Zero JavaScript knowledge needed - just add HTML attributes. GSAP-powered, mobile-responsive, and completely free.`,
-    url: "https://www.flowbitz.dev",
-    publisher: {
-      "@type": "Organization",
-      name: "SlabPixel Studio",
-      url: "https://slabpixel.com",
-      description:
-        "Creative studio specializing in web development and Webflow solutions",
-    },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: "https://www.flowbitz.dev/components?search={search_term_string}",
-      "query-input": "required name=search_term_string",
-    },
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-      description:
-        "Free GSAP animation components for Webflow - no coding required",
-    },
-    keywords:
-      "webflow animations, webflow components, gsap webflow, webflow text effects, webflow animation library, free webflow components",
-  };
+  const structuredData = jsonLd.website(componentCount);
 
   return (
     <>
       <SEO
-        title="FlowBitz | Free GSAP Animation Components for Webflow (No Coding Required)"
-        description={`Transform your Webflow projects with ${componentCount}+ FlowBitz components. Use simple HTML attributes to activate GSAP-powered motion—free, mobile-friendly, and performance optimized.`}
-        keywords="FlowBitz, webflow animations, GSAP for Webflow, webflow HTML attributes, interactive components, free webflow components, motion effects, hover animations, scroll animations"
+        title={homeSeo.title}
+        description={homeSeo.description}
+        keywords={homeSeo.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev"
         structuredData={structuredData}
@@ -57,24 +33,23 @@ const Home = () => {
               <div className="flex gap-[0.875rem] px-4 py-2 bg-foreground/10 rounded-[2px] items-center">
                 <div className="w-2 h-2 bg-[#51A2FF]" />
                 <p className="flex flex-row gap-1 inter-med-16 text-foreground">
-                  {componentCount} components available -
+                  {componentCount} {copy.badgePrefix}
                   <span wb-component="text-type" 
-                  wb-text-1="100% Free Forever"
-                  wb-text-2="Industry Standard GSAP"
-                  wb-text-3="No Coding Required"
-                  wb-text-4="Highly Customizable"
-                  wb-text-5="Performance Optimized"
+                  wb-text-1={copy.textRotator[0]}
+                  wb-text-2={copy.textRotator[1]}
+                  wb-text-3={copy.textRotator[2]}
+                  wb-text-4={copy.textRotator[3]}
+                  wb-text-5={copy.textRotator[4]}
                   />
                 </p>
               </div>
 
-              <h1 className="inter-semi-72 text-center">
-                Free GSAP Components for <span wb-component="gradient-text">Webflow</span>
+              <h1 className="inter-semi-100 text-center">
+                {copy.headline} <span wb-component="gradient-text">{copy.headlineAccent}</span>
               </h1>
 
-              <p className="inter-reg-18 text-center lg:w-[430px] text-foreground/90 opacity-80">
-                Interactive effects using simple HTML attributes, No coding
-                required!
+              <p className="inter-reg-18 text-center lg:w-[540px] text-foreground/90 opacity-80">
+                {copy.subhead}
               </p>
             </div>
           </div>
@@ -92,7 +67,7 @@ const Home = () => {
                 <div className="flex flex-col gap-4 items-start">
                   <Logo className="h-8 w-auto" />
                   <h2 className="inter-semi-48 text-foreground">
-                    Pro Animations, <br /> Zero Code.
+                    {copy.ctaHeadline} <br /> {copy.ctaHeadlineLine2}
                   </h2>
                 </div>
 

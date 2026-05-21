@@ -1,7 +1,7 @@
 {
-  "name": "FlowBitz - Free GSAP Animation Components for Webflow | No Coding Required",
+  "name": "FlowBitz — Premium UI Motion System for Webflow",
   "short_name": "FlowBitz",
-  "description": "Transform your Webflow projects with 20+ professional animation components. Zero JavaScript knowledge needed - just add HTML attributes. GSAP-powered, mobile-responsive, and completely free.",
+  "description": "Ship premium text, hover, and scroll motion in Webflow. Attribute-based motion system powered by GSAP—free core library, built for serious creators.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

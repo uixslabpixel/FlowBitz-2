@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/button.jsx'
 import { Home, ArrowLeft, Search } from 'lucide-react'
 import SEO from '../components/SEO.jsx'
+import { seoPages } from '../content/brandCopy.js'
 
 const NotFound = () => {
   const navigate = useNavigate()
@@ -10,9 +11,9 @@ const NotFound = () => {
   return (
     <>
       <SEO 
-        title="404 - Page Not Found | FlowBitz"
-        description="The page you’re looking for doesn’t exist. Explore FlowBitz free GSAP components for Webflow or return to the homepage."
-        keywords="404, page not found, FlowBitz, webflow components, free GSAP components"
+        title={seoPages.notFound.title}
+        description={seoPages.notFound.description}
+        keywords={seoPages.notFound.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/404"
       />
