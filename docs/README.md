@@ -10,6 +10,8 @@ This directory contains all documentation files for the FlowBitz project (except
 
 - **[SEO.md](./SEO.md)** - SEO implementation guide, including meta tags, structured data, technical optimizations, and content strategy.
 
+- **[BRAND.md](./BRAND.md)** - Brand positioning, voice, messaging, design direction, audience, and decision framework for product and marketing.
+
 - **[VERSION.md](./VERSION.md)** - Version update guide with checklist and detailed instructions for updating version numbers across all project files during releases. 
 
 ---
@@ -22,5 +24,5 @@ This directory contains all documentation files for the FlowBitz project (except
 
 ---
 
-**Last Updated**: Based on FlowBitz v2.3.5
+**Last Updated**: Based on FlowBitz v2.4.x
 
