@@ -11,8 +11,11 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v2.4](#whats-new-in-v24)
+- [What's New in v2.4.5](#whats-new-in-v245)
+- [Quick Start](#quick-start)
 - [Component Catalog](#component-catalog)
+- [Bundles & CDN](#bundles--cdn)
+- [Local Development](#local-development)
 - [Contributing](#contributing)
 - [Support & Resources](#support--resources)
 
@@ -20,20 +23,60 @@
 
 ## Overview
 
-- 24 plug-and-play animations covering text, buttons, and immersive effects
+- **30** plug-and-play components for text, buttons, effects, and canvas backgrounds
 - Built for visual developers: configure everything with `wb-*` attributes inside Webflow
-- GSAP under the hood with graceful CSS fallbacks where possible
+- GSAP under the hood with graceful CSS and canvas fallbacks where possible
 - Dual build pipeline (UMD + ES modules) with smart lazy loading
 - Detailed docs, metadata, and debugging utilities baked in
 
 ---
 
-## What's New in v2.4
+## What's New in v2.4.5
 
-- **New components:** `shimmer-button`, `hover-zoom`, `matrix-rain`
-- **ImageTrail improvements:** Enhanced performance and better image preloading
-- **ScrollTrigger improvements:** Enhanced helper calculations and viewport unit handling
-- **Performance wins:** UMD bundle still 85 KB gzipped (−72% vs v1)
+- **New backgrounds:** `firefly-background`, `dot-grid`, `star-field`, `particles-network`, `flow-field`
+- **Canvas backgrounds:** Full-screen effects on `<div>` / `<section>` with content staying interactive above the layer
+- **Docs & site:** SEO and brand copy updates, improved installation notes for background components
+- **Earlier in v2.4:** `shimmer-button`, `hover-zoom`, `matrix-rain`, ImageTrail and ScrollTrigger improvements
+
+---
+
+## Quick Start
+
+### CDN (UMD)
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/flowbitz@latest/dist/flowbitz.umd.js"></script>
+
+<h1 wb-component="split-text" wb-split-type="words">
+  Create Amazing Websites with Powerful Animations
+</h1>
+```
+
+### npm (ES modules)
+
+```bash
+npm install flowbitz
+```
+
+```javascript
+import FlowBitz from 'flowbitz';
+
+await FlowBitz.init({
+  components: ['splitText', 'starField'],
+  debug: false,
+});
+```
+
+### Background example
+
+```html
+<section
+  wb-component="star-field"
+  wb-star-color="#e6e664"
+  wb-interactive="true"
+  class="h-screen w-full"
+></section>
+```
 
 ---
 
@@ -80,11 +123,75 @@
 
 ### Background
 
-| Component     | GSAP | Highlights                             |
-| ------------- | ---- | -------------------------------------- |
-| `matrix-rain` | ❌   | Matrix Rain background using 2D Canvas |
+| Component             | GSAP | Highlights                                                    |
+| --------------------- | ---- | ------------------------------------------------------------- |
+| `matrix-rain`         | ❌   | Matrix or binary digital rain (Canvas 2D)                     |
+| `firefly-background`  | ❌   | Floating firefly particles with glow and lifecycle (Canvas 2D) |
+| `dot-grid`            | ❌   | Animated dot grid with scroll direction and spacing (CSS)     |
+| `star-field`          | ❌   | Cursor-driven star burst with trails and click acceleration   |
+| `particles-network`   | ❌   | Bouncing particles with mouse-proximity connection lines      |
+| `flow-field`          | ❌   | Sinusoidal vector-field trails with palette presets (Canvas 2D) |
 
-> Components marked ❌ are CSS-only and ship without GSAP for minimal bundles.
+> Components marked ❌ do not use GSAP (CSS-only or Canvas 2D) for smaller bundles when those effects are used alone.
+
+---
+
+## Bundles & CDN
+
+| Channel   | Use case              |
+| --------- | --------------------- |
+| `@latest` | Newest stable build   |
+| `@2.4.5`  | Pinned release        |
+| `@beta`   | Beta channel          |
+
+```html
+<!-- flowbitz.dev -->
+<script src="https://www.flowbitz.dev/latest/flowbitz.umd.js"></script>
+
+<!-- jsDelivr -->
+<script src="https://cdn.jsdelivr.net/npm/flowbitz@2.4.5/dist/flowbitz.umd.js"></script>
+
+<!-- ES module -->
+<script type="module">
+  import FlowBitz from 'https://cdn.jsdelivr.net/npm/flowbitz@2.4.5/dist/flowbitz.es.js';
+  await FlowBitz.init();
+</script>
+```
+
+| Bundle        | v1 (gzipped) | v2.4 (gzipped) | Notes        |
+| ------------- | ------------ | -------------- | ------------ |
+| UMD           | 300 KB       | ~108 KB        | GSAP bundled |
+| ES entry      | 300 KB       | ~4.5 KB        | + lazy chunks |
+| npm install   | 828 KB       | ~320 KB        | Full package |
+
+---
+
+## Local Development
+
+### Prerequisites
+
+- Node.js 16+
+- npm 8+
+
+### Setup
+
+```bash
+git clone https://github.com/Slabpixel/FlowBitz.git
+cd FlowBitz
+npm install
+npm run dev
+```
+
+### Common scripts
+
+| Command                 | Purpose                          |
+| ----------------------- | -------------------------------- |
+| `npm run dev`           | Showcase app (Vite)              |
+| `npm run build:library` | Library bundles                  |
+| `npm run deploy:stable` | Build versioned dist + Vercel    |
+| `npm run deploy:beta`   | Beta channel only                |
+
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) and [docs/VERSION.md](docs/VERSION.md) for release workflow.
 
 ---
 
