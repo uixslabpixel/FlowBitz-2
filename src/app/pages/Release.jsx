@@ -8,6 +8,19 @@ import { seoPages } from "../content/brandCopy.js";
 const Release = () => {
     const releases = [
         {
+            version: "2.4.5",
+            date: "May 21, 2026",
+            type: "stable",
+            description: "v2.4.5 maintenance release: New canvas background components, SEO and brand copy updates, and console log cleanup.",
+            changes: [
+                "New background components: Firefly, Dot Grid, Star Field, Particles Network, and Flow Field",
+                "Improved installation notes and showcase UI for background components",
+                "Major SEO and copywriting updates across the site",
+                "Brand documentation updates (BRAND.md)",
+                "Removed unnecessary console logs from the library"
+            ]
+        },
+        {
             version: "2.4.4",
             date: "November 27, 2025",
             type: "stable",
@@ -132,8 +145,8 @@ const Release = () => {
         "name": "FlowBitz",
         "description": "Interactive components library for Webflow - Release notes and version history",
         "url": "https://www.flowbitz.dev/release",
-        "version": "2.4.4",
-        "datePublished": "2025-12-20",
+        "version": "2.4.5",
+        "datePublished": "2026-05-21",
         "applicationCategory": "Web Development",
         "operatingSystem": "Web Browser"
     }
