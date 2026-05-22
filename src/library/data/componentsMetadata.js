@@ -1019,7 +1019,6 @@ export const componentsMetadata = {
   },
 
   "tooltip-text": {
-    newComponent: true,
     name: 'Tooltip Text',
     description: 'Refined hover tooltips for inline labels and product UI copy',
     category: 'text',
@@ -1109,7 +1108,6 @@ export const componentsMetadata = {
   },
 
   "roll-text": {
-    newComponent: true,
     name: 'Roll Text',
     description: 'Vertical roll swap on hover—premium link and label motion',
     category: 'text',
@@ -1392,7 +1390,6 @@ export const componentsMetadata = {
   },
 
   "shimmer-button": {
-    newComponent: true,
     name: 'Shimmer Button',
     description: 'Directional shimmer on hover for polished CTAs',
     category: 'button',
@@ -1528,7 +1525,6 @@ export const componentsMetadata = {
   },
 
   "3d-card-hover": {
-    newComponent: true,
     name: '3D Card Hover',
     description: 'CSS perspective tilt for product cards and feature tiles',
     category: 'effect',
@@ -1576,7 +1572,6 @@ export const componentsMetadata = {
   },
 
   "outline-gradient": {
-    newComponent: true,
     name: 'Outline Gradient',
     description: 'Animated gradient outline for frames, badges, and highlights',
     category: 'effect',
@@ -1655,7 +1650,6 @@ export const componentsMetadata = {
   },
 
   "image-trail": {
-    newComponent: true,
     name: 'Image Trail',
     description: 'Mouse-following image trails—eight variants for immersive moments',
     category: 'effect',
@@ -1742,7 +1736,6 @@ export const componentsMetadata = {
   },
 
   "hover-zoom": {
-    newComponent: true,
     name: 'Hover Zoom',
     description: 'Zoom with parallax on hover for editorial imagery and galleries',
     category: 'effect',
@@ -1779,7 +1772,6 @@ export const componentsMetadata = {
   },
 
   "matrix-rain": {
-    newComponent: true,
     name: "Matrix Digital Rain",
     description: "Matrix Digital Rain background effect using Canvas 2D API",
     category: "background",
@@ -1858,7 +1850,6 @@ export const componentsMetadata = {
   },
 
   "firefly-background": {
-    newComponent: true,
     name: "Firefly Background",
     description:
       "Animated floating firefly particles with fade in/out lifecycle using Canvas 2D API",
@@ -1974,7 +1965,6 @@ export const componentsMetadata = {
     },
   },
   "dot-grid": {
-    newComponent: true,
     name: "Dot Grid",
     description:
       "Animated scrolling dot grid background effect using pure CSS radial-gradient",
@@ -2064,7 +2054,6 @@ export const componentsMetadata = {
   },
 
   "star-field": {
-    newComponent: true,
     name: "Star Field",
     description:
       "Interactive star field animation where stars radiate from the cursor position. Click to trigger a speed burst.",
@@ -2207,7 +2196,6 @@ export const componentsMetadata = {
   },
 
   "particles-network": {
-    newComponent: true,
     name: "Particles Network",
     description:
       "Animated particle network with mouse-proximity connection lines. Particles bounce within the container; lines appear near the cursor.",
@@ -2367,7 +2355,6 @@ export const componentsMetadata = {
   },
 
   "flow-field": {
-    newComponent: true,
     name: "Flow Field",
     description:
       "Animated particle trails following a sinusoidal vector field. Each particle traces a path guided by pre-computed angle data, leaving a colored history trail. Pure Canvas 2D + requestAnimationFrame — zero dependencies.",
