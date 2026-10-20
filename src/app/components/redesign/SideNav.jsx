@@ -171,17 +171,30 @@ const BugIcon = () => (
 const ReportBugButton = () => (
   <Link
     to="/contact?tab=report"
-    className="block w-full rounded-[4px] bg-[#1a0909] p-px transition-opacity hover:opacity-90"
+    className="group block w-full rounded-[4px] bg-[#1a0909] p-px transition-shadow duration-300 ease-out hover:shadow-[0_3px_6px_rgba(0,0,0,0.10),0_11px_11px_rgba(0,0,0,0.09),0_24px_14px_rgba(0,0,0,0.05),0_42px_17px_rgba(0,0,0,0.01),0_66px_19px_rgba(0,0,0,0)]"
   >
     <span
-      className="flex items-center justify-center gap-2 h-12 rounded-[3px] text-[15px] leading-7 text-white"
+      // overflow-hidden: the climbing bug and its thread disappear past the button's top edge.
+      className="flex items-center justify-center gap-2 h-10 overflow-hidden rounded-[3px] text-[15px] leading-7 text-white"
       style={{
         border: "1px solid transparent",
         background:
           "linear-gradient(#1a0909, #1a0909) padding-box, linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0)) border-box",
       }}
     >
-      <BugIcon />
+      {/* Hover: this bug spins a thread and climbs out the top; a second one crawls in below. */}
+      <span className="relative flex w-[17px] h-[15px]">
+        <span className="bug-climb absolute inset-0 flex">
+          <span
+            aria-hidden="true"
+            className="bug-silk absolute left-[8px] bottom-[calc(100%-2px)] w-px h-6 origin-bottom scale-y-0 bg-gradient-to-t from-[#4bb7ff] to-[#4bb7ff]/30"
+          />
+          <BugIcon />
+        </span>
+        <span className="bug-arrive absolute inset-0 flex translate-y-[30px]">
+          <BugIcon />
+        </span>
+      </span>
       Report Bug
     </span>
   </Link>

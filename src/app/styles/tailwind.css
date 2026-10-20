@@ -420,6 +420,35 @@ body {
   animation: shimmer 2s infinite;
 }
 
+/* Report Bug button (sidebar): on hover the bug shoots a silk thread up, climbs it out of the
+   button, and a fresh bug crawls in from below. One 1s timeline shared by all three parts. */
+@keyframes bug-silk {
+  0% { transform: scaleY(0); }
+  28%, 100% { transform: scaleY(1); }
+}
+
+@keyframes bug-climb {
+  0%, 28% { transform: translateY(0); }
+  34% { transform: translateY(1.5px); } /* crouch before the climb */
+  70%, 100% { transform: translateY(-36px); }
+}
+
+@keyframes bug-arrive {
+  0%, 58% { transform: translateY(30px); }
+  88% { transform: translateY(-1.5px); }
+  100% { transform: translateY(0); }
+}
+
+.group:hover .bug-silk { animation: bug-silk 1s cubic-bezier(0.3, 0, 0.2, 1) forwards; }
+.group:hover .bug-climb { animation: bug-climb 1s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+.group:hover .bug-arrive { animation: bug-arrive 1s cubic-bezier(0.3, 0, 0.2, 1) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .bug-silk,
+  .group:hover .bug-climb,
+  .group:hover .bug-arrive { animation: none; }
+}
+
 /* Ensure proper touch scrolling on mobile */
 @media (max-width: 768px) {
   body {
