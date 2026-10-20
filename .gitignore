@@ -37,3 +37,4 @@ out/
 .cursor/
 .sdd/
 specs/
+.env*

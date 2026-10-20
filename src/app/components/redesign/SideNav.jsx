@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../Logo";
-import PixelMark from "./PixelMark";
+import EasterEggMark from "./EasterEggMark";
 
 // Main sections of the sidebar. `to: null` renders the item as not yet available.
 // `match` lists extra path prefixes that should mark the item as active.
@@ -172,7 +172,7 @@ const SideNav = () => {
 
   return (
     <aside className="relative lg:fixed lg:left-2 lg:top-2 lg:bottom-2 lg:w-[250px] m-2 lg:m-0 bg-white rounded-md p-[25px] flex flex-col text-black font-inter z-20 overflow-y-auto overflow-x-hidden">
-      <PixelMark size={10} className="absolute top-0 right-0" />
+      <EasterEggMark className="absolute top-0 right-0 z-10" />
 
       <div className="flex items-center justify-between">
         <Link to="/" aria-label="FlowBitz home" className="block w-fit">
