@@ -33,12 +33,37 @@ const isActive = ({ to, match = [] }, pathname) =>
 const itemClass =
   "relative flex items-center h-8 text-[15px] leading-7 transition-opacity duration-200";
 
+// Not-yet-available item: clicking it flashes a "Coming soon" tooltip beside the label.
+const SoonItem = ({ label }) => {
+  const [open, setOpen] = useState(false);
+  const timer = useRef(0);
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  const show = () => {
+    setOpen(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setOpen(false), 1500);
+  };
+
+  return (
+    <button type="button" onClick={show} className={`${itemClass} w-fit text-left`}>
+      <span className="opacity-50">{label}</span>
+      <span
+        role="status"
+        aria-hidden={!open}
+        className={`absolute left-full top-1/2 ml-2 whitespace-nowrap rounded-md bg-black px-2 text-[13px] leading-6 text-white pointer-events-none transition-all duration-200 ${
+          open ? "opacity-100 -translate-y-1/2" : "opacity-0 -translate-y-1/2 translate-x-[-4px]"
+        }`}
+      >
+        Coming soon
+      </span>
+    </button>
+  );
+};
+
 const NavItem = ({ label, to, active }) => {
-  if (!to) {
-    return (
-      <span className={`${itemClass} opacity-50 cursor-default`}>{label}</span>
-    );
-  }
+  if (!to) return <SoonItem label={label} />;
 
   return (
     <Link
