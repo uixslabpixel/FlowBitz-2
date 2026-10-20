@@ -1,19 +1,91 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import SEO from "../components/SEO.jsx";
-import { getFilteredComponentKeys } from "../../library/data/componentsMetadata.js";
-import Logo from "../components/Logo.jsx";
-import { BookOpen, Bug, Lightbulb } from "lucide-react";
-import { GalleryContainer } from "../components/gallery";
-import { seoPages, jsonLd, uiCopy } from "../content/brandCopy.js";
+import { PageHeader } from "../components/redesign/AppShell.jsx";
+import EffectCard from "../components/redesign/EffectCard.jsx";
+import FilterChips from "../components/redesign/FilterChips.jsx";
+import PixelMark from "../components/redesign/PixelMark.jsx";
+import { useStaggerIn } from "../components/redesign/useStaggerIn.js";
+import { FEATURED_EFFECTS } from "../components/redesign/cardThemes.js";
+import {
+  componentsMetadata,
+  getFilteredComponentKeys,
+} from "../../library/data/componentsMetadata.js";
+import { seoPages, jsonLd } from "../content/brandCopy.js";
+
+const FILTERS = [
+  { id: "all", label: "All" },
+  { id: "text", label: "Text" },
+  { id: "button", label: "Button" },
+  { id: "effect", label: "Effects" },
+  { id: "background", label: "Background" },
+];
+
+const PAGE_SIZE = 12;
+
+// Empty category: dashed placeholder cards keep the grid's rhythm; the first one explains
+// and offers a way back to everything.
+const EmptyState = ({ label, onReset }) => (
+  <>
+    <div
+      className="aspect-[4/3] rounded-lg border border-dashed border-black/15 flex flex-col items-center justify-center gap-4 px-6 text-center"
+    >
+      <PixelMark size={8} />
+      <div>
+        <p className="font-inter-tight text-xl font-medium leading-7">
+          {label} is coming soon
+        </p>
+        <p className="text-[15px] leading-6 text-black/50 mt-1">
+          We're still crafting this set. Explore the rest meanwhile.
+        </p>
+      </div>
+      <button
+        onClick={onReset}
+        className="bg-black text-white rounded-[2px] px-3 text-[15px] leading-8 font-medium hover:bg-black/80 transition-colors"
+      >
+        Show all effects
+      </button>
+    </div>
+    {[1, 2].map((i) => (
+      <div
+        key={i}
+        aria-hidden="true"
+        className={`hidden ${i === 1 ? "md:block" : "xl:block"} aspect-[4/3] rounded-lg border border-dashed border-black/10`}
+      />
+    ))}
+  </>
+);
 
 const Home = () => {
-  const navigate = useNavigate();
-  const componentCount = getFilteredComponentKeys().length;
-  const homeSeo = seoPages.home(componentCount);
-  const copy = uiCopy.home;
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const structuredData = jsonLd.website(componentCount);
+  const allComponents = useMemo(
+    () =>
+      FEATURED_EFFECTS.map((key) => ({
+        id: key,
+        ...componentsMetadata[key],
+      })),
+    [],
+  );
+
+  const filtered = useMemo(
+    () =>
+      activeFilter === "all"
+        ? allComponents
+        : allComponents.filter((c) => c.category === activeFilter),
+    [allComponents, activeFilter],
+  );
+
+  const visible = filtered.slice(0, visibleCount);
+
+  // Cards rise in one after another on load and on every filter switch.
+  const gridRef = useRef(null);
+  useStaggerIn(gridRef, activeFilter);
+
+  useEffect(() => setVisibleCount(PAGE_SIZE), [activeFilter]);
+
+  const libraryCount = getFilteredComponentKeys().length;
+  const homeSeo = seoPages.home(libraryCount);
 
   return (
     <>
@@ -23,123 +95,49 @@ const Home = () => {
         keywords={homeSeo.keywords}
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev"
-        structuredData={structuredData}
+        structuredData={jsonLd.website(libraryCount)}
       />
-      <div className="relative z-[2] text-foreground">
-        {/* Hero Section */}
-        <section className="relative px-2 lg:px-0">
-          <div className="max-w-[1200px] mx-auto py-6 lg:py-16 flex flex-col items-center border-x-[1px] border-b-[1px] border-foreground/10">
-            <div className="max-w-[800px] w-[80%] lg:w-2/3 flex flex-col items-center gap-[1.625rem]">
-              <div className="flex gap-[0.875rem] px-4 py-2 bg-foreground/10 rounded-[2px] items-center">
-                <div className="w-2 h-2 bg-[#51A2FF]" />
-                <p className="flex flex-row gap-1 inter-med-16 text-foreground">
-                  {componentCount} {copy.badgePrefix}
-                  <span wb-component="text-type" 
-                  wb-text-1={copy.textRotator[0]}
-                  wb-text-2={copy.textRotator[1]}
-                  wb-text-3={copy.textRotator[2]}
-                  wb-text-4={copy.textRotator[3]}
-                  wb-text-5={copy.textRotator[4]}
-                  />
-                </p>
-              </div>
 
-              <h1 className="inter-semi-100 text-center">
-                {copy.headline} <span wb-component="gradient-text">{copy.headlineAccent}</span>
-              </h1>
+      <PageHeader title="Premium effects for Webflow">
+        <FilterChips
+          filters={FILTERS}
+          active={activeFilter}
+          onChange={setActiveFilter}
+          label="Filter effects"
+        />
+      </PageHeader>
 
-              <p className="inter-reg-18 text-center lg:w-[540px] text-foreground/90 opacity-80">
-                {copy.subhead}
-              </p>
-            </div>
-          </div>
-        </section>
-        {/* End Hero Section */}
+      <section
+        ref={gridRef}
+        className="p-4 lg:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+      >
+        {visible.map((c) => (
+          <EffectCard
+            key={c.id}
+            id={c.id}
+            name={c.name}
+            category={c.category}
+            exampleCode={c.example?.code}
+          />
+        ))}
+        {filtered.length === 0 && (
+          <EmptyState
+            label={FILTERS.find((f) => f.id === activeFilter)?.label}
+            onReset={() => setActiveFilter("all")}
+          />
+        )}
+      </section>
 
-        {/* Component Gallery Section */}
-        <GalleryContainer showAll={false} />
-
-        {/* CTA Section */}
-        <section className="px-2 lg:px-0">
-          <div className="max-w-[1200px] mx-auto pt-0 pb-12 md:py-7 border-x-[1px] border-foreground/10">
-            <div className="relative w-full lg:h-[500px] border-y-[1px] border-foreground/10 flex flex-col lg:flex-row justify-between items-start gap-9 lg:gap-0 lg:items-center lg:pl-[3.75rem] overflow-hidden">
-              <div className="flex flex-col gap-6 md:gap-10 max-w-[550px] relative z-[3] pt-6 pl-6 lg:pt-0 lg:pl-0">
-                <div className="flex flex-col gap-4 items-start">
-                  <Logo className="h-8 w-auto" />
-                  <h2 className="inter-semi-48 text-foreground">
-                    {copy.ctaHeadline} <br /> {copy.ctaHeadlineLine2}
-                  </h2>
-                </div>
-
-                <div className="w-full flex flex-wrap gap-3 md:gap-0 lg:flex-nowrap">
-                  <button
-                    onClick={() => navigate("/installation")}
-                    className="pr-0 md:pr-3 lg:pr-6 py-2 md:py-[10px] md:border-r border-white/10 text-foreground inter-med-16 transition-all duration-200 flex items-center gap-2 md:gap-3 hover:text-foreground/50"
-                  >
-                    <BookOpen
-                      className="w-4 h-4 opacity-60"
-                    />
-                    <span className="inline text-nowrap">
-                      Installation Guide
-                    </span>
-                  </button>
-
-                  <button
-                    onClick={() => navigate("/contact?tab=report")}
-                    className="px-0 md:px-3 lg:px-6 py-2 md:py-[10px] md:border-r border-white/10 text-foreground inter-med-16 transition-all duration-200 flex items-center gap-2 md:gap-3 hover:text-foreground/50"
-                  >
-                    <Bug
-                      className="w-4 h-4 opacity-60"
-                    />
-                    <span className="inline text-nowrap">Report Bug</span>
-                  </button>
-
-                  <button
-                    onClick={() => navigate("/contact?tab=feature")}
-                    className={`px-0 md:px-3 lg:px-6 py-2 md:py-[10px] text-foreground inter-med-16 transition-all duration-200 flex items-center gap-3 hover:text-foreground/50
-                    `}
-                  >
-                    <Lightbulb
-                      className="w-4 h-4 opacity-60"
-                    />
-                    <span className="inline text-nowrap">
-                      Request a Feature
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="relative w-full lg:w-1/2 h-full z-[1]">
-                <video
-                  src="/videos/flowbitz-tutorial.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="relative w-full z-[1] h-full object-cover"
-                ></video>
-                <div className="absolute top-0 w-full h-full z-[2] pointer-events-none bg-gradient-custom-mobile md:bg-gradient-custom"></div>
-              </div>
-
-              <img
-                src="/images/cta-gradient.webp"
-                alt=""
-                aria-hidden="true"
-                className="absolute hidden md:block top-0 left-0 w-full object-contain z-[2] md:z-[1] pointer-events-none"
-                loading="lazy"
-              />
-
-              <img
-                src="/images/cta-grad-mobile.webp"
-                alt=""
-                aria-hidden="true"
-                className="absolute block md:hidden top-0 right-0 object-contain z-[2] md:z-[1] pointer-events-none"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </section>
-      </div>
+      {visible.length < filtered.length && (
+        <div className="flex justify-center pb-10">
+          <button
+            onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+            className="bg-white rounded-[26px] px-4 text-[15px] leading-8 text-black/60 hover:text-black transition-colors"
+          >
+            Load more
+          </button>
+        </div>
+      )}
     </>
   );
 };

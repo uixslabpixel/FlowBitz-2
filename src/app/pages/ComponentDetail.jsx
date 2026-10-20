@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getComponent } from "../../library/data/componentsMetadata.js";
-import Sidebar from "../components/layout/LeftSidebar.jsx";
+import { PageHeader } from "../components/redesign/AppShell.jsx";
 import ConfigSidebar from "../components/layout/RightSidebar.jsx";
 import SEO from "../components/SEO.jsx";
-import { Button } from "../components/ui/button.jsx";
 import { Copy, RotateCcw, Download, Code, RotateCw } from "lucide-react";
 import { useWebflowBits } from "../hooks/useWebflowBits";
 import { seoPages, jsonLd } from "../content/brandCopy.js";
@@ -272,7 +271,7 @@ const ComponentDetail = () => {
 
   if (!component) {
     return (
-      <div className="bg-background text-foreground pt-[64px] min-h-screen flex items-center justify-center">
+      <div className="text-foreground min-h-[60dvh] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Component Not Found</h1>
           <p className="text-muted-foreground">
@@ -301,7 +300,7 @@ const ComponentDetail = () => {
   );
 
   /* ═══════════════════════════════════════════════════════
-     Main Render — 3 Column Layout
+     Main Render — preview + attribute editor
      ═══════════════════════════════════════════════════════ */
 
   return (
@@ -314,65 +313,41 @@ const ComponentDetail = () => {
         url={`https://www.flowbitz.dev/components/${componentName}`}
         structuredData={structuredData}
       />
-      <div className="bg-background text-foreground h-full overflow-x-hidden overflow-y-scroll">
-        <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-4.5rem)]">
-          {/* ── Column 1: Left Navigation Sidebar (shared) ── */}
-          <Sidebar showBackLink={false} />
-
-          {/* ── Column 2: Center Content (header + preview) ── */}
-          <main className="flex-1 flex flex-col bg-base-medium w-auto lg:w-full rounded items-center my-4 lg:overflow-hidden lg:h-auto">
-            {/* Header */}
-            <div className="w-full max-w-[1440px] pt-2 pb-6 md:pt-2 md:px-2">
-              <div className="flex items-center md:items-start justify-between gap-3 sm:gap-4">
-                <div className="flex flex-col max-w-[278px] md:max-w-none md:gap-2 px-4 py-2 md:p-2 min-w-0">
-                  <h1 className="text-heading-small text-foreground">
-                    {component.name}
-                  </h1>
-                  <p className="text-text-medium text-paragraph truncate">
-                    {component.description}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 px-2 md:px-0 shrink-0">
-                  <Button
-                    onClick={() => navigate("/installation")}
-                    variant="custom"
-                    size="custom"
-                    className="py-[0.625rem] text-link font-medium text-foreground hover:text-primary-blue"
-                  >
-                    <Code className="w-4 h-4 opacity-60" />
-                    <p className="hidden md:block">Installation guide</p>
-                  </Button>
-
-                  <Button
-                    variant="custom"
-                    size="custom"
-                    className="flex flex-col items-center justify-center w-8 h-8 hover:bg-foreground/10 rounded"
-                    onClick={reloadPreview}
-                    title="Reload animation"
-                  >
-                    <RotateCw className="w-4 h-4 opacity-60" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Preview */}
-            <div className="w-full max-w-[1440px] h-full">
-              {renderPreviewContent()}
-            </div>
-          </main>
-
-          {/* ── Column 3: Right Config Sidebar (page-specific) ── */}
-          <ConfigSidebar
-            isMobile={false}
-            component={component}
-            activeAttributes={activeAttributes}
-            attributeValues={attributeValues}
-            onToggleAttribute={handleToggleAttribute}
-            onChangeValue={handleChangeValue}
-          />
+      <PageHeader title={component.name} description={component.description}>
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            onClick={() => navigate("/installation")}
+            className="flex items-center gap-2 px-3 bg-white rounded-[26px] text-[15px] leading-7 text-black/60 hover:text-black transition-colors"
+          >
+            <Code className="w-4 h-4" />
+            Installation guide
+          </button>
+          <button
+            onClick={reloadPreview}
+            title="Reload animation"
+            className="flex items-center gap-2 px-3 bg-white rounded-[26px] text-[15px] leading-7 text-black/60 hover:text-black transition-colors"
+          >
+            <RotateCw className="w-4 h-4" />
+            Replay
+          </button>
         </div>
+      </PageHeader>
+
+      <div className="p-4 lg:p-6 flex flex-col lg:flex-row gap-4 items-stretch">
+        {/* Preview */}
+        <section className="flex-1 min-w-0 bg-white rounded-lg overflow-hidden lg:min-h-[calc(100dvh-140px)] flex">
+          <div className="w-full">{renderPreviewContent()}</div>
+        </section>
+
+        {/* Attribute editor */}
+        <ConfigSidebar
+          isMobile={false}
+          component={component}
+          activeAttributes={activeAttributes}
+          attributeValues={attributeValues}
+          onToggleAttribute={handleToggleAttribute}
+          onChangeValue={handleChangeValue}
+        />
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import {
   Plus,
 } from "lucide-react";
 import SEO from "../components/SEO.jsx";
+import { PageHeader } from "../components/redesign/AppShell.jsx";
 import { seoPages, jsonLd } from "../content/brandCopy.js";
 import Logo from "../components/Logo.jsx";
 import { Button } from "../components/ui/button.jsx";
@@ -365,30 +366,12 @@ const Showcase = () => {
         url="https://www.flowbitz.dev/showcase"
         structuredData={structuredData}
       />
-      <section className="bg-transparent text-foreground min-h-screen relative overflow-hidden">
-        <div className="max-w-[1200px] lg:mx-auto mx-2 relative z-[2] border-x border-foreground/10">
-          {/* Hero Section */}
-          <header
-            wb-component="smart-animate"
-            className="w-full flex flex-col items-center gap-5 md:gap-[1.625rem] py-6 md:py-14 border-b border-foreground/10"
-          >
-            <div className="bg-foreground/10 h-[30px] w-fit px-4 flex items-center justify-center gap-1">
-              <span className="text-link font-medium text-foreground">
-                Made with
-              </span>
-              <Logo className="h-4 w-auto" />
-            </div>
-
-            <h1 className="inter-semi-48 w-2/3 md:w-full text-center text-foreground">
-              Website Showcase
-            </h1>
-
-            <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-              Premium Webflow sites built with FlowBitz—see how freelancers and
-              agencies ship polished motion with the same system.
-            </p>
-          </header>
-          {/* End Hero Section */}
+      <section className="bg-transparent text-foreground relative">
+        <PageHeader
+          title={<>Website Showcase</>}
+          description={<>Premium Webflow sites built with FlowBitz—see how freelancers and agencies ship polished motion with the same system.</>}
+        />
+        <div className="m-4 lg:m-6 bg-white rounded-lg overflow-hidden relative z-[2]">
 
           {/* Showcase Gallery */}
           <div

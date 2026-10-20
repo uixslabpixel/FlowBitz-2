@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs.jsx'
 import { CheckCircle, AlertCircle, Send, Bug, Lightbulb, Mail } from 'lucide-react'
 import SEO from '../components/SEO.jsx'
+import { PageHeader } from "../components/redesign/AppShell.jsx";
 import { seoPages } from '../content/brandCopy.js'
 import Footer from '../components/layout/Footer.jsx'
 
@@ -175,20 +176,12 @@ const Contact = () => {
       />
       
       <section className="bg-transparent text-foreground relative z-[2] overflow-hidden">
-        <div className="mx-2 lg:mx-auto max-w-[1200px] border-x border-foreground/10">
+        <PageHeader
+          title={<>{getFormTitle()}</>}
+          description={<>{getFormDescription()}</>}
+        />
+        <div className="m-4 lg:m-6 bg-white rounded-lg overflow-hidden relative z-[2]">
           <div className="flex flex-col items-center w-full mx-auto border-b border-foreground/10">
-            {/* Header */}
-            <header
-              wb-component="smart-animate"
-              className="w-full flex flex-col items-center gap-5 md:gap-[1.625rem] py-6 md:py-14 border-b border-foreground/10"
-            >
-              <h1 className="inter-semi-48 text-foreground text-center">
-                {getFormTitle()}
-              </h1>
-              <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-                {getFormDescription()}
-              </p>
-            </header>
 
             {/* Form Area */}
             <div className="flex flex-col gap-10 items-center w-full max-w-3xl px-4 py-16">

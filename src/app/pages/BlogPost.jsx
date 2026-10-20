@@ -87,7 +87,7 @@ const BlogPost = () => {
           .join(", ")}
         structuredData={structuredData}
       />
-      <article className="relative z-[2] md:pt-14 pt-10 pb-12 bg-transparent text-foreground max-w-[1200px] mx-auto border-x border-foreground/10">
+      <article className="relative z-[2] m-4 lg:m-6 md:pt-14 pt-10 pb-12 bg-white rounded-lg text-foreground">
         <div
           key={slug}
           wb-component="smart-animate"

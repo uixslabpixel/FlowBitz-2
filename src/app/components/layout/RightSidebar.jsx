@@ -187,7 +187,7 @@ const ConfigSidebar = ({
   };
 
   return (
-    <aside className="lg:w-full mx-4 my-4 p-0 max-w-none w-full lg:max-w-[300px] lg:min-w-[300px] bg-background lg:overflow-y-auto overflow-x-hidden lg:overflow-x-hidden lg:h-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/30">
+    <aside className="w-full lg:max-w-[320px] lg:min-w-[320px] p-6 bg-white rounded-lg lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100dvh-2rem)] lg:overflow-y-auto overflow-x-hidden lg:overflow-x-hidden lg:h-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/30">
       <div className="flex flex-col gap-4 p-0 w-full">
         {/* ── Installation Notes ── */}
         {component.installationNotes && (
@@ -295,7 +295,7 @@ const ConfigSidebar = ({
           </div>
         </section>
 
-        <div className="relative flex flex-col gap-4 px-4 py-6 md:p-6 bg-base-medium rounded overflow-hidden">
+        <div className="relative flex flex-col gap-4 px-4 py-6 md:p-6 bg-[#f0f0f0] rounded-lg overflow-hidden">
           <h4 className="relative z-[2] text-heading-small text-foreground">
             Found an Issue or Have a Suggestion?
           </h4>

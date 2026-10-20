@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HelpCircle, Mail, Heart, Globe } from "lucide-react";
 import { Button } from "../components/ui/button.jsx";
-import Sidebar from "../components/layout/LeftSidebar.jsx";
+import { PageHeader } from "../components/redesign/AppShell.jsx";
 import SEO from "../components/SEO.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { seoPages, jsonLd } from "../content/brandCopy.js";
@@ -54,28 +54,17 @@ const Support = () => {
         url="https://www.flowbitz.dev/support"
         structuredData={structuredData}
       />
-      <div className="bg-background text-foreground h-full overflow-scroll lg:overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-4.5rem)]">
-          {/* Shared Sidebar */}
-          <Sidebar showBackLink={false} />
-
-          {/* Main Content */}
-          <main className="flex flex-col px-2 py-8 gap-8 md:p-6 w-full items-center lg:overflow-y-auto lg:h-full">
-            <div className="w-full max-w-[800px] flex flex-col gap-2">
-              <h1 className="inter-semi-32 installation text-foreground md:pt-4">
-                Support & Help
-              </h1>
-              <p className="text-paragraph large text-text-medium">
-                Documentation, bugs, and feature requests for the FlowBitz motion
-                system—support for serious Webflow creators.
-              </p>
-            </div>
+      <PageHeader
+        title="Support & Help"
+        description="Documentation, bugs, and feature requests for the FlowBitz motion system—support for serious Webflow creators."
+      />
+      <div className="p-4 lg:p-6 flex flex-col gap-8 max-w-[960px]">
 
             <div className="w-full max-w-[800px]">
               {/* Support Options */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4">
                 {/* FAQ */}
-                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-background/40 border border-foreground/10 rounded-[6px]">
+                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-white rounded-lg">
                   <div className="relative z-[2] flex gap-2 items-center py-1.5">
                     <HelpCircle
                       className="w-4 h-4 opacity-60"
@@ -111,7 +100,7 @@ const Support = () => {
                 </div>
 
                 {/* Email Support */}
-                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-background/40 border border-foreground/10 rounded-[6px]">
+                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-white rounded-lg">
                   <div className="relative z-[2] flex gap-2 items-center py-1.5">
                     <Mail
                       className="w-4 h-4 opacity-60"
@@ -147,7 +136,7 @@ const Support = () => {
                 </div>
 
                 {/* GitHub */}
-                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-background/40 border border-foreground/10 rounded-[6px]">
+                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-white rounded-lg">
                   <div className="relative z-[2] flex gap-2 items-center py-1.5">
                     <FontAwesomeIcon
                       icon={["fab", "github"]}
@@ -185,7 +174,7 @@ const Support = () => {
                 </div>
 
                 {/* Support Us */}
-                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-background/40 border border-foreground/10 rounded-[6px]">
+                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-white rounded-lg">
                   <div className="relative z-[2] flex gap-2 items-center py-1.5">
                     <Heart
                       className="w-4 h-4 opacity-60"
@@ -221,7 +210,7 @@ const Support = () => {
                 </div>
 
                 {/* Visit SlabPixel */}
-                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-background/40 border border-foreground/10 rounded-[6px]">
+                <div className="group relative flex flex-col gap-[0.875rem] p-[0.875rem] bg-white rounded-lg">
                   <div className="relative z-[2] flex gap-2 items-center py-1.5">
                     <img
                       src="/images/slabpixel.svg"
@@ -259,8 +248,6 @@ const Support = () => {
                 </div>
               </div>
             </div>
-          </main>
-        </div>
       </div>
     </>
   );

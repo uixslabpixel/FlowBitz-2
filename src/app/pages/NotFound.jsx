@@ -17,11 +17,11 @@ const NotFound = () => {
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/404"
       />
-      <div className="bg-background text-foreground min-h-screen flex items-center justify-center px-4">
+      <div className="text-foreground min-h-[85dvh] flex items-center justify-center px-4 py-12">
       <div className="max-w-2xl mx-auto text-center">
         {/* 404 Illustration */}
         <div className="mb-8">
-          <div className="text-8xl sm:text-9xl font-bold text-primary/20 mb-4">404</div>
+          <div className="text-8xl sm:text-9xl font-bold text-foreground/10 mb-4 font-inter-tight">404</div>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-muted-foreground mx-auto rounded-full"></div>
         </div>
 
@@ -56,7 +56,7 @@ const NotFound = () => {
         </div>
 
         {/* Helpful Links */}
-        <div className="bg-muted/30 rounded-xl p-6 max-w-md mx-auto">
+        <div className="bg-white rounded-lg p-6 max-w-md mx-auto">
           <h3 className="text-lg font-semibold text-foreground mb-4">Maybe you're looking for:</h3>
           <div className="space-y-2">
             <button 
