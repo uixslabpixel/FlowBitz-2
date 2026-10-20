@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getComponent } from "../../library/data/componentsMetadata.js";
 import { PageHeader } from "../components/redesign/AppShell.jsx";
+import { cardThemes } from "../components/redesign/cardThemes.js";
 import ConfigSidebar from "../components/layout/RightSidebar.jsx";
 import SEO from "../components/SEO.jsx";
 import { Copy, RotateCcw, Download, Code, RotateCw } from "lucide-react";
@@ -15,10 +16,14 @@ const ComponentDetail = () => {
   const [copyStates, setCopyStates] = useState({});
   const [activeAttributes, setActiveAttributes] = useState({});
   const [attributeValues, setAttributeValues] = useState({});
+  const [initialValues, setInitialValues] = useState({});
   const { reinitializeComponents } = useWebflowBits();
 
   // Get component metadata
   const component = getComponent(componentName);
+  // Effects with gallery art direction preview the same markup and surface as their card.
+  const theme = cardThemes[componentName];
+  const baseCode = theme?.code || component?.example.code || "";
 
   // Initialize active attributes and values based on example code
   useEffect(() => {
@@ -32,12 +37,12 @@ const ComponentDetail = () => {
         initialAttributes[attr.name] = true;
         initialValues[attr.name] = attr.default;
       } else {
-        const isInExample = component.example.code.includes(attr.name);
+        const isInExample = baseCode.includes(attr.name);
         initialAttributes[attr.name] = isInExample;
 
         // Extract value from example code if present, otherwise use default
         if (isInExample) {
-          const valueMatch = component.example.code.match(
+          const valueMatch = baseCode.match(
             new RegExp(`${attr.name}="([^"]*)"`),
           );
           initialValues[attr.name] = valueMatch ? valueMatch[1] : attr.default;
@@ -49,7 +54,8 @@ const ComponentDetail = () => {
 
     setActiveAttributes(initialAttributes);
     setAttributeValues(initialValues);
-  }, [component]);
+    setInitialValues(initialValues);
+  }, [component, baseCode]);
 
   // Refresh components when active attributes or values change
   useEffect(() => {
@@ -83,44 +89,43 @@ const ComponentDetail = () => {
     }, 100);
   };
 
-  // Generate updated HTML code based on active attributes and values
+  // Generate updated HTML code based on active attributes and values.
+  // Every tag running this effect is rewritten (themed previews can hold several, e.g. the
+  // decrypted-text wall). Each tag keeps its own authored values until the user changes that
+  // attribute in the editor, so per-tag art direction survives the initial render.
   const generateUpdatedCode = () => {
-    const baseCode = component.example.code;
-
-    // Find the element that has wb-component attribute (the actual component element)
-    const componentMatch = baseCode.match(
-      /<(\w+)[^>]*wb-component="[^"]*"[^>]*>/,
+    const componentTags = new RegExp(
+      `<\\w+[^>]*wb-component="${componentName}"[^>]*>`,
+      "g",
     );
 
-    if (componentMatch) {
-      const componentTag = componentMatch[0];
-      const activeAttrList = [];
+    if (componentTags.test(baseCode)) {
+      const name = attributeValues["wb-component"] || componentName;
+      return baseCode.replace(componentTags, (tag) => {
+        let updated = tag;
+        component.attributes.forEach((attr) => {
+          if (attr.name === "wb-component") return;
+          const existing = new RegExp(`\\s${attr.name}="[^"]*"`);
+          const hasAttr = existing.test(updated);
 
-      // Add active attributes with their current values (excluding wb-component)
-      component.attributes.forEach((attr) => {
-        if (activeAttributes[attr.name] && attr.name !== "wb-component") {
+          if (!activeAttributes[attr.name]) {
+            updated = updated.replace(existing, "");
+            return;
+          }
+
           const value = attributeValues[attr.name] || attr.default || "true";
-          activeAttrList.push(`${attr.name}="${value}"`);
-        }
+          if (hasAttr && value === initialValues[attr.name]) return;
+
+          const pair = ` ${attr.name}="${value}"`;
+          updated = hasAttr
+            ? updated.replace(existing, pair)
+            : updated.replace(/\s*>$/, `${pair}>`);
+        });
+        return updated.replace(
+          `wb-component="${componentName}"`,
+          `wb-component="${name}"`,
+        );
       });
-
-      const attributesString =
-        activeAttrList.length > 0 ? " " + activeAttrList.join(" ") : "";
-
-      // Clean up the component tag and add new attributes
-      let cleanTag = componentTag.replace(/wb-[\w-]+="[^"]*"/g, "").trim();
-      if (cleanTag.endsWith(">")) {
-        cleanTag = cleanTag.slice(0, -1);
-      }
-
-      // Always add wb-component attribute
-      cleanTag +=
-        ' wb-component="' +
-        (attributeValues["wb-component"] || componentName) +
-        '"';
-      cleanTag += attributesString + ">";
-
-      return baseCode.replace(componentTag, cleanTag);
     }
 
     // Fallback: use the old method for components without wb-component in example
@@ -193,18 +198,10 @@ const ComponentDetail = () => {
      Render — Preview Content (center column)
      ═══════════════════════════════════════════════════════ */
 
-  const renderPreviewContent = () => {
-    const currentCode = generateUpdatedCode();
-    const wbAttributes = extractWbAttributes(currentCode);
-
-    return (
-      <div
-        className={`relative px-2 md:p-4 sm:p-8 overflow-hidden min-h-[300px] sm:min-h-[400px] lg:min-h-[470px] h-full flex items-center justify-center
-        ${component.category === "background" ? "lg:px-4" : "lg:p-12"}`}
-      >
-        {/* Attributes Pills - Bottom Left */}
-        {wbAttributes.length > 0 && (
-          <div className="absolute bottom-0 left-0 flex flex-wrap gap-2 p-2 sm:p-4  z-10 max-w-none">
+  // Attribute pills, bottom-left of the preview: click a name or value to copy it.
+  const renderAttributePills = (wbAttributes) =>
+    wbAttributes.length > 0 && (
+      <div className="absolute bottom-0 left-0 flex flex-wrap gap-2 p-2 sm:p-4  z-10 max-w-none">
             {wbAttributes.map((attr, attrIndex) => (
               <div
                 key={attrIndex}
@@ -254,7 +251,53 @@ const ComponentDetail = () => {
               </div>
             ))}
           </div>
-        )}
+    );
+
+  const renderPreviewContent = () => {
+    const currentCode = generateUpdatedCode();
+    const wbAttributes = extractWbAttributes(currentCode);
+
+    // Themed effects: the card's surface fills the panel, and the markup renders in a 4:3 stage
+    // fitted inside it (contain). The stage is the same size container as the card, so its
+    // cqw-based art direction lays out 1:1 with the gallery, just larger.
+    if (theme) {
+      return (
+        <div
+          id={`card-${componentName}`}
+          className="relative h-full min-h-[300px] sm:min-h-[400px] overflow-hidden flex items-center justify-center"
+          style={{ backgroundColor: theme.background, containerType: "size" }}
+        >
+          {theme.image && (
+            <img
+              src={theme.image}
+              alt=""
+              aria-hidden="true"
+              className="absolute max-w-none w-[227%] h-[170%] left-[-69%] top-[-3%] origin-top-left -rotate-[5.56deg] object-cover pointer-events-none"
+            />
+          )}
+          <div
+            className="relative aspect-[4/3]"
+            style={{ width: "min(100cqw, 133.333cqh)", containerType: "inline-size" }}
+          >
+            <div
+              key={reloadKey}
+              className={`w-full h-full flex items-center justify-center text-center ${
+                theme.fill ? "" : "p-[5.37cqw]"
+              }`}
+              dangerouslySetInnerHTML={{ __html: currentCode }}
+            />
+          </div>
+          {renderAttributePills(wbAttributes)}
+        </div>
+      );
+    }
+
+    return (
+      <div
+        className={`relative px-2 md:p-4 sm:p-8 overflow-hidden min-h-[300px] sm:min-h-[400px] lg:min-h-[470px] h-full flex items-center justify-center
+        ${component.category === "background" ? "lg:px-4" : "lg:p-12"}`}
+      >
+        {renderAttributePills(wbAttributes)}
 
         <div
           key={reloadKey}
@@ -303,8 +346,10 @@ const ComponentDetail = () => {
      Main Render — preview + attribute editor
      ═══════════════════════════════════════════════════════ */
 
+  // Desktop: the page is exactly one viewport tall. Header takes its natural height, the
+  // preview + editor row fills the rest, and the editor scrolls inside itself.
   return (
-    <>
+    <div className="flex flex-col lg:h-dvh">
       <SEO
         title={pageSeo.title}
         description={pageSeo.description}
@@ -333,9 +378,9 @@ const ComponentDetail = () => {
         </div>
       </PageHeader>
 
-      <div className="p-4 lg:p-6 flex flex-col lg:flex-row gap-4 items-stretch">
+      <div className="p-4 lg:p-6 flex flex-col lg:flex-row gap-4 items-stretch lg:flex-1 lg:min-h-0">
         {/* Preview */}
-        <section className="flex-1 min-w-0 bg-white rounded-lg overflow-hidden lg:min-h-[calc(100dvh-140px)] flex">
+        <section className="flex-1 min-w-0 bg-white rounded-lg overflow-hidden flex">
           <div className="w-full">{renderPreviewContent()}</div>
         </section>
 
@@ -349,7 +394,7 @@ const ComponentDetail = () => {
           onChangeValue={handleChangeValue}
         />
       </div>
-    </>
+    </div>
   );
 };
 
