@@ -1,0 +1,10 @@
+{
+  "name": "Haventlist.",
+  "cover": "/images/templates/haventlist-cover.jpg",
+  "hover": "/images/templates/haventlist-hover.jpg",
+  "price": "$49",
+  "tags": [
+    "Webflow"
+  ],
+  "links": []
+}

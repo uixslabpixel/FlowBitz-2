@@ -6,7 +6,9 @@ const LABEL_LIGHT_MS = 260; // label turns white as the block arrives, not befor
 
 // "Slide" filter chips: one shared black block glides to the active chip and stretches to its
 // width, rounding into a pill while moving and squaring up (2px) when it lands.
-const FilterChips = ({ filters, active, onChange, label }) => {
+// `chipClassName` sets the resting chip background (white on the grey page, grey on white panels);
+// `size="sm"` is the compact variant for panels (same 28px height, smaller text and padding).
+const FilterChips = ({ filters, active, onChange, label, chipClassName = "bg-white", size }) => {
   const chipRefs = useRef({});
   const mounted = useRef(false); // first placement jumps; later changes slide
   const [block, setBlock] = useState(null); // { x, y, w, animate }
@@ -43,7 +45,7 @@ const FilterChips = ({ filters, active, onChange, label }) => {
   }, [active]);
 
   return (
-    <div role="tablist" aria-label={label} className="relative flex flex-wrap gap-1.5">
+    <div role="tablist" aria-label={label} className={`relative flex flex-wrap ${size === "sm" ? "gap-1" : "gap-1.5"}`}>
       {block && (
         <span
           aria-hidden="true"
@@ -68,7 +70,9 @@ const FilterChips = ({ filters, active, onChange, label }) => {
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(filter.id)}
-            className={`relative bg-white rounded-[26px] px-3 text-[15px] leading-7 transition-colors duration-[250ms] ${
+            className={`relative ${chipClassName} rounded-[26px] leading-7 ${
+              size === "sm" ? "px-2 text-[12px]" : "px-3 text-[15px]"
+            } transition-colors [transition-duration:250ms] ${
               isActive ? "font-medium" : ""
             } ${isLit ? "text-white" : "text-black/50 hover:text-black"}`}
           >

@@ -1,0 +1,8 @@
+---
+import Base from "../layouts/Base.astro";
+import PageIsland from "../../app/PageIsland.jsx";
+---
+
+<Base>
+  <PageIsland client:only="react" url={Astro.url.pathname + Astro.url.search} />
+</Base>

@@ -1,0 +1,10 @@
+{
+  "name": "Clarity",
+  "cover": "/images/templates/clarity-cover.jpg",
+  "hover": "/images/templates/clarity-hover.jpg",
+  "price": "$49",
+  "tags": [
+    "Webflow"
+  ],
+  "links": []
+}

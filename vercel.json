@@ -11,6 +11,19 @@
   ],
   "routes": [
     {
+      "src": "/(.*)",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      "continue": true
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
@@ -30,7 +43,6 @@
         "Cache-Control": "public, max-age=86400"
       }
     },
-
     {
       "src": "/manifest.json",
       "dest": "/manifest.json",
@@ -105,19 +117,18 @@
         "Cache-Control": "public, max-age=31536000, immutable"
       }
     },
-    { "handle": "filesystem" },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.+?)/?$",
+      "dest": "/$1/index.html",
+      "check": true
+    },
     {
       "src": "/(.*)",
-      "dest": "/index.html",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept",
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
-        "X-XSS-Protection": "1; mode=block",
-        "Referrer-Policy": "strict-origin-when-cross-origin"
-      }
+      "status": 404,
+      "dest": "/404.html"
     }
   ]
 }

@@ -1,0 +1,10 @@
+{
+  "name": "Nexus",
+  "cover": "/images/templates/nexus-cover.jpg",
+  "hover": "/images/templates/nexus-hover.jpg",
+  "price": "$49",
+  "tags": [
+    "Webflow"
+  ],
+  "links": []
+}

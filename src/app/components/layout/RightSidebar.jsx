@@ -71,11 +71,11 @@ const ConfigSidebar = ({
   const navigate = useNavigate();
 
   const handleBugReport = () => {
-    navigate(`/contact?tab=report&component=${componentName}`);
+    navigate(`?feedback=report&component=${componentName}`);
   };
 
   const handleFeatureRequest = () => {
-    navigate(`/contact?tab=feature&component=${componentName}`);
+    navigate(`?feedback=feature&component=${componentName}`);
   };
 
   /* ─── Render individual input control ─── */

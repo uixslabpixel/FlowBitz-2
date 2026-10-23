@@ -1,0 +1,11 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageIsland from "../../../app/PageIsland.jsx";
+import { getAllPosts } from "../../../app/data/blogPosts.js";
+
+export const getStaticPaths = () => getAllPosts().map(({ slug }) => ({ params: { slug } }));
+---
+
+<Base>
+  <PageIsland client:only="react" url={Astro.url.pathname} />
+</Base>

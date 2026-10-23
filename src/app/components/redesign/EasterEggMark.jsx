@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 // The sidebar's 3x3 pixel mark hides one easter egg per page load (see pickEgg):
 //   glider     — click: one pixel hops, the mark becomes a Game of Life glider and flies off-screen
@@ -137,7 +138,7 @@ async function playGlider(mark, cells) {
     step();
     draw();
   }
-  await canvas.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: "forwards" }).finished;
+  await gsap.to(canvas, { opacity: 0, duration: 0.3 });
   layer.remove();
 }
 
@@ -180,13 +181,11 @@ async function playRain(mark, cells) {
 
   await Promise.all(
     pixels.map((p, k) =>
-      p.el.animate(
-        [
-          { transform: `translate(${p.x}px, ${p.y}px) rotate(${p.rot}deg)` },
-          { transform: `translate(${p.home.x}px, ${p.home.y}px) rotate(0deg)` },
-        ],
-        { duration: 700, delay: k * 70, easing: "cubic-bezier(.65,0,.35,1)", fill: "forwards" },
-      ).finished,
+      gsap.fromTo(
+        p.el,
+        { x: p.x, y: p.y, rotation: p.rot },
+        { x: p.home.x, y: p.home.y, rotation: 0, duration: 0.7, delay: k * 0.07, ease: "power2.inOut" },
+      ),
     ),
   );
   layer.remove();
@@ -245,8 +244,9 @@ async function playTetris(mark) {
   const bar = document.createElement("div");
   bar.style.cssText = `position:absolute;left:${side.left}px;top:${floorY}px;height:${CELL}px;width:0;background:${INK};`;
   layer.appendChild(bar);
-  await bar.animate([{ width: "0px" }, { width: `${side.width}px` }], { duration: 220, easing: "ease-out", fill: "forwards" }).finished;
-  await bar.animate([{ opacity: 1 }, { opacity: 0 }, { opacity: 1 }, { opacity: 0 }, { opacity: 1 }, { opacity: 0 }], { duration: 480, fill: "forwards" }).finished;
+  await gsap.fromTo(bar, { width: 0 }, { width: side.width, duration: 0.22, ease: "power1.out" });
+  // Three hard blinks, ending hidden.
+  await gsap.to(bar, { keyframes: { opacity: [1, 0, 1, 0, 1, 0] }, duration: 0.48, ease: "none" });
   layer.remove();
   await sleep(150);
 }
@@ -267,10 +267,7 @@ async function playScreensaver(mark) {
     if (y <= 0 || y >= H) { vy *= -1; y = Math.max(0, Math.min(H, y)); bounces++; }
     moveTo(sprite, x, y);
   }
-  await sprite.animate(
-    [{ transform: `translate(${x}px, ${y}px)` }, { transform: `translate(${home.left}px, ${home.top}px)` }],
-    { duration: 800, easing: "cubic-bezier(.65,0,.35,1)", fill: "forwards" },
-  ).finished;
+  await gsap.fromTo(sprite, { x, y }, { x: home.left, y: home.top, duration: 0.8, ease: "power2.inOut" });
   layer.remove();
 }
 
@@ -313,11 +310,11 @@ async function playDice(mark, cells) {
   for (let n = 0; n < 12; n++) {
     show(n === 11 ? result : FACES[Math.floor(Math.random() * FACES.length)]);
     rot += 90;
-    mark.animate([{ transform: `rotate(${rot - 90}deg)` }, { transform: `rotate(${rot}deg)` }], { duration: delay, fill: "forwards" });
+    gsap.fromTo(mark, { rotation: rot - 90 }, { rotation: rot, duration: delay / 1000, ease: "none" });
     await sleep(delay);
     delay *= 1.22;
   }
-  await mark.animate([{ transform: "scale(1)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }], { duration: 260 }).finished;
+  await gsap.fromTo(mark, { scale: 1 }, { scale: 1.25, duration: 0.13, ease: "power1.inOut", yoyo: true, repeat: 1 });
   await sleep(1300);
 }
 
@@ -344,10 +341,11 @@ async function playTagAlong(mark, cells) {
   window.removeEventListener("mousemove", onMove);
   await Promise.all(
     chain.map((p, k) =>
-      p.el.animate(
-        [{ transform: `translate(${p.x}px, ${p.y}px)` }, { transform: `translate(${p.home.x}px, ${p.home.y}px)` }],
-        { duration: 650, delay: k * 60, easing: "cubic-bezier(.65,0,.35,1)", fill: "forwards" },
-      ).finished,
+      gsap.fromTo(
+        p.el,
+        { x: p.x, y: p.y },
+        { x: p.home.x, y: p.home.y, duration: 0.65, delay: k * 0.06, ease: "power2.inOut" },
+      ),
     ),
   );
   layer.remove();
@@ -425,10 +423,7 @@ const EasterEggMark = ({ className = "" }) => {
       // Restore the resting mark, then pop it back in.
       cellsRef.current.forEach((c, i) => (c.style.background = PATTERN[i] ? INK : "transparent"));
       mark.style.visibility = "";
-      mark.animate([{ opacity: 0, transform: "scale(.6)" }, { opacity: 1, transform: "scale(1)" }], {
-        duration: 300,
-        easing: "cubic-bezier(.34,1.56,.64,1)",
-      });
+      gsap.fromTo(mark, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)", clearProps: "opacity,transform" });
       busy.current = false;
     }
   };

@@ -1,8 +1,15 @@
 # Pages CMS (https://app.pagescms.org) — edits commit straight to this repo.
 media:
-  input: public/images/tools
-  output: /images/tools
-  extensions: [png, jpg, jpeg, webp, gif, svg]
+  - name: tools
+    label: Tool images
+    input: public/images/tools
+    output: /images/tools
+    extensions: [png, jpg, jpeg, webp, gif, svg]
+  - name: templates
+    label: Template images
+    input: public/images/templates
+    output: /images/templates
+    extensions: [png, jpg, jpeg, webp, gif, svg]
 
 content:
   - name: tools
@@ -24,9 +31,61 @@ content:
         label: Cover
         description: Card image, 4:3 works best.
         type: image
+        options:
+          media: tools
       - name: tags
         label: Tags
         description: Also used as the filter chips on the Tools page.
+        type: string
+        list: true
+      - name: links
+        label: Links
+        description: The first link is where the card opens.
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+            required: true
+          - name: url
+            label: URL
+            type: string
+            required: true
+  - name: templates
+    label: Templates
+    type: collection
+    path: src/app/content/templates
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: name
+      fields: [name, tags]
+      sort: name
+    fields:
+      - name: name
+        label: Name
+        type: string
+        required: true
+      - name: cover
+        label: Cover
+        description: Card image, 4:3 works best.
+        type: image
+        options:
+          media: templates
+      - name: hover
+        label: Hover image
+        description: Fades in over the cover on hover. Optional, same size as the cover.
+        type: image
+        options:
+          media: templates
+      - name: price
+        label: Price
+        description: Shown as a chip beside the name, e.g. $49.
+        type: string
+      - name: tags
+        label: Tags
+        description: Also used as the filter chips on the Templates page.
         type: string
         list: true
       - name: links

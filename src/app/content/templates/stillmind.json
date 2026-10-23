@@ -1,0 +1,10 @@
+{
+  "name": "Stillmind",
+  "cover": "/images/templates/stillmind-cover.jpg",
+  "hover": "/images/templates/stillmind-hover.jpg",
+  "price": "$49",
+  "tags": [
+    "Webflow"
+  ],
+  "links": []
+}

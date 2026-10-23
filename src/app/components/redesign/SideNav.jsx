@@ -2,20 +2,14 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../Logo";
 import EasterEggMark from "./EasterEggMark";
+import { useBugHover, useSquish } from "../../motion/gsap";
 
 // Main sections of the sidebar. `to: null` renders the item as not yet available.
 // `match` lists extra path prefixes that should mark the item as active.
 const PRIMARY_NAV = [
   { label: "Tools", to: "/tools" },
   { label: "Effects", to: "/", match: ["/components"] },
-  { label: "Templates", to: null },
-];
-
-const DOCS_NAV = [
-  { label: "Installation", to: "/installation" },
-  { label: "FAQ", to: "/faq" },
-  { label: "Support", to: "/support" },
-  { label: "Release notes", to: "/release" },
+  { label: "Templates", to: "/templates" },
 ];
 
 const SECONDARY_NAV = [
@@ -148,15 +142,9 @@ const WavyDivider = () => (
 
 const BugIcon = () => (
   <svg viewBox="0 0 24 24" className="w-[17px] h-[15px]" aria-hidden="true">
-    <defs>
-      <linearGradient id="report-bug-gradient" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#4bb7ff" />
-        <stop offset="100%" stopColor="#00ffcc" />
-      </linearGradient>
-    </defs>
     <g
       fill="none"
-      stroke="url(#report-bug-gradient)"
+      stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
     >
@@ -167,26 +155,48 @@ const BugIcon = () => (
   </svg>
 );
 
-const ReportBugButton = () => (
+// Press squishes the button flat and wide; release springs it back (GSAP, see motion/gsap.js).
+const RequestFeatureButton = () => {
+  const ref = useRef(null);
+  useSquish(ref);
+  return (
   <Link
-    to="/contact?tab=report"
-    className="group block w-full rounded-[4px] bg-[#1a0909] p-px transition-shadow duration-300 ease-out hover:shadow-[0_3px_6px_rgba(0,0,0,0.10),0_11px_11px_rgba(0,0,0,0.09),0_24px_14px_rgba(0,0,0,0.05),0_42px_17px_rgba(0,0,0,0.01),0_66px_19px_rgba(0,0,0,0)]"
+    ref={ref}
+    to={{ search: "?feedback=feature" }}
+    className={`block w-full rounded-[4px] bg-[#1a0909] p-px hover:shadow-[0_3px_6px_rgba(0,0,0,0.10),0_11px_11px_rgba(0,0,0,0.09),0_24px_14px_rgba(0,0,0,0.05),0_42px_17px_rgba(0,0,0,0.01),0_66px_19px_rgba(0,0,0,0)]`}
   >
     <span
-      // overflow-hidden: the climbing bug and its thread disappear past the button's top edge.
-      className="flex items-center justify-center gap-2 h-10 overflow-hidden rounded-[3px] text-[15px] leading-7 text-white"
+      className="flex items-center justify-center h-10 rounded-[3px] text-[15px] leading-7 text-white"
       style={{
         border: "1px solid transparent",
         background:
           "linear-gradient(#1a0909, #1a0909) padding-box, linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0)) border-box",
       }}
     >
+      Request Feature
+    </span>
+  </Link>
+  );
+};
+
+const ReportBugButton = () => {
+  const ref = useRef(null);
+  useSquish(ref);
+  useBugHover(ref);
+  return (
+  <Link
+    ref={ref}
+    to={{ search: "?feedback=report" }}
+    className="group block w-full rounded-[4px] p-px"
+  >
+    {/* overflow-hidden: the climbing bug and its thread disappear past the button's top edge. */}
+    <span className="flex items-center justify-center gap-2 h-10 overflow-hidden rounded-[3px] text-[15px] leading-7 text-black">
       {/* Hover: this bug spins a thread and climbs out the top; a second one crawls in below. */}
-      <span className="relative flex w-[17px] h-[15px]">
+      <span className="relative flex w-[17px] h-[15px] opacity-50">
         <span className="bug-climb absolute inset-0 flex">
           <span
             aria-hidden="true"
-            className="bug-silk absolute left-[8px] bottom-[calc(100%-2px)] w-px h-6 origin-bottom scale-y-0 bg-gradient-to-t from-[#4bb7ff] to-[#4bb7ff]/30"
+            className="bug-silk absolute left-[8px] bottom-[calc(100%-2px)] w-px h-6 origin-bottom scale-y-0 bg-gradient-to-t from-black to-black/30"
           />
           <BugIcon />
         </span>
@@ -197,7 +207,8 @@ const ReportBugButton = () => (
       Report Bug
     </span>
   </Link>
-);
+  );
+};
 
 const SideNav = () => {
   const { pathname } = useLocation();
@@ -235,7 +246,7 @@ const SideNav = () => {
           aria-hidden="true"
           className={`hidden lg:block absolute -left-[25px] top-0 w-2 h-2 bg-black ${
             marker.animate
-              ? "transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)]"
+              ? "transition-transform duration-500 [transition-timing-function:cubic-bezier(0.65,0,0.35,1)]"
               : ""
           } ${marker.visible ? "" : "opacity-0"}`}
           style={{
@@ -244,14 +255,10 @@ const SideNav = () => {
         />
         <NavGroup items={PRIMARY_NAV} pathname={pathname} className="py-6" />
         <WavyDivider />
-        <NavGroup items={DOCS_NAV} pathname={pathname} className="pt-6" />
+        <NavGroup items={SECONDARY_NAV} pathname={pathname} className="pt-6" />
 
         <div className="flex flex-col mt-6 lg:mt-auto">
-          <NavGroup
-            items={SECONDARY_NAV}
-            pathname={pathname}
-            className="pb-4"
-          />
+          <RequestFeatureButton />
           <ReportBugButton />
         </div>
       </div>

@@ -1,0 +1,12 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageIsland from "../../../app/PageIsland.jsx";
+import { getFilteredComponentKeys } from "../../../library/data/componentsMetadata.js";
+
+export const getStaticPaths = () =>
+  getFilteredComponentKeys().map((componentName) => ({ params: { componentName } }));
+---
+
+<Base title={`${Astro.params.componentName} | FlowBitz`}>
+  <PageIsland client:only="react" url={Astro.url.pathname} />
+</Base>

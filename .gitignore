@@ -38,3 +38,6 @@ out/
 .sdd/
 specs/
 .env*
+
+# Astro generated types
+.astro

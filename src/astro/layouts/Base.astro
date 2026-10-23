@@ -1,0 +1,72 @@
+---
+import "@fontsource-variable/inter";
+import "../../app/styles/tailwind.css";
+
+const {
+  title = "FlowBitz — Premium UI Motion System for Webflow",
+  description = "Ship premium text, hover, and scroll motion in Webflow. Attribute-based motion system powered by GSAP—free core library, built for serious creators.",
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-256.png" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="SlabPixel Studio" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="FlowBitz" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@slabpixel" />
+    <meta name="twitter:site" content="@slabpixel" />
+    <meta name="theme-color" content="#f0f0f0" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- The wb-component library reads GSAP and its plugins from window. -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/SplitText.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrambleTextPlugin.min.js"></script>
+    <script is:inline>
+      if (window.gsap) {
+        if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+        if (window.SplitText) gsap.registerPlugin(SplitText);
+        if (window.ScrambleTextPlugin) gsap.registerPlugin(ScrambleTextPlugin);
+      }
+    </script>
+
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HG2WWR04WH"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag("js", new Date());
+      gtag("config", "G-HG2WWR04WH");
+    </script>
+  </head>
+  <body>
+    <div id="root"><slot /></div>
+  </body>
+</html>

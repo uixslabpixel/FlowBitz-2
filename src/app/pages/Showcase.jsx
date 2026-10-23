@@ -4,11 +4,13 @@ import {
   CheckCircle,
   AlertCircle,
   ArrowRight,
-  ChevronDown,
   Plus,
 } from "lucide-react";
 import SEO from "../components/SEO.jsx";
 import { PageHeader } from "../components/redesign/AppShell.jsx";
+import ToolCard from "../components/redesign/ToolCard.jsx";
+import { useStaggerIn } from "../components/redesign/useStaggerIn.js";
+import { useSquish } from "../motion/gsap.js";
 import { seoPages, jsonLd } from "../content/brandCopy.js";
 import Logo from "../components/Logo.jsx";
 import { Button } from "../components/ui/button.jsx";
@@ -16,7 +18,139 @@ import { Input } from "../components/ui/input.jsx";
 import { Modal } from "../components/ui/modal.jsx";
 import { componentsMetadata } from "../../library/data/componentsMetadata.js";
 
-const ITEMS_PER_PAGE = 15;
+// Ghost site card behind the "Showcase your site" button; springs out with a slight overshoot.
+const GHOST =
+  "absolute inset-0 rounded-md bg-[#f3f3f3] border border-black/10 transition-transform [transition-duration:450ms] [transition-timing-function:cubic-bezier(.34,1.56,.64,1)]";
+
+const SHOWCASE_PROJECTS = [
+  {
+    name: "Lunet",
+    url: "https://lunets.webflow.io/",
+    image: "/showcase/lunet.webp",
+    description: "Fashion & Lifestyle",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Alexandria AI",
+    url: "https://alexandria-ai.webflow.io/",
+    image: "/showcase/alexandria.webp",
+    description: "AI Agentic Platform",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Asgard",
+    url: "https://asgard-slabpixel.webflow.io/",
+    image: "/showcase/asgard.webp",
+    description: "Construction Management",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Soun AI",
+    url: "https://soun-ai.webflow.io/",
+    image: "/showcase/soun.webp",
+    description: "Personal AI Assistant",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Finguard",
+    url: "https://finguard-e89d5c.webflow.io/",
+    image: "/showcase/finguard.webp",
+    description: "Finance Application",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "LOUD Fest",
+    url: "https://loud-fest.webflow.io/",
+    image: "/showcase/loud.webp",
+    description: "Music and Art Festival",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Vallen Angel",
+    url: "https://vallenangel.webflow.io/",
+    image: "/showcase/vallen.webp",
+    description: "Fashion & Lifestyle",
+    components: ["Split Text", "Smart Animate"],
+  },
+  // Covers below still point at slabpixel.dev, where the files are missing (404).
+  {
+    name: "SlabPixel",
+    url: "https://slabpixel.com",
+    image: "https://slabpixel.dev/images/slabpixel.webp",
+    description: "Creative Digital Studio",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Neuera",
+    url: "https://neuera.webflow.io",
+    image: "https://slabpixel.dev/images/neuera.webp",
+    description: "AI-powered Solutions",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Whispr",
+    url: "https://whisprrr.webflow.io",
+    image: "https://slabpixel.dev/images/whispr.webp",
+    description: "Communication Platform",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Quantra AI",
+    url: "https://quantra-ai.webflow.io",
+    image: "https://slabpixel.dev/images/quantra.webp",
+    description: "Quantum AI Technology",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Mavence",
+    url: "https://mavencee.webflow.io",
+    image: "https://slabpixel.dev/images/mavence.webp",
+    description: "Business Solutions",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Formahaus",
+    url: "https://formahaus.webflow.io",
+    image: "https://slabpixel.dev/images/formahaus.webp",
+    description: "Design & Architecture",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Vexum",
+    url: "https://vexum.webflow.io",
+    image: "https://slabpixel.dev/images/vexum.webp",
+    description: "WEB3 & Finance",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Langford",
+    url: "https://llangford.webflow.io",
+    image: "https://slabpixel.dev/images/langford.webp",
+    description: "Fashion & Lifestyle",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Stagetimer",
+    url: "https://stagetimer.webflow.io",
+    image: "https://slabpixel.dev/images/stagetimer.webp",
+    description: "Tools & Management",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Art-Doc",
+    url: "https://art-doc.webflow.io",
+    image: "https://slabpixel.dev/images/artdoc.webp",
+    description: "Art & Culture",
+    components: ["Split Text", "Smart Animate"],
+  },
+  {
+    name: "Swiftmate",
+    url: "https://swftmate.webflow.io",
+    image: "https://slabpixel.dev/images/swiftmate.webp",
+    description: "Finance Application",
+    components: ["Split Text", "Smart Animate"],
+  },
+];
 
 const componentNames = Object.values(componentsMetadata).map((c) => c.name);
 
@@ -169,7 +303,11 @@ const ComponentAutocomplete = ({ selected = [], onChange }) => {
 };
 
 const Showcase = () => {
-  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  const gridRef = useRef(null);
+  useStaggerIn(gridRef);
+  const submitCardRef = useRef(null);
+  const submitIconRef = useRef(null);
+  useSquish(submitIconRef, submitCardRef);
   const [modalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
@@ -225,134 +363,6 @@ const Showcase = () => {
     setModalOpen(true);
   };
 
-  const showcaseProjects = [
-    {
-      name: "SlabPixel",
-      url: "https://slabpixel.com",
-      image: "https://slabpixel.dev/images/slabpixel.webp",
-      description: "Creative Digital Studio",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Neuera",
-      url: "https://neuera.webflow.io",
-      image: "https://slabpixel.dev/images/neuera.webp",
-      description: "AI-powered Solutions",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Whispr",
-      url: "https://whisprrr.webflow.io",
-      image: "https://slabpixel.dev/images/whispr.webp",
-      description: "Communication Platform",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Quantra AI",
-      url: "https://quantra-ai.webflow.io",
-      image: "https://slabpixel.dev/images/quantra.webp",
-      description: "Quantum AI Technology",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Mavence",
-      url: "https://mavencee.webflow.io",
-      image: "https://slabpixel.dev/images/mavence.webp",
-      description: "Business Solutions",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Formahaus",
-      url: "https://formahaus.webflow.io",
-      image: "https://slabpixel.dev/images/formahaus.webp",
-      description: "Design & Architecture",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Vexum",
-      url: "https://vexum.webflow.io",
-      image: "https://slabpixel.dev/images/vexum.webp",
-      description: "WEB3 & Finance",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Langford",
-      url: "https://llangford.webflow.io",
-      image: "https://slabpixel.dev/images/langford.webp",
-      description: "Fashion & Lifestyle",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Stagetimer",
-      url: "https://stagetimer.webflow.io",
-      image: "https://slabpixel.dev/images/stagetimer.webp",
-      description: "Tools & Management",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Art-Doc",
-      url: "https://art-doc.webflow.io",
-      image: "https://slabpixel.dev/images/artdoc.webp",
-      description: "Art & Culture",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Swiftmate",
-      url: "https://swftmate.webflow.io",
-      image: "https://slabpixel.dev/images/swiftmate.webp",
-      description: "Finance Application",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Lunet",
-      url: "https://lunets.webflow.io/",
-      image: "/showcase/lunet.webp",
-      description: "Fashion & Lifestyle",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Alexandria AI",
-      url: "https://alexandria-ai.webflow.io/",
-      image: "/showcase/alexandria.webp",
-      description: "AI Agentic Platform",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Asgard",
-      url: "https://asgard-slabpixel.webflow.io/",
-      image: "/showcase/asgard.webp",
-      description: "Construction Management",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Soun AI",
-      url: "https://soun-ai.webflow.io/",
-      image: "/showcase/soun.webp",
-      description: "Personal AI Assistant",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Finguard",
-      url: "https://finguard-e89d5c.webflow.io/",
-      image: "/showcase/finguard.webp",
-      description: "Finance Application",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "LOUD Fest",
-      url: "https://loud-fest.webflow.io/",
-      image: "/showcase/loud.webp",
-      description: "Music and Art Festival",
-      components: ["Split Text", "Smart Animate"],
-    },
-    {
-      name: "Vallen Angel",
-      url: "https://vallenangel.webflow.io/",
-      image: "/showcase/vallen.webp",
-      description: "Fashion & Lifestyle",
-      components: ["Split Text", "Smart Animate"],
-    },
-  ];
 
   const structuredData = jsonLd.showcase;
 
@@ -366,97 +376,49 @@ const Showcase = () => {
         url="https://www.flowbitz.dev/showcase"
         structuredData={structuredData}
       />
-      <section className="bg-transparent text-foreground relative">
-        <PageHeader
-          title={<>Website Showcase</>}
-          description={<>Premium Webflow sites built with FlowBitz—see how freelancers and agencies ship polished motion with the same system.</>}
-        />
-        <div className="m-4 lg:m-6 bg-white rounded-lg overflow-hidden relative z-[2]">
+      <PageHeader title="Website Showcase" />
 
-          {/* Showcase Gallery */}
-          <div
-            wb-component="smart-animate"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border-t border-l border-foreground/10"
-          >
-            {showcaseProjects.slice(0, visibleCount).map((project, index) => (
-              <a
-                key={index}
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative p-4 overflow-hidden transition-all duration-300 border-r border-b border-foreground/10"
-              >
-                {/* Image Container */}
-                <div className="relative aspect-video overflow-hidden bg-muted">
-                  <img
-                    src={project.image}
-                    alt={project.name}
-                    className="w-full h-fit object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  {/* Overlay on hover */}
-                  <div className="absolute flex items-end h-full bottom-0 w-full bg-gradient-to-t from-black/70 to-transparent opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="flex w-full items-center p-2 gap-4 text-white">
-                      {/* <div className="w-[90%] hide-scrollbar overflow-x-scroll flex flex-nowrap lg:flex-wrap gap-2">
-                        {project.components.map((component, index) => (
-                          <div
-                            key={index}
-                            className="text-attribute text-foreground rounded px-2.5 py-1.5 bg-base-low/50 text-nowrap"
-                          >
-                            {component}
-                          </div>
-                        ))}
-                      </div> */}
-
-                      <ArrowRight className="ml-auto w-5 h-5 -rotate-45" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="pt-4">
-                  <h3 className="text-link font-medium text-foreground">
-                    {project.name} - {project.description}
-                  </h3>
-                </div>
-
-                {/* Decorative corner gradient */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-2xl"></div>
-              </a>
-            ))}
-
-            <button
-              type="button"
-              onClick={openModal}
-              className="group relative flex flex-col overflow-hidden text-left transition-all duration-300 border-r border-b border-foreground/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      <section
+        ref={gridRef}
+        className="p-4 lg:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+      >
+        {/* Same card frame as the gallery, opening the submit form instead of a link. */}
+        <button
+          ref={submitCardRef}
+          type="button"
+          onClick={openModal}
+          className="group relative aspect-[4/3] rounded-lg overflow-hidden bg-white text-black flex flex-col items-center justify-center gap-6 p-6 text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {/* Two blank site cards behind the button fan out on hover: "your site joins the gallery". */}
+          <span className="relative w-[180px] h-[135px]">
+            <span className={`${GHOST} -rotate-6 -translate-x-2.5 group-hover:-rotate-[14deg] group-hover:-translate-x-12 group-hover:translate-y-1.5 group-focus-visible:-rotate-[14deg] group-focus-visible:-translate-x-12`} />
+            <span className={`${GHOST} rotate-[5deg] translate-x-2.5 group-hover:rotate-[12deg] group-hover:translate-x-12 group-hover:translate-y-1.5 group-focus-visible:rotate-[12deg] group-focus-visible:translate-x-12`} />
+          {/* Same chrome as the sidebar's Request Feature button; pressing anywhere on the card squishes it. */}
+          <span ref={submitIconRef} className="absolute left-1/2 top-1/2 -ml-[25px] -mt-[25px] block rounded-full bg-[#1a0909] p-px group-hover:shadow-[0_3px_6px_rgba(0,0,0,0.10),0_11px_11px_rgba(0,0,0,0.09),0_24px_14px_rgba(0,0,0,0.05),0_42px_17px_rgba(0,0,0,0.01),0_66px_19px_rgba(0,0,0,0)]">
+            <span
+              className="flex h-12 w-12 items-center justify-center rounded-full text-white"
+              style={{
+                border: "1px solid transparent",
+                background:
+                  "linear-gradient(#1a0909, #1a0909) padding-box, linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0)) border-box",
+              }}
             >
-              <div className="relative h-full aspect-video overflow-hidden bg-muted">
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-base-medium/90 p-6 transition-colors duration-300 group-hover:bg-base-medium">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground/10 text-foreground transition-transform duration-300 group-hover:scale-105">
-                    <Plus className="h-6 w-6" strokeWidth={2} />
-                  </span>
-                  <span className="inter-semi-24 text-foreground">Add your site</span>
-                  <span className="inter-reg-18 text-text-medium text-center max-w-[240px]">
-                    Submit your project to appear in the showcase
-                  </span>
-                </div>
-              </div>
-            </button>
-          </div>
+              <Plus className="h-5 w-5" strokeWidth={2} />
+            </span>
+          </span>
+          </span>
+          <span className="text-[15px] leading-7">Showcase your site</span>
+        </button>
 
-          {/* Load More */}
-          {visibleCount < showcaseProjects.length && (
-            <div className="flex justify-center pt-12 md:pt-8">
-              <button
-                onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
-                className="flex items-center gap-2 px-6 py-3 border border-foreground/10 rounded text-foreground hover:text-foreground/70 transition-colors duration-200"
-              >
-                <span className="text-sm font-medium">Load More</span>
-                <ChevronDown className="w-4 h-4 opacity-60" />
-              </button>
-            </div>
-          )}
-        </div>
+        {SHOWCASE_PROJECTS.map((project) => (
+          <ToolCard
+            key={project.name}
+            name={project.name}
+            cover={project.image}
+            price={project.description}
+            links={[{ url: project.url }]}
+          />
+        ))}
       </section>
 
       {/* Submit Modal */}

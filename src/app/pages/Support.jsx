@@ -15,15 +15,15 @@ const Support = () => {
   };
 
   const handleBugReport = () => {
-    navigate("/contact?tab=report");
+    navigate("?feedback=report");
   };
 
   const handleFeatureRequest = () => {
-    navigate("/contact?tab=feature");
+    navigate("?feedback=feature");
   };
 
   const handleEmail = () => {
-    navigate("/contact");
+    navigate("?feedback=contact");
   };
 
   const handleGitHub = () => {

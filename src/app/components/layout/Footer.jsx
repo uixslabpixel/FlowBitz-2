@@ -147,7 +147,7 @@ const Footer = ({ onScrollToTop }) => {
                 FAQ
               </button>
               <button
-                onClick={() => handleNavigation("/contact?tab=contact")}
+                onClick={() => handleNavigation("?feedback=contact")}
                 className="inter-reg-16 opacity-80 text-foreground hover:opacity-100"
               >
                 Contact
@@ -178,13 +178,13 @@ const Footer = ({ onScrollToTop }) => {
                 Release notes
               </button>
               <button
-                onClick={() => handleNavigation("/contact?tab=report")}
+                onClick={() => handleNavigation("?feedback=report")}
                 className="inter-reg-16 opacity-80 text-foreground hover:opacity-100"
               >
                 Report bug
               </button>
               <button
-                onClick={() => handleNavigation("/contact?tab=feature")}
+                onClick={() => handleNavigation("?feedback=feature")}
                 className="inter-reg-16 opacity-80 text-foreground hover:opacity-100"
               >
                 Feature request

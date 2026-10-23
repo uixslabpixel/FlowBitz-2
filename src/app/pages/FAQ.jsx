@@ -200,7 +200,7 @@ const FAQ = () => {
   };
 
   const handleContactSupport = () => {
-    navigate("/contact?tab=contact");
+    navigate("?feedback=contact");
   };
 
   const structuredData = {

@@ -1,4 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import { useShimmer } from '../../motion/gsap'
+
+const Shimmer = () => {
+  const ref = useRef(null)
+  useShimmer(ref)
+  return <span ref={ref} className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+}
 
 /**
  * PreviewRenderer - Renders placeholder previews for each component type
@@ -45,7 +52,7 @@ const PreviewRenderer = ({ componentId, componentName }) => {
         return (
           <span className="text-3xl font-bold text-primary relative overflow-hidden">
             Shiny Text
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+            <Shimmer />
           </span>
         )
 

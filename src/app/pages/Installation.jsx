@@ -22,7 +22,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
+import tomorrow from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow.js";
 import { useNavigate } from "react-router-dom";
 import { seoPages } from "../content/brandCopy.js";
 
