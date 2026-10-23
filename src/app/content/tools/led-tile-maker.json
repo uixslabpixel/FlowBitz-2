@@ -1,0 +1,8 @@
+{
+  "name": "LED Tile Maker",
+  "cover": "/images/tools/pixel-mosaic.jpg",
+  "tags": ["Tools"],
+  "links": [
+    { "label": "Open tool", "url": "https://led-tile-maker.vercel.app/" }
+  ]
+}
