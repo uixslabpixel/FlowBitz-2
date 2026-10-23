@@ -12,8 +12,16 @@ const TOOLS = Object.values(
 
 // Filter chips come from the tags editors set in the CMS.
 const buildFilters = (tools) => {
-  // TODO(human): return [{ id, label }, ...] chips for the tools' tags, starting with "All".
-  return [{ id: "all", label: "All" }];
+  // Case-insensitive: "Shaders" and "shaders" are one chip, labelled with the first spelling seen.
+  const tags = new Map();
+  tools.forEach((t) =>
+    t.tags?.forEach((tag) => {
+      const id = tag.trim().toLowerCase();
+      if (id && !tags.has(id)) tags.set(id, tag.trim());
+    }),
+  );
+  const chips = [...tags].map(([id, label]) => ({ id, label })).sort((a, b) => a.label.localeCompare(b.label));
+  return [{ id: "all", label: "All" }, ...chips];
 };
 
 const Tools = () => {
