@@ -364,12 +364,13 @@ const useShyPixels = (enabled, cellsRef) => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const cells = cellsRef.current;
+        // Measure from the untransformed grid: a cell's own rect is mid-transition while it
+        // springs, so subtracting its target offset gives the wrong resting spot (jitter).
+        const g = cells[0].parentElement.getBoundingClientRect();
         let any = false;
         cells.forEach((c, i) => {
           if (!PATTERN[i]) return;
-          const b = c.getBoundingClientRect();
-          // Measure from the cell's resting spot, not its pushed position.
-          const cx = b.left + CELL / 2 - (c._dx || 0), cy = b.top + CELL / 2 - (c._dy || 0);
+          const cx = g.left + (i % 3) * CELL + CELL / 2, cy = g.top + Math.floor(i / 3) * CELL + CELL / 2;
           const dx = cx - e.clientX, dy = cy - e.clientY, d = Math.hypot(dx, dy) || 1;
           const f = d < R ? (1 - d / R) * PUSH : 0;
           c._dx = (dx / d) * f;
@@ -381,6 +382,8 @@ const useShyPixels = (enabled, cellsRef) => {
       });
     };
     const onLeave = () => {
+      // A queued frame would re-push the cells after we reset them.
+      cancelAnimationFrame(frame);
       if (!displaced) return;
       cellsRef.current.forEach((c) => {
         c._dx = c._dy = 0;
