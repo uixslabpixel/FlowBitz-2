@@ -1,0 +1,8 @@
+{
+  "name": "Banknote Engraver",
+  "cover": "/images/tools/halftone-duotone.jpg",
+  "tags": ["Shaders"],
+  "links": [
+    { "label": "Open tool", "url": "https://banknote-engraver.vercel.app/" }
+  ]
+}
