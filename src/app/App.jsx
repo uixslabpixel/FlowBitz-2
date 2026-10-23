@@ -4,6 +4,7 @@ import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "./components/ScrollToTop";
 import AppShell from "./components/redesign/AppShell";
 import Home from "./pages/Home";
+import Tools from "./pages/Tools";
 import ComponentDetail from "./pages/ComponentDetail";
 import Installation from "./pages/Installation";
 import About from "./pages/About";
@@ -29,6 +30,7 @@ function App() {
           {/* The effects gallery replaced the separate components index. */}
           <Route path="/components" element={<Home />} />
           <Route path="/components/:componentName" element={<ComponentDetail />} />
+          <Route path="/tools" element={<Tools />} />
           <Route path="/installation" element={<Installation />} />
           <Route path="/about" element={<About />} />
           <Route path="/support" element={<Support />} />

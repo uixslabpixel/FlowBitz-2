@@ -5,9 +5,8 @@ import EasterEggMark from "./EasterEggMark";
 
 // Main sections of the sidebar. `to: null` renders the item as not yet available.
 // `match` lists extra path prefixes that should mark the item as active.
-// TODO(human): decide where "Tools" and "Templates" should go (or keep them unlinked).
 const PRIMARY_NAV = [
-  { label: "Tools", to: null },
+  { label: "Tools", to: "/tools" },
   { label: "Effects", to: "/", match: ["/components"] },
   { label: "Templates", to: null },
 ];
