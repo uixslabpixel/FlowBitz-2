@@ -16,7 +16,7 @@ import {
   Mail,
   Sparkles,
 } from "lucide-react";
-import Sidebar from "../components/layout/LeftSidebar.jsx";
+import { PageHeader } from "../components/redesign/AppShell.jsx";
 import SEO from "../components/SEO.jsx";
 import { useNavigate } from "react-router-dom";
 import { seoPages, jsonLd } from "../content/brandCopy.js";
@@ -225,22 +225,11 @@ const FAQ = () => {
         url="https://www.flowbitz.dev/faq"
         structuredData={structuredData}
       />
-      <div className="bg-background text-foreground h-full overflow-scroll lg:overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-4.5rem)]">
-          {/* Shared Sidebar */}
-          <Sidebar showBackLink={false} />
-
-          {/* Main Content */}
-          <main className="flex flex-col px-2 py-8 gap-8 md:p-6 w-full items-center lg:overflow-y-auto lg:h-full">
-            <div className="w-full max-w-[800px] flex flex-col gap-2">
-              <h1 className="inter-semi-32 installation text-foreground pt-4">
-                Frequently Asked Questions
-              </h1>
-              <p className="text-paragraph large text-text-medium">
-                Help with installing FlowBitz, wb-* attributes, performance, and
-                troubleshooting—built for serious Webflow creators.
-              </p>
-            </div>
+      <PageHeader
+        title="Frequently Asked Questions"
+        description="Help with installing FlowBitz, wb-* attributes, performance, and troubleshooting—built for serious Webflow creators."
+      />
+      <div className="p-4 lg:p-6 flex flex-col gap-8 max-w-[960px]">
 
             <div className="w-full max-w-[800px]">
               {/* FAQ Items */}
@@ -360,8 +349,6 @@ const FAQ = () => {
                 loading="lazy"
               />
             </div>
-          </main>
-        </div>
       </div>
     </>
   );

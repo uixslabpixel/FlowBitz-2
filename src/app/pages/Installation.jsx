@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import Sidebar from "../components/layout/LeftSidebar.jsx";
+import { PageHeader } from "../components/redesign/AppShell.jsx";
 import SEO from "../components/SEO.jsx";
 import { Button } from "../components/ui/button.jsx";
 import {
@@ -124,22 +124,11 @@ const Installation = () => {
         url="https://www.flowbitz.dev/installation"
         structuredData={structuredData}
       />
-      <div className="bg-background text-foreground h-full overflow-scroll lg:overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-4.5rem)]">
-          {/* Shared Sidebar */}
-          <Sidebar />
-
-          {/* Main Content */}
-          <main className="flex flex-col px-2 py-8 md:p-6 gap-8 w-full items-center overflow-scroll lg:h-full">
-            <div className="w-full max-w-[800px] flex flex-col gap-2">
-              <h1 className="inter-semi-32 installation text-foreground">
-                Installation Guide
-              </h1>
-              <p className="text-paragraph large text-text-medium">
-                Add FlowBitz to your Webflow project—one script, wb-* attributes,
-                premium motion on your next build.
-              </p>
-            </div>
+      <PageHeader
+        title="Installation Guide"
+        description="Add FlowBitz to your Webflow project—one script, wb-* attributes, premium motion on your next build."
+      />
+      <div className="p-4 lg:p-6 flex flex-col gap-8 max-w-[960px]">
 
             {/* Installation Steps */}
             <div className="w-full max-w-[800px] flex flex-col gap-4 md:py-6">
@@ -151,7 +140,7 @@ const Installation = () => {
                   </div>
                   <div className="flex-1 w-px bg-foreground/20 mt-4" />
                 </div>
-                <div className="flex-1 p-4 border border-foreground/10 rounded-lg flex flex-col gap-2">
+                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
                   <h2 className="text-heading-small text-foreground my-1">
                     Adding FlowBitz Script
                   </h2>
@@ -225,7 +214,7 @@ const Installation = () => {
                   </div>
                   <div className="flex-1 w-px bg-foreground/20 mt-4" />
                 </div>
-                <div className="flex-1 p-4 border border-foreground/10 rounded-lg flex flex-col gap-2">
+                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
                   <h2 className="text-heading-small text-foreground my-1">
                     Adding FlowBitz Component
                   </h2>
@@ -314,7 +303,7 @@ const Installation = () => {
                   </div>
                   <div className="flex-1 w-px bg-foreground/20 mt-4" />
                 </div>
-                <div className="flex-1 p-4 border border-foreground/10 rounded-lg flex flex-col gap-2">
+                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
                   <h2 className="text-heading-small text-foreground my-1">
                     Customize with Attributes
                   </h2>
@@ -360,7 +349,7 @@ const Installation = () => {
                     4
                   </div>
                 </div>
-                <div className="flex-1 p-4 border border-foreground/10 rounded-lg flex flex-col gap-2">
+                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
                   <h2 className="text-heading-small text-foreground my-1">
                     Publish Your Site
                   </h2>
@@ -421,8 +410,6 @@ const Installation = () => {
                 ))}
               </div>
             </div>
-          </main>
-        </div>
       </div>
     </>
   );

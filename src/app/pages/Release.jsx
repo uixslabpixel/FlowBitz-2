@@ -1,8 +1,8 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
-import Logo from "../components/Logo.jsx";
 import Footer from "../components/layout/Footer";
 import SEO from "../components/SEO.jsx";
+import { PageHeader } from "../components/redesign/AppShell.jsx";
 import { seoPages } from "../content/brandCopy.js";
 
 const Release = () => {
@@ -161,22 +161,12 @@ const Release = () => {
                 url="https://www.flowbitz.dev/release"
                 structuredData={structuredData}
             />
-            <section className="bg-transparent text-foreground min-h-screen relative overflow-hidden">
-                <div className="max-w-[1200px] lg:mx-auto mx-2 relative z-[2] border-x border-foreground/10">
-                    {/* Hero */}
-                    <header
-                        wb-component="smart-animate"
-                        className="w-full flex flex-col items-center gap-5 md:gap-[1.625rem] py-6 md:py-14 border-b border-foreground/10"
-                    >
-
-                        <h1 className="inter-semi-48 w-2/3 md:w-full text-center text-foreground">
-                            Release Notes
-                        </h1>
-
-                        <p className="inter-reg-18 text-text-medium text-center px-4 md:px-0 max-w-[99%] md:max-w-[770px]">
-                            Version history for the FlowBitz motion system—what shipped, what improved, and what matters for your Webflow builds.
-                        </p>
-                    </header>
+            <section className="bg-transparent text-foreground relative">
+                <PageHeader
+                  title={<>Release Notes</>}
+                  description={<>Version history for the FlowBitz motion system—what shipped, what improved, and what matters for your Webflow builds.</>}
+                />
+                <div className="m-4 lg:m-6 bg-white rounded-lg overflow-hidden relative z-[2]">
 
                     {/* Release Timeline */}
                     <div className="py-12 md:py-16 px-4 md:px-0 border-b border-foreground/10">

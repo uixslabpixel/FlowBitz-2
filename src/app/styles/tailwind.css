@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500&display=swap");
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@500&display=swap");
 
 @font-face {
   font-family: "InterVariable";
@@ -14,31 +16,32 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Redesign palette (light): page #f0f0f0, white surfaces, black ink. */
+    --background: 0 0% 94%;
     --foreground: 0 0% 0%;
-    --not-background: 240, 10%, 4%;
-    --base-high: 39 39 42;
-    --base-medium: 24 24 27;
-    --base-low: 9 9 11;
-    --text-medium: 212 212 216;
+    --not-background: 0 0% 0%;
+    --base-high: 240 240 240;
+    --base-medium: 255 255 255;
+    --base-low: 232 232 232;
+    --text-medium: 82 82 91;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 0%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 215 100% 52%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 218 100% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --text-low: 0, 0%, 0%;
-    --ring: 215 100% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 0% / 0.08;
+    --input: 0 0% 0% / 0.1;
+    --text-low: 0, 0%, 45%;
+    --ring: 218 100% 52%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -50,13 +53,13 @@
     --primary-color: #0b64ff;
     --secondary-color: #764ba2;
     --accent-color: #f0932b;
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --text-muted: #666666;
-    --bg-primary: #0a0a0a;
-    --bg-secondary: #1a1a1a;
-    --bg-tertiary: #2a2a2a;
-    --border-color: #333333;
+    --text-primary: #000000;
+    --text-secondary: #6b6b6b;
+    --text-muted: #8a8a8a;
+    --bg-primary: #f0f0f0;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e8e8e8;
+    --border-color: rgba(0, 0, 0, 0.08);
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
     --gradient-primary: linear-gradient(
@@ -417,6 +420,35 @@ body {
   animation: shimmer 2s infinite;
 }
 
+/* Report Bug button (sidebar): on hover the bug shoots a silk thread up, climbs it out of the
+   button, and a fresh bug crawls in from below. One 1s timeline shared by all three parts. */
+@keyframes bug-silk {
+  0% { transform: scaleY(0); }
+  28%, 100% { transform: scaleY(1); }
+}
+
+@keyframes bug-climb {
+  0%, 28% { transform: translateY(0); }
+  34% { transform: translateY(1.5px); } /* crouch before the climb */
+  70%, 100% { transform: translateY(-36px); }
+}
+
+@keyframes bug-arrive {
+  0%, 58% { transform: translateY(30px); }
+  88% { transform: translateY(-1.5px); }
+  100% { transform: translateY(0); }
+}
+
+.group:hover .bug-silk { animation: bug-silk 1s cubic-bezier(0.3, 0, 0.2, 1) forwards; }
+.group:hover .bug-climb { animation: bug-climb 1s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+.group:hover .bug-arrive { animation: bug-arrive 1s cubic-bezier(0.3, 0, 0.2, 1) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .bug-silk,
+  .group:hover .bug-climb,
+  .group:hover .bug-arrive { animation: none; }
+}
+
 /* Ensure proper touch scrolling on mobile */
 @media (max-width: 768px) {
   body {
@@ -580,3 +612,4 @@ pre code .value {
     color: hsl(var(--primary));
   }
 }
+

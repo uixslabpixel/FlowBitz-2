@@ -1,7 +1,7 @@
 import React from 'react'
 
-const Logo = ({ className = "w-11 h-6", variant = "full" }) => {
-  const flowFill = 'white'
+const Logo = ({ className = "w-11 h-6", variant = "full", fill = "white" }) => {
+  const flowFill = fill
   
   if (variant === "icon") {
     return (

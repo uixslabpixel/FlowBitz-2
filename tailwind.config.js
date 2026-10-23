@@ -9,6 +9,9 @@ export default {
     extend: {
       fontFamily: {
         inter: ["InterVariable", "Inter", "sans-serif"],
+        "inter-tight": ["Inter Tight", "InterVariable", "sans-serif"],
+        "mono-dm": ["DM Mono", "ui-monospace", "monospace"],
+        clash: ["Clash Display", "Inter Tight", "sans-serif"],
       },
       spacing: {
         '18': '4.5rem',

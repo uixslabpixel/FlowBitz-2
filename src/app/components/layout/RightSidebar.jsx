@@ -11,16 +11,8 @@ import {
   SelectValue,
 } from "../ui/select.jsx";
 import { Input } from "../ui/input.jsx";
-import { Badge } from "../ui/badge.jsx";
 import { ColorControl } from "../ui/colorControl.jsx";
-import { Button } from "../ui/button.jsx";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "../ui/accordion.jsx";
-import { Info, Bug, Sparkles } from "lucide-react";
+import { Info, Bug, Sparkles, ChevronDown } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════
    Helpers
@@ -48,7 +40,7 @@ const renderInstallationNotes = (text) => {
       return (
         <code
           key={index}
-          className="px-1 py-0.5 rounded bg-base-high text-foreground mono-med-12"
+          className="px-1 py-px rounded bg-black/[0.05] text-black font-mono text-[12px]"
         >
           {part}
         </code>
@@ -57,6 +49,10 @@ const renderInstallationNotes = (text) => {
     return part;
   });
 };
+
+// Light, borderless field used by every text-like control in the editor.
+const FIELD =
+  "h-9 w-full rounded-lg border-0 bg-black/[0.04] px-3 text-[14px] text-black shadow-none hover:bg-black/[0.06] focus:ring-1 focus:ring-black/20 focus:ring-offset-0 disabled:opacity-50";
 
 /* ═══════════════════════════════════════════════════════
    ConfigSidebar Component
@@ -94,23 +90,28 @@ const ConfigSidebar = ({
     };
 
     switch (inputType) {
-      case "toggle":
+      case "toggle": {
+        const on = currentValue === "true" || currentValue === true;
         return (
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={currentValue === "true" || currentValue === true}
-              disabled={isRequired || !isActive}
-              onCheckedChange={(checked) =>
-                handleValueChange(checked ? "true" : "false")
-              }
-            />
-            <Label className="text-xs text-muted-foreground">
-              {currentValue === "true" || currentValue === true
-                ? "True"
-                : "False"}
-            </Label>
+          <div className="inline-flex p-0.5 rounded-lg bg-black/[0.04]">
+            {[true, false].map((value) => (
+              <button
+                key={String(value)}
+                type="button"
+                disabled={isRequired || !isActive}
+                onClick={() => handleValueChange(String(value))}
+                className={`h-8 px-4 rounded-md text-[14px] transition-colors ${
+                  on === value
+                    ? "bg-white text-black shadow-sm font-medium"
+                    : "text-black/50 hover:text-black"
+                }`}
+              >
+                {value ? "True" : "False"}
+              </button>
+            ))}
           </div>
         );
+      }
 
       case "color":
         return (
@@ -129,7 +130,7 @@ const ConfigSidebar = ({
         const sliderUnit = attr.unit || "";
 
         return (
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <Slider
               value={sliderValue}
               onValueChange={(value) => handleValueChange(value[0].toString())}
@@ -139,13 +140,10 @@ const ConfigSidebar = ({
               disabled={isRequired || !isActive}
               className="flex-1"
             />
-            <Badge
-              variant="secondary"
-              className="flex flex-col items-center justify-center text-link text-foreground min-w-[93px] text-center"
-            >
+            <span className="min-w-[56px] h-7 px-2 rounded-md bg-black/[0.04] flex items-center justify-center text-[13px] tabular-nums text-black">
               {currentValue}
               {sliderUnit}
-            </Badge>
+            </span>
           </div>
         );
       }
@@ -158,7 +156,7 @@ const ConfigSidebar = ({
             onValueChange={handleValueChange}
             disabled={isRequired || !isActive}
           >
-            <SelectTrigger>
+            <SelectTrigger className={FIELD}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -180,161 +178,114 @@ const ConfigSidebar = ({
             value={currentValue}
             disabled={isRequired || !isActive}
             onChange={(e) => handleValueChange(e.target.value)}
-            className="text-link text-text-medium"
+            className={FIELD}
           />
         );
     }
   };
 
-  return (
-    <aside className="lg:w-full mx-4 my-4 p-0 max-w-none w-full lg:max-w-[300px] lg:min-w-[300px] bg-background lg:overflow-y-auto overflow-x-hidden lg:overflow-x-hidden lg:h-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/30">
-      <div className="flex flex-col gap-4 p-0 w-full">
-        {/* ── Installation Notes ── */}
-        {component.installationNotes && (
-          <>
-            {/* Desktop */}
-            <section className="hidden md:block">
-              <h2
-                className="text-heading-small text-foreground flex items-center"
-                style={{ lineHeight: "240%" }}
-              >
-                Installation Notes
-              </h2>
-              <p className="text-paragraph text-foreground">
-                {renderInstallationNotes(component.installationNotes)}
-              </p>
-            </section>
+  const attributes = component.attributes;
 
-            {/* Mobile / Tablet */}
-            <Accordion type="single" collapsible className="md:hidden">
-              <AccordionItem value="installation-notes" className="px-2">
-                <AccordionTrigger className="py-3">
-                  <h2 className="text-heading-small text-foreground">
-                    Installation Notes
-                  </h2>
-                </AccordionTrigger>
-                <AccordionContent className="px-0">
-                  <p className="text-paragraph text-foreground">
-                    {renderInstallationNotes(component.installationNotes)}
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </>
+  return (
+    <aside className="w-full lg:max-w-[320px] lg:min-w-[320px] bg-white rounded-lg lg:overflow-y-auto overflow-x-clip [scrollbar-width:thin] [scrollbar-color:transparent_transparent] hover:[scrollbar-color:rgba(0,0,0,0.15)_transparent]">
+      <div className="flex flex-col p-5 gap-6">
+        {/* ── Installation notes: always visible on desktop, collapsible on small screens ── */}
+        {component.installationNotes && (
+          <details className="group/notes" open>
+            <summary className="list-none [&::-webkit-details-marker]:hidden flex items-center justify-between cursor-pointer md:cursor-default md:pointer-events-none">
+              <h2 className="font-inter-tight text-[17px] font-medium leading-6 text-black">
+                Installation notes
+              </h2>
+              <ChevronDown className="w-4 h-4 text-black/40 transition-transform group-open/notes:rotate-180 md:hidden" />
+            </summary>
+            <p className="mt-2 text-[14px] leading-[22px] text-black/60">
+              {renderInstallationNotes(component.installationNotes)}
+            </p>
+          </details>
         )}
 
-        <div className="border-b border-foreground/10" />
-
-        {/* ── Attribute Editor ── */}
-        <section className="pb-6 px-2 md:px-0">
-          <h2
-            className="text-heading-small text-foreground flex items-center"
-            style={{ lineHeight: "240%" }}
-          >
-            Attribute Editor
+        {/* ── Attribute editor ── */}
+        <section>
+          <h2 className="font-inter-tight text-[17px] font-medium leading-6 text-black mb-2">
+            Attributes
           </h2>
 
-          <div className="flex flex-col gap-2">
-            {component.attributes.map((attr, index, attrs) => {
-              const length = attrs.length;
+          <ul className="divide-y divide-black/[0.06]">
+            {attributes.map((attr) => {
               const isRequired = attr.required || attr.name === "wb-component";
               const isActive = activeAttributes[attr.name] || false;
-              const shouldShowControl = isRequired || isActive;
-              const lastItem = length - 1 === index ? true : false;
 
               return (
-                <React.Fragment key={index}>
-                  <div>
-                    {/* Label row: switch (left) + name + badge + info tooltip */}
-                    <div className="flex items-center py-3 gap-2">
-                      {!isRequired ? (
+                <li key={attr.name} className="relative py-3">
+                  {/* Name + info on the left, on/off switch on the right */}
+                  <div className="flex items-center gap-1.5 min-h-6">
+                    <Label
+                      htmlFor={`attr-${attr.name}`}
+                      className={`text-[14px] font-medium transition-colors ${
+                        isRequired || isActive ? "text-black" : "text-black/50"
+                      }`}
+                    >
+                      {formatAttributeName(attr.name)}
+                    </Label>
+                    {attr.description && !isRequired && (
+                      <span className="group/info flex">
+                        <Info className="w-3.5 h-3.5 text-black/30 hover:text-black/60 cursor-help transition-colors" />
+                        <span className="absolute z-20 top-10 inset-x-0 px-3 py-2 rounded-lg bg-black text-white text-[12px] leading-[17px] opacity-0 translate-y-1 group-hover/info:opacity-100 group-hover/info:translate-y-0 transition-[opacity,transform] duration-150 pointer-events-none">
+                          {attr.description}
+                        </span>
+                      </span>
+                    )}
+                    <span className="ml-auto flex items-center">
+                      {isRequired ? (
+                        <span className="text-[12px] text-black/40">Required</span>
+                      ) : (
                         <Switch
+                          id={`attr-${attr.name}`}
                           checked={isActive}
                           onCheckedChange={(checked) =>
                             onToggleAttribute(attr.name, checked)
                           }
-                          className="shrink-0"
+                          aria-label={`Use ${formatAttributeName(attr.name)}`}
                         />
-                      ) : null}
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <Label className="text-link font-medium text-foreground">
-                          {formatAttributeName(attr.name)}
-                        </Label>
-                        {isRequired && (
-                          <span className="rounded px-[0.3125rem] py-[0.225rem] text-[9px] font-bold uppercase text-foreground flex items-center justify-center bg-primary">
-                            Required
-                          </span>
-                        )}
-                        {attr.description && !isRequired && (
-                          <span className="relative group">
-                            <Info className="w-3 h-3 text-textLow cursor-pointer" />
-                            <div className="absolute min-w-[200px] top-7 -left-6 transform mb-2 px-[0.625rem] py-2 text-tooltip text-background bg-foreground rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20">
-                              {attr.description}
-                            </div>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Control */}
-                    {shouldShowControl ? (
-                      <div className="transition-opacity duration-200">
-                        {renderInputControl(attr)}
-                      </div>
-                    ) : null}
+                      )}
+                    </span>
                   </div>
 
-                  {lastItem ? (
-                    ""
-                  ) : (
-                    <div className="h-[1px] w-full bg-foreground/10" />
+                  {/* Value control, shown once the attribute is in use */}
+                  {(isRequired || isActive) && (
+                    <div className="mt-2.5">{renderInputControl(attr)}</div>
                   )}
-                </React.Fragment>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </section>
 
-        <div className="relative flex flex-col gap-4 px-4 py-6 md:p-6 bg-base-medium rounded overflow-hidden">
-          <h4 className="relative z-[2] text-heading-small text-foreground">
-            Found an Issue or Have a Suggestion?
-          </h4>
-
-          <p className="relative z-[2] text-paragraph text-foreground/60">
-            Help us improve this component by reporting bugs or requesting new
-            features.
+        {/* ── Feedback ── */}
+        <section className="rounded-lg bg-black/[0.03] p-4">
+          <h2 className="text-[14px] font-medium text-black">
+            Found an issue or have an idea?
+          </h2>
+          <p className="mt-1 text-[13px] leading-5 text-black/50">
+            Help us improve {component.name}.
           </p>
-
-          <div className="relative z-[2] flex md:flex-col gap-2 items-start justify-start">
-            <Button
-              onClick={handleBugReport}
-              variant="custom"
-              size="custom"
-              className="flex items-center gap-2 px-3 py-[0.625rem] rounded-lg bg-background border border-foreground/10 text-link font-medium"
-            >
-              <Bug className="w-4 h-4 opacity-60" />
-              Report Bug
-            </Button>
-
-            <Button
-              onClick={handleFeatureRequest}
-              variant="custom"
-              size="custom"
-              className="flex items-center gap-2 px-3 py-[0.625rem] rounded-lg bg-background border border-foreground/10 text-link font-medium"
-            >
-              <Sparkles className="w-4 h-4 opacity-60" />
-              Request Feature
-            </Button>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {[
+              { label: "Report bug", Icon: Bug, onClick: handleBugReport },
+              { label: "Request feature", Icon: Sparkles, onClick: handleFeatureRequest },
+            ].map(({ label, Icon, onClick }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={onClick}
+                className="flex items-center gap-1.5 h-8 px-3 rounded-[26px] bg-white text-[13px] text-black/60 hover:text-black shadow-[0_0_0_1px_rgba(0,0,0,0.06)] transition-colors"
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+              </button>
+            ))}
           </div>
-
-          <img
-            src="/images/component-report-gradient.webp"
-            alt=""
-            aria-hidden="true"
-            className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] object-cover z-[1] pointer-events-none`}
-            loading="lazy"
-          />
-        </div>
+        </section>
       </div>
     </aside>
   );
