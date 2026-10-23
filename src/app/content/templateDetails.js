@@ -43,7 +43,14 @@ const DETAILS = {
 
 export const TEMPLATES = CMS.map((t) => {
   const slug = slugify(t.name);
-  return { ...DUMMY, ...DETAILS[slug], ...t, slug };
+  const merged = { ...DUMMY, ...DETAILS[slug], ...t, slug };
+  // Purchase options: the full Webflow build plus cheaper design-only / static editions (dummy prices).
+  merged.editions ??= [
+    { id: "webflow", label: "Webflow + Figma", price: merged.price },
+    { id: "figma", label: "Figma only", price: "$29" },
+    { id: "html", label: "HTML", price: "$39" },
+  ];
+  return merged;
 }).sort((a, b) => a.name.localeCompare(b.name));
 
 export const getTemplate = (slug) => TEMPLATES.find((t) => t.slug === slug);

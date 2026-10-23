@@ -32,10 +32,45 @@ const Accordion = ({ title, children }) => (
   </>
 );
 
-const List = ({ items }) => (
+// Platform marks for the purchase options, from the design file.
+const EDITION_ICONS = {
+  webflow: (
+    <svg width="18" height="11" viewBox="0 0 18 11" fill="currentColor" aria-hidden="true">
+      <path d="M17.5 0L11.92 10.91H6.67L9.02 6.4H8.91C6.97 8.89 4.1 10.55 0 10.91V6.45s2.63-.16 4.16-1.78H0V0h4.68v3.86h.1L6.7 0h3.53v3.83h.1L12.33 0H17.5Z" />
+    </svg>
+  ),
+  figma: (
+    <svg width="11" height="16" viewBox="0 0 10.67 16" aria-hidden="true">
+      <path d="M0 2.67A2.67 2.67 0 0 1 2.67 0h2.66v5.33H2.67A2.67 2.67 0 0 1 0 2.67Z" fill="#F24E1E" />
+      <path d="M5.33 0H8a2.67 2.67 0 0 1 0 5.33H5.33V0Z" fill="#FF7262" />
+      <path d="M0 8a2.67 2.67 0 0 1 2.67-2.67h2.66v5.34H2.67A2.67 2.67 0 0 1 0 8Z" fill="#A259FF" />
+      <circle cx="8" cy="8" r="2.67" fill="#1ABCFE" />
+      <path d="M2.67 16a2.67 2.67 0 0 0 2.66-2.67v-2.66H2.67a2.67 2.67 0 0 0 0 5.33Z" fill="#0ACF83" />
+    </svg>
+  ),
+  html: (
+    <svg width="14" height="16" viewBox="0 0 14.11 16" aria-hidden="true">
+      <path d="M1.28 14.41 0 0h14.11l-1.28 14.4L7.04 16" fill="#E44D26" />
+      <path d="M7.05 14.78V1.18h5.77l-1.1 12.29" fill="#F16529" />
+      <path d="M2.62 2.94h4.43v1.77H4.56l.16 1.81h2.33v1.76H3.1m.08.89h1.77l.13 1.41 1.97.53v1.84l-3.62-1.01" fill="#EBEBEB" />
+      <path d="M11.47 2.94H7.05v1.77h4.26m-.16 1.81h-4.1v1.76h2.18l-.21 2.3-1.97.53v1.83l3.61-1" fill="#fff" />
+    </svg>
+  ),
+};
+
+const Check = () => (
+  <svg width="11" height="8" viewBox="0 0 11 8" fill="currentColor" aria-hidden="true" className="shrink-0">
+    <path d="M10.28.23c.31.28.31.77 0 1.05l-6 6c-.28.31-.77.31-1.05 0l-3-3a.72.72 0 0 1 0-1.05c.28-.31.77-.31 1.05 0l2.49 2.46L9.23.23c.28-.31.77-.31 1.05 0Z" />
+  </svg>
+);
+
+const List = ({ items, check = false }) => (
   <ul className="text-[15px] leading-6">
     {items.map((item) => (
-      <li key={item}>{item}</li>
+      <li key={item} className={check ? "flex items-center gap-2.5 pl-[3px]" : undefined}>
+        {check && <Check />}
+        {item}
+      </li>
     ))}
   </ul>
 );
@@ -78,9 +113,8 @@ const TemplateModal = ({ slug }) => {
 
   if (!template) return null;
 
-  const { name, subtitle, price, cover, hover, info, features, pages, platform, tags = [], keywords = [], links = [] } = template;
+  const { name, subtitle, price, cover, hover, info, features, pages, platform, tags = [], keywords = [], editions = [], links = [] } = template;
   const chips = [...new Set([...tags, ...keywords])];
-  const buyUrl = links[0]?.url;
   const previewUrl = links[1]?.url ?? links[0]?.url;
 
   return (
@@ -136,14 +170,23 @@ const TemplateModal = ({ slug }) => {
 
             <div className="order-3 lg:order-none flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <a
-                  href={buyUrl ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-10 rounded-full bg-black text-white text-sm font-medium flex items-center justify-center hover:bg-black/80 transition-colors"
-                >
-                  Buy Template · {price}
-                </a>
+                {editions.map((edition, i) => (
+                  <a
+                    key={edition.id}
+                    href={edition.url ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`h-10 px-4 rounded-full text-sm flex items-center gap-3 transition-colors ${
+                      i === 0
+                        ? "bg-black text-white hover:bg-black/80"
+                        : "border border-black/10 font-medium hover:bg-black/[0.03]"
+                    }`}
+                  >
+                    <span className="w-5 h-5 flex items-center justify-center">{EDITION_ICONS[edition.id]}</span>
+                    <span className="flex-1">{edition.label}</span>
+                    <span>{edition.price}</span>
+                  </a>
+                ))}
                 <a
                   href={previewUrl ?? "#"}
                   target="_blank"
@@ -159,7 +202,7 @@ const TemplateModal = ({ slug }) => {
               <div className="flex flex-col">
                 <Divider />
                 <Accordion title="Features">
-                  <List items={features} />
+                  <List items={features} check />
                 </Accordion>
                 <Accordion title="Pages">
                   <List items={pages} />
