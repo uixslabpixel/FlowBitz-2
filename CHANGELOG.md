@@ -3,6 +3,20 @@
 > **Convention from here on:** build new pages and content in Astro (`src/astro/`,
 > content collections for data) with GSAP for motion. Use a React island only where a
 > piece genuinely needs client-side interactivity. Don't add new pages to `PageIsland`.
+> New pages just use `Base.astro`: the sidebar and Astro navigation come with it.
+
+## 2026-10-23 — Persistent sidebar via Astro ClientRouter
+
+- `Base.astro` now owns the frame: `<ClientRouter />`, the `#main-content` scroller, and
+  the sidebar as its own island (`SideNavIsland.jsx`, `transition:persist="sidenav"`).
+  Astro page swaps replace only `<main>`; the sidebar never remounts, Astro or React page.
+- `src/app/AstroRouter.jsx` — a React Router `<Router>` whose navigator hands page changes
+  to Astro's `navigate()`. Same-path changes (`?feedback=`) and an island's own
+  `localPaths` (`/templates` <-> `/templates/:slug`) are a plain `pushState` instead.
+  Location re-syncs on `popstate` and `astro:page-load` (fired on `document`).
+- `PageIsland` is per-page again (`page` prop picks the React page). `AppShell` no longer
+  renders the frame, it only re-scans wb-components after each render.
+- Vercel Analytics / Speed Insights moved into the persisted sidebar island.
 
 ## 2026-10-23 — Astro port + GSAP motion
 
@@ -19,10 +33,9 @@ build (`vite.config.library.js`) are unchanged.
 - `src/astro/pages/**` — one `.astro` file per route. Dynamic routes use
   `getStaticPaths` from existing data: component keys (`componentsMetadata.js`),
   template slugs (`templateDetails.js`), blog slugs (`blogPosts.js`).
-- `src/app/PageIsland.jsx` — the single React island every page hydrates. It holds the
-  **full route table**, so after the first load React Router navigates client-side and
-  the sidebar (`AppShell`/`SideNav`) never remounts. Astro still emits HTML per URL, so
-  refreshes and deep links work. `src/app/App.jsx` / `main.jsx` are no longer entry points.
+- `src/app/PageIsland.jsx` — the React island for the legacy React pages (superseded
+  by the per-page setup in the entry above). `src/app/App.jsx` / `main.jsx` are no
+  longer entry points.
 - Islands use `client:only="react"`: the library touches `document` at import time, so
   it can't be server-rendered. Only `<head>` is static HTML.
 - `npm run dev` → `astro dev`; `npm run build` → `astro build` then the library build.

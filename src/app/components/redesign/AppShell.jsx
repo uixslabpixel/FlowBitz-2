@@ -1,11 +1,9 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import SideNav from "./SideNav";
 import { useWebflowBits } from "../../hooks/useWebflowBits";
 
-// Shared frame for every page: fixed sidebar on the left, scrollable content on the right.
-// body/#root are overflow:hidden globally, so #main-content owns the page scroll
-// (ScrollToTop resets it on route change).
+// Page content wrapper. The frame itself (#main-content scroller + sidebar) lives in
+// src/astro/layouts/Base.astro, where the sidebar is a persisted island.
 const AppShell = ({ children }) => {
   const { pathname } = useLocation();
   const { reinitializeComponents } = useWebflowBits();
@@ -16,15 +14,7 @@ const AppShell = ({ children }) => {
     return () => clearTimeout(timer);
   }, [pathname, reinitializeComponents]);
 
-  return (
-    <div
-      id="main-content"
-      className="relative h-dvh overflow-y-auto overflow-x-hidden bg-background text-foreground font-inter"
-    >
-      <SideNav />
-      <main className="relative lg:pl-[258px] min-w-0">{children}</main>
-    </div>
-  );
+  return children;
 };
 
 // Standard page header from the redesign: Inter Tight 20/500 title + optional actions row.

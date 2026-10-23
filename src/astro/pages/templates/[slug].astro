@@ -7,5 +7,5 @@ export const getStaticPaths = () => TEMPLATES.map(({ slug }) => ({ params: { slu
 ---
 
 <Base>
-  <PageIsland client:only="react" url={Astro.url.pathname} />
+  <PageIsland client:only="react" page="templates" />
 </Base>

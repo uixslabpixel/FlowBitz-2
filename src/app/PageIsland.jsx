@@ -1,11 +1,8 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { StaticRouter } from "react-router-dom/server";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/react";
 import "./config/fontawesome.js";
-import ScrollToTop from "./components/ScrollToTop";
+import AstroRouter from "./AstroRouter";
 import AppShell from "./components/redesign/AppShell";
 import FeedbackModal from "./components/redesign/FeedbackModal";
 import Home from "./pages/Home";
@@ -23,14 +20,14 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import NotFound from "./pages/NotFound";
 
-// Every Astro page hydrates this same island with the full route table. After the first
-// load React Router handles navigation client-side, so the AppShell (sidebar) stays mounted;
-// Astro still emits static HTML for each URL so direct visits and refreshes work.
+// Legacy React pages, each hydrated by its own Astro route. New pages should be plain Astro
+// (see CHANGELOG.md); only add here if a page is mostly client-side interactivity.
+// `paths` are the URLs this island handles in place, without an Astro page swap.
 const PAGES = {
   home: { paths: ["/", "/components"], element: <Home /> },
   componentDetail: { paths: ["/components/:componentName"], element: <ComponentDetail /> },
   tools: { paths: ["/tools"], element: <Tools /> },
-  templates: { paths: ["/templates/:slug?"], element: <Templates /> },
+  templates: { paths: ["/templates", "/templates/:slug"], element: <Templates /> },
   installation: { paths: ["/installation"], element: <Installation /> },
   about: { paths: ["/about"], element: <About /> },
   support: { paths: ["/support"], element: <Support /> },
@@ -40,36 +37,31 @@ const PAGES = {
   blogPost: { paths: ["/blog/:slug"], element: <BlogPost /> },
   release: { paths: ["/release"], element: <Release /> },
   license: { paths: ["/license"], element: <License /> },
+  contact: { paths: ["/contact"], element: <ContactRedirect /> },
   notFound: { paths: ["*"], element: <NotFound /> },
 };
 
 // Old /contact?tab=… links open the feedback popup over the home page.
-const ContactRedirect = () => {
+function ContactRedirect() {
   const tab = new URLSearchParams(useLocation().search).get("tab");
   const type = ["report", "feature"].includes(tab) ? tab : "contact";
   return <Navigate to={`/?feedback=${type}`} replace />;
-};
+}
 
-const PageIsland = ({ url }) => {
-  const Router = typeof window === "undefined" ? StaticRouter : BrowserRouter;
-  const routerProps = typeof window === "undefined" ? { location: url } : {};
-
+const PageIsland = ({ page }) => {
+  const { paths, element } = PAGES[page] ?? PAGES.notFound;
   return (
     <HelmetProvider>
-      <Router {...routerProps} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <ScrollToTop />
+      <AstroRouter localPaths={paths}>
         <AppShell>
           <Routes>
-            {Object.values(PAGES).flatMap(({ paths, element }) =>
-              paths.map((path) => <Route key={path} path={path} element={element} />),
-            )}
-            <Route path="/contact" element={<ContactRedirect />} />
+            {paths.map((path) => (
+              <Route key={path} path={path} element={element} />
+            ))}
           </Routes>
         </AppShell>
         <FeedbackModal />
-      </Router>
-      <Analytics />
-      <SpeedInsights />
+      </AstroRouter>
     </HelmetProvider>
   );
 };

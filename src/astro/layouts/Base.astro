@@ -1,6 +1,8 @@
 ---
 import "@fontsource-variable/inter";
 import "../../app/styles/tailwind.css";
+import { ClientRouter } from "astro:transitions";
+import SideNavIsland from "../../app/SideNavIsland.jsx";
 
 const {
   title = "FlowBitz — Premium UI Motion System for Webflow",
@@ -41,6 +43,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:site" content="@slabpixel" />
     <meta name="theme-color" content="#f0f0f0" />
     <link rel="manifest" href="/manifest.json" />
+    <ClientRouter fallback="swap" />
 
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -67,6 +70,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </script>
   </head>
   <body>
-    <div id="root"><slot /></div>
+    <!-- Shared frame: #main-content owns the page scroll (body is overflow:hidden). The sidebar
+         island is persisted, so Astro page swaps only replace <main>. -->
+    <div
+      id="main-content"
+      class="relative h-dvh overflow-y-auto overflow-x-hidden bg-background text-foreground font-inter"
+    >
+      <SideNavIsland client:only="react" transition:persist="sidenav" />
+      <main class="relative lg:pl-[258px] min-w-0"><slot /></main>
+    </div>
   </body>
 </html>

@@ -8,5 +8,5 @@ export const getStaticPaths = () =>
 ---
 
 <Base title={`${Astro.params.componentName} | FlowBitz`}>
-  <PageIsland client:only="react" url={Astro.url.pathname} />
+  <PageIsland client:only="react" page="componentDetail" />
 </Base>

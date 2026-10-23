@@ -7,5 +7,5 @@ export const getStaticPaths = () => getAllPosts().map(({ slug }) => ({ params: {
 ---
 
 <Base>
-  <PageIsland client:only="react" url={Astro.url.pathname} />
+  <PageIsland client:only="react" page="blogPost" />
 </Base>
