@@ -1,5 +1,9 @@
 # Changelog
 
+> **Convention from here on:** build new pages and content in Astro (`src/astro/`,
+> content collections for data) with GSAP for motion. Use a React island only where a
+> piece genuinely needs client-side interactivity. Don't add new pages to `PageIsland`.
+
 ## 2026-10-23 — Astro port + GSAP motion
 
 The showcase site moved from a Vite React SPA to **Astro 7** (static output), and every
