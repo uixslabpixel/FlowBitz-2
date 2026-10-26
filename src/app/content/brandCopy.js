@@ -48,11 +48,11 @@ export const seoPages = {
   }),
 
   about: {
-    title: `About ${brandName} — ${categoryLine}`,
+    title: `About ${brandName} — Effects, Templates and Tools for Building Websites`,
     description:
-      'FlowBitz is a premium UI motion system for serious Webflow freelancers and agencies. GSAP-powered components via wb-* attributes—crafted by SlabPixel Studio.',
+      'FlowBitz collects the effects, templates and tools SlabPixel Studio built for client projects and team experiments, shared for anyone building websites.',
     keywords:
-      'about FlowBitz, premium webflow motion, webflow motion system, GSAP for Webflow, SlabPixel Studio, serious webflow creators',
+      'about FlowBitz, website effects, website templates, web design tools, GSAP animations, SlabPixel Studio, freelancers, agencies',
   },
 
   installation: {
@@ -161,13 +161,13 @@ export const jsonLd = {
     '@type': 'AboutPage',
     name: `About ${brandName}`,
     description:
-      'Premium UI motion system for serious Webflow creators—GSAP-powered components via wb-* attributes. Crafted by SlabPixel Studio.',
+      'Effects, templates and tools SlabPixel Studio built for client projects and team experiments, shared for anyone building websites.',
     url: `${seoDefaults.siteUrl}/about`,
     mainEntity: {
       '@type': 'Organization',
       name: 'SlabPixel Studio',
       url: 'https://slabpixel.com',
-      description: 'Creative studio specializing in premium Webflow development and design',
+      description: 'Small studio that designs and builds websites for clients',
     },
   },
 

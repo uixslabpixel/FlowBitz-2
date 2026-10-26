@@ -1,8 +1,112 @@
 ---
 import Base from "../layouts/Base.astro";
-import PageIsland from "../../app/PageIsland.jsx";
+import Logo from "../../app/components/Logo.jsx";
+import { getFilteredComponentKeys } from "../../library/data/componentsMetadata.js";
+import { seoPages, jsonLd } from "../../app/content/brandCopy.js";
+
+const facts = [
+  { value: getFilteredComponentKeys().length, label: "Effects" },
+  { value: Object.keys(import.meta.glob("../../app/content/templates/*.json")).length, label: "Templates" },
+  { value: Object.keys(import.meta.glob("../../app/content/tools/*.json")).length, label: "Tools" },
+];
+
+const faqs = [
+  {
+    q: "What is FlowBitz?",
+    a: "A collection of effects, templates and tools our team built for client projects and our own experiments. Instead of using them once, we share them so others can use them too.",
+  },
+  {
+    q: "Is it free?",
+    a: "The effects library and the tools are free, and the effects library is open source under the MIT license. Templates are sold individually.",
+  },
+  {
+    q: "Can I use it on client projects?",
+    a: "Yes. The effects library is free for personal and commercial projects.",
+  },
+  {
+    q: "Do I need to write code?",
+    a: "No. Add one script to your site, then add an attribute to the element you want to animate.",
+  },
+];
+
+const year = new Date().getFullYear();
+const link = "text-foreground underline underline-offset-2";
 ---
 
-<Base>
-  <PageIsland client:only="react" page="about" />
+<Base title={seoPages.about.title} description={seoPages.about.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd.about)} />
+
+  <div class="p-2">
+    <section class="bg-white rounded-lg min-h-[calc(100dvh-16px)] flex flex-col items-center justify-center gap-10 px-6 py-16 lg:p-16">
+      <h1>
+        <a href="/" aria-label="FlowBitz home" class="block">
+          <Logo className="w-[127px] h-[34px]" fill="black" />
+        </a>
+      </h1>
+
+      <p class="max-w-[500px] text-center text-[15px] leading-7 text-foreground/60">
+        FlowBitz is made by <a href="https://slabpixel.com" target="_blank" rel="noreferrer" class={link}>SlabPixel</a>,
+        a small team that builds websites for clients. It collects the custom tools our team built for client
+        projects or our own experiments, shared so others can use them too.
+      </p>
+
+      <ul class="zigzag zigzag-y w-full max-w-[500px] grid grid-cols-3 list-none m-0">
+        {facts.map((f) => (
+          <li class="py-2 text-center">
+            <span class="block font-inter-tight text-2xl leading-8 font-medium tabular-nums">{f.value}</span>
+            <span class="block text-[15px] leading-6 text-foreground/50">{f.label}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div class="w-full max-w-[500px]">
+        <h2 class="text-[15px] leading-6 text-foreground/50 pb-2">FAQ</h2>
+        {faqs.map((item, i) => (
+          <details class="faq zigzag" open={i === 0}>
+            <summary class="flex items-center justify-between gap-4 py-2 text-[15px] leading-6 cursor-pointer list-none">
+              {item.q}
+              <svg class="faq-icon shrink-0 transition-transform duration-200" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                <path d="M7.27 5.86h5.86v1.4H7.27v5.87h-1.4V7.27H0v-1.4h5.86V0h1.4v5.86Z" fill="currentColor" />
+              </svg>
+            </summary>
+            <p class="pb-3 text-[15px] leading-6 text-foreground/60">{item.a}</p>
+          </details>
+        ))}
+        <div class="zigzag" />
+      </div>
+
+      <footer class="flex flex-col items-center gap-3 text-[13px] leading-5">
+        <p class="flex items-center gap-1.5">
+          Made with
+          <svg width="15" height="14" viewBox="0 0 15 14" aria-label="love" role="img">
+            <path d="M3.9 0c1.26 0 2.43.62 3.16 1.61l.44.62.44-.62A3.9 3.9 0 0 1 11.1 0C13.24 0 15 1.76 15 3.9c0 4.01-4.48 7.61-7.5 9.7C4.51 11.51 0 7.91 0 3.9 0 1.76 1.76 0 3.9 0Z" fill="#0B64FF" />
+          </svg>
+          by <a href="https://slabpixel.com" target="_blank" rel="noreferrer" class={link}>SlabPixel</a>
+        </p>
+        <p>© {year} FlowBitz. All rights reserved.</p>
+      </footer>
+    </section>
+  </div>
 </Base>
+
+<style>
+  /* Zigzag rule from the design: a 1px black stroke at 20% opacity, repeated across. */
+  .zigzag {
+    --zigzag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='4'%3E%3Cpath d='M0 .5 4 3.5 8 .5' fill='none' stroke='%23000' stroke-opacity='.2'/%3E%3C/svg%3E");
+    background: var(--zigzag) top left / 8px 4px repeat-x;
+    padding-top: 4px;
+  }
+  .zigzag-y {
+    background:
+      var(--zigzag) top left / 8px 4px repeat-x,
+      var(--zigzag) bottom left / 8px 4px repeat-x;
+    /* 4px line + 8px gap on each side, as in Figma; items add their own 8px. */
+    padding-block: 12px;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq[open] .faq-icon {
+    transform: rotate(45deg);
+  }
+</style>
