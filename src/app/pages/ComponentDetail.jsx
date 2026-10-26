@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useInstallModal } from "../components/redesign/InstallModal.jsx";
 import { getComponent } from "../../library/data/componentsMetadata.js";
 import { PageHeader } from "../components/redesign/AppShell.jsx";
 import { cardThemes } from "../components/redesign/cardThemes.js";
@@ -11,7 +12,7 @@ import { seoPages, jsonLd } from "../content/brandCopy.js";
 
 const ComponentDetail = () => {
   const { componentName } = useParams();
-  const navigate = useNavigate();
+  const installModal = useInstallModal();
   const [reloadKey, setReloadKey] = useState(0);
   const [copyStates, setCopyStates] = useState({});
   const [activeAttributes, setActiveAttributes] = useState({});
@@ -361,7 +362,7 @@ const ComponentDetail = () => {
       <PageHeader title={component.name} description={component.description}>
         <div className="flex flex-wrap gap-1.5">
           <button
-            onClick={() => navigate("/installation")}
+            onClick={() => installModal.setOpen(true)}
             className="flex items-center gap-2 px-3 bg-white rounded-[26px] text-[15px] leading-7 text-black/60 hover:text-black transition-colors"
           >
             <Code className="w-4 h-4" />

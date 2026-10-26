@@ -1,3 +1,18 @@
+// tailwindcss-animate also registers `duration-*` / `ease-*` (for animation timing). Two plugins
+// claiming the same arbitrary value makes Tailwind drop it silently, so `ease-[cubic-bezier(...)]`
+// and `duration-[123ms]` generated nothing. Skip just those two; animate-in/fade/zoom/slide stay.
+const withoutAnimateTiming = (animate) => ({
+  ...animate,
+  handler: (api) =>
+    animate.handler({
+      ...api,
+      matchUtilities: (utilities, options) => {
+        const { duration, ease, ...rest } = utilities;
+        if (Object.keys(rest).length) api.matchUtilities(rest, options);
+      },
+    }),
+});
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
@@ -86,5 +101,5 @@ export default {
       }
     }
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [withoutAnimateTiming(require("tailwindcss-animate"))],
 }

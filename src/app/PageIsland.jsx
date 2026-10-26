@@ -5,12 +5,12 @@ import "./config/fontawesome.js";
 import AstroRouter from "./AstroRouter";
 import AppShell from "./components/redesign/AppShell";
 import FeedbackModal from "./components/redesign/FeedbackModal";
+import InstallModal from "./components/redesign/InstallModal";
 import Home from "./pages/Home";
 import Tools from "./pages/Tools";
 import Templates from "./pages/Templates";
 import ComponentDetail from "./pages/ComponentDetail";
 import Installation from "./pages/Installation";
-import About from "./pages/About";
 import Support from "./pages/Support";
 import Showcase from "./pages/Showcase";
 import FAQ from "./pages/FAQ";
@@ -29,7 +29,6 @@ const PAGES = {
   tools: { paths: ["/tools"], element: <Tools /> },
   templates: { paths: ["/templates", "/templates/:slug"], element: <Templates /> },
   installation: { paths: ["/installation"], element: <Installation /> },
-  about: { paths: ["/about"], element: <About /> },
   support: { paths: ["/support"], element: <Support /> },
   faq: { paths: ["/faq"], element: <FAQ /> },
   showcase: { paths: ["/showcase"], element: <Showcase /> },
@@ -61,6 +60,7 @@ const PageIsland = ({ page }) => {
           </Routes>
         </AppShell>
         <FeedbackModal />
+        <InstallModal />
       </AstroRouter>
     </HelmetProvider>
   );

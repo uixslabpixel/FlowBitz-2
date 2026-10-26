@@ -10,6 +10,8 @@ import {
   componentsMetadata,
   getFilteredComponentKeys,
 } from "../../library/data/componentsMetadata.js";
+import { useInstallModal } from "../components/redesign/InstallModal.jsx";
+import { Code } from "lucide-react";
 import { seoPages, jsonLd } from "../content/brandCopy.js";
 
 const FILTERS = [
@@ -58,6 +60,7 @@ const EmptyState = ({ label, onReset }) => (
 const Home = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const installModal = useInstallModal();
 
   const allComponents = useMemo(
     () =>
@@ -99,12 +102,21 @@ const Home = () => {
       />
 
       <PageHeader title="Premium effects for Webflow">
-        <FilterChips
-          filters={FILTERS}
-          active={activeFilter}
-          onChange={setActiveFilter}
-          label="Filter effects"
-        />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <FilterChips
+            filters={FILTERS}
+            active={activeFilter}
+            onChange={setActiveFilter}
+            label="Filter effects"
+          />
+          <button
+            onClick={() => installModal.setOpen(true)}
+            className="flex items-center gap-2 px-3 bg-white rounded-[26px] text-[15px] leading-7 text-black/60 hover:text-black transition-colors"
+          >
+            <Code className="w-4 h-4" />
+            Installation guide
+          </button>
+        </div>
       </PageHeader>
 
       <section

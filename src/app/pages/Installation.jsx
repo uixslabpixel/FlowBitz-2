@@ -1,78 +1,167 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { PageHeader } from "../components/redesign/AppShell.jsx";
 import SEO from "../components/SEO.jsx";
-import { Button } from "../components/ui/button.jsx";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card.jsx";
-import {
-  Copy,
-  CheckCircle,
-  Code,
-  Settings,
-  Upload,
-  Rocket,
-  ExternalLink,
-  Zap,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import tomorrow from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow.js";
-import { useNavigate } from "react-router-dom";
+import { Copy, Check } from "lucide-react";
 import { seoPages } from "../content/brandCopy.js";
 
-const Installation = () => {
-  const [copyStates, setCopyStates] = useState({});
-  const [openFAQItems, setOpenFAQItems] = useState({});
-  const navigate = useNavigate();
+const SCRIPT_TAG =
+  '<script src="https://cdn.jsdelivr.net/npm/flowbitz@latest/dist/flowbitz.umd.js"></script>';
 
-  const copyToClipboard = async (text, key) => {
+const FAQ_ITEMS = [
+  {
+    question: "Do I need to install GSAP separately?",
+    answer:
+      "No. FlowBitz bundles GSAP and the plugins it needs, so one script tag is all you add.",
+  },
+  {
+    question: "Can I use FlowBitz outside Webflow?",
+    answer:
+      "FlowBitz is designed for Webflow. The core JavaScript can be adapted to other frameworks, but Webflow gives the best experience.",
+  },
+  {
+    question: "My animations aren't working. What should I check?",
+    answer:
+      "1. The FlowBitz script is in Footer Code and the site is published\n2. The wb-component value is spelled exactly like the effect name\n3. The element has text content\n4. The browser console shows no errors",
+  },
+  {
+    question: "Some Webflow elements don't animate",
+    answer:
+      "FlowBitz works best on plain text elements. Deeply nested or complex Webflow elements may not, so try a simpler element or check the effect's installation notes.",
+  },
+];
+
+// Hand-drawn wavy divider, same tile as the template popup.
+const WAVE = `url("data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 3Q3 0 6 3T12 3" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1"/></svg>',
+)}")`;
+const Divider = () => (
+  <div aria-hidden="true" className="h-1.5 bg-repeat-x bg-left" style={{ backgroundImage: WAVE }} />
+);
+
+const useCopy = () => {
+  const [copied, setCopied] = useState(null);
+  const copy = async (text, key) => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopyStates((prev) => ({ ...prev, [key]: true }));
-      setTimeout(() => {
-        setCopyStates((prev) => ({ ...prev, [key]: false }));
-      }, 2000);
+      setCopied(key);
+      setTimeout(() => setCopied((k) => (k === key ? null : k)), 1600);
     } catch (err) {
       console.error("Failed to copy text: ", err);
     }
   };
+  return { copied, copy };
+};
 
-  const toggleFAQItem = (index) => {
-    setOpenFAQItems((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
+const CopyButton = ({ copied, onClick, label }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    aria-label={copied ? "Copied" : `Copy ${label}`}
+    className="shrink-0 flex items-center gap-1.5 px-2.5 rounded-[26px] bg-white text-[13px] leading-7 text-black/60 hover:text-black transition-colors"
+  >
+    {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+    {copied ? "Copied" : "Copy"}
+  </button>
+);
 
-  const installationFAQItems = [
-    {
-      question: "Do I need to install GSAP separately?",
-      answer:
-        "No separate GSAP install. FlowBitz bundles GSAP and required plugins—add one script tag and components are ready in Webflow.",
-    },
-    {
-      question: "Can I use FlowBitz with other frameworks besides Webflow?",
-      answer:
-        "FlowBitz is specifically designed for Webflow, but the core JavaScript can be adapted for other frameworks. However, we recommend using it with Webflow for the best experience.",
-    },
-    {
-      question: "My animations aren't working. What should I check?",
-      answer:
-        "1. Make sure the FlowBitz script is loaded\n2. Check that you have the correct wb-component attribute\n3. Verify the component name is spelled correctly\n4. Check browser console for errors\n5. Ensure your element has text content",
-    },
-    {
-      question: "The component doesn't work with certain Webflow elements",
-      answer:
-        "FlowBitz works best with text elements. Some complex Webflow elements or nested structures might not work properly. Try using simpler text elements or check the component documentation for compatibility notes.",
-    },
-  ];
+// A copyable value on the light well: the script tag, or one half of an attribute pair.
+const CodeWell = ({ label, value, id, copy, copied, wrap = false }) => (
+  <div className="flex items-start gap-2 rounded-[4px] bg-[#f0f0f0] p-1.5 pl-3">
+    <code
+      className={`flex-1 min-w-0 py-1 font-mono text-[12.5px] leading-5 text-black/80 ${
+        wrap ? "break-all" : "truncate"
+      }`}
+    >
+      {value}
+    </code>
+    <CopyButton copied={copied === id} onClick={() => copy(value, id)} label={label} />
+  </div>
+);
 
+const Step = ({ n, title, last, children }) => (
+  <li className="relative flex gap-4">
+    <div className="flex flex-col items-center">
+      <span className="w-7 h-7 rounded-full bg-black text-white text-[13px] font-medium flex items-center justify-center tabular-nums">
+        {n}
+      </span>
+      {!last && <span aria-hidden="true" className="flex-1 w-px bg-black/10 my-2" />}
+    </div>
+    <div className={`flex-1 min-w-0 ${last ? "" : "pb-7"}`}>
+      <h3 className="font-inter-tight text-[17px] font-medium leading-7">{title}</h3>
+      <div className="mt-1.5 flex flex-col gap-3 text-[15px] leading-6 text-black/60">
+        {children}
+      </div>
+    </div>
+  </li>
+);
+
+const Path = ({ children }) => <span className="text-black font-medium">{children}</span>;
+
+// Steps + FAQ, shared by the /installation page and the InstallModal popup.
+export const InstallationGuide = ({ className = "" }) => {
+  const { copied, copy } = useCopy();
+  return (
+    <div className={`flex flex-col gap-8 ${className}`}>
+      <ol className="flex flex-col">
+        <Step n={1} title="Add the script">
+          <p>
+            In Webflow, open <Path>Site settings → Custom code → Footer code</Path> and paste:
+          </p>
+          <CodeWell label="script tag" value={SCRIPT_TAG} id="script" wrap copy={copy} copied={copied} />
+        </Step>
+        <Step n={2} title="Tag an element">
+          <p>
+            Select an element, open <Path>Element settings → Custom attributes</Path>, and add:
+          </p>
+          <div className="flex flex-col gap-2">
+            {[
+              ["Name", "wb-component"],
+              ["Value", "text-type"],
+            ].map(([label, value]) => (
+              <div key={label} className="flex flex-col gap-1">
+                <span className="text-xs uppercase tracking-[0.04em] text-black/50">{label}</span>
+                <CodeWell label={`attribute ${label.toLowerCase()}`} value={value} id={label} copy={copy} copied={copied} />
+              </div>
+            ))}
+          </div>
+          <p>Swap the value for any effect's name.</p>
+        </Step>
+        <Step n={3} title="Tune it with attributes">
+          <p>
+            Every effect page lists its own attributes, like <code className="font-mono text-[13px] text-black/80">wb-duration</code>,{" "}
+            <code className="font-mono text-[13px] text-black/80">wb-delay</code> and{" "}
+            <code className="font-mono text-[13px] text-black/80">wb-trigger</code>. Add them the same way.
+          </p>
+        </Step>
+        <Step n={4} title="Publish" last>
+          <p>Effects run on the published site. The script loads on its own and starts every tagged element.</p>
+        </Step>
+      </ol>
+
+      <section>
+        <h3 className="text-xs uppercase tracking-[0.04em] text-black/50 pb-1">Common questions</h3>
+        <Divider />
+        {FAQ_ITEMS.map((item) => (
+          <React.Fragment key={item.question}>
+            <details className="group">
+              <summary className="flex items-center justify-between gap-4 py-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-[15px] leading-6 text-black/80 hover:text-black">
+                {item.question}
+                <svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className="shrink-0">
+                  <path d="M0 5h10" />
+                  <path d="M5 0v10" className="origin-center [transform-box:fill-box] transition-transform duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-open:rotate-90" />
+                </svg>
+              </summary>
+              <p className="pb-4 text-[15px] leading-6 text-black/60 whitespace-pre-line">{item.answer}</p>
+            </details>
+            <Divider />
+          </React.Fragment>
+        ))}
+      </section>
+    </div>
+  );
+};
+
+const Installation = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "HowTo",
@@ -128,288 +217,8 @@ const Installation = () => {
         title="Installation Guide"
         description="Add FlowBitz to your Webflow project—one script, wb-* attributes, premium motion on your next build."
       />
-      <div className="p-4 lg:p-6 flex flex-col gap-8 max-w-[960px]">
-
-            {/* Installation Steps */}
-            <div className="w-full max-w-[800px] flex flex-col gap-4 md:py-6">
-              {/* Step 1 */}
-              <div className="flex gap-4 items-stretch">
-                <div className="flex flex-col items-center w-10">
-                  <div className="h-9 w-9 bg-muted-foreground/10 rounded-lg flex items-center justify-center text-foreground font-semibold">
-                    1
-                  </div>
-                  <div className="flex-1 w-px bg-foreground/20 mt-4" />
-                </div>
-                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
-                  <h2 className="text-heading-small text-foreground my-1">
-                    Adding FlowBitz Script
-                  </h2>
-
-                  <div className="flex flex-col gap-2">
-                    <p className="text-paragraph large text-text-medium">
-                      • Add the FlowBitz script to your Webflow project's custom
-                      code section to enable all animations.
-                    </p>
-
-                    <p className="text-paragraph large text-text-medium">
-                      • Go to your Webflow Project{" "}
-                      <strong>Settings → Custom Code → Footer Code</strong>, and
-                      paste the script there.
-                    </p>
-
-                    <div className="relative">
-                      <SyntaxHighlighter
-                        language="html"
-                        style={tomorrow}
-                        customStyle={{
-                          margin: 0,
-                          padding: "0.875rem",
-                          fontSize: "0.75rem",
-                          borderRadius: "0.5rem",
-                          backgroundColor: "#181b27",
-                        }}
-                        codeTagProps={{
-                          style: {
-                            fontFamily:
-                              'Monaco, Menlo, "Ubuntu Mono", monospace',
-                          },
-                        }}
-                      >
-                        {
-                          '<script src="https://cdn.jsdelivr.net/npm/flowbitz@latest/dist/flowbitz.umd.js"></script>'
-                        }
-                      </SyntaxHighlighter>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-2 top-2 h-8 w-8 p-0 hover:bg-gray-700"
-                        onClick={() =>
-                          copyToClipboard(
-                            '<script src="https://cdn.jsdelivr.net/npm/flowbitz@latest/dist/flowbitz.umd.js"></script>',
-                            "scriptTag",
-                          )
-                        }
-                      >
-                        {copyStates.scriptTag ? (
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                        ) : (
-                          <Copy className="w-4 h-4 text-white" />
-                        )}
-                      </Button>
-                    </div>
-
-                    <p className="text-paragraph large text-text-medium">
-                      Thats it! 🎉 You can now use FlowBitz animations in your
-                      Webflow project.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex gap-4 items-stretch">
-                <div className="flex flex-col items-center w-10">
-                  <div className="h-9 w-9 bg-muted-foreground/10 rounded-lg flex items-center justify-center text-foreground font-semibold">
-                    2
-                  </div>
-                  <div className="flex-1 w-px bg-foreground/20 mt-4" />
-                </div>
-                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
-                  <h2 className="text-heading-small text-foreground my-1">
-                    Adding FlowBitz Component
-                  </h2>
-
-                  <div className="flex flex-col gap-2">
-                    <p className="text-paragraph large semi text-foreground">
-                      Add Component Attributes
-                    </p>
-
-                    <p className="text-paragraph large text-text-medium">
-                      Add the wb-component attribute to any element in your
-                      Webflow project to enable animations. In Webflow, you can
-                      add custom attributes by selecting your element, going to{" "}
-                      <strong>Element Settings → Custom Attributes</strong>, and
-                      adding the attribute name and value.
-                    </p>
-
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                          <label className="text-paragraph large text-text-medium">
-                            Attribute Name
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              value="wb-component"
-                              readOnly
-                              className="w-full p-2.5 flex items-center justify-center text-attribute bg-base-high border border-foreground/10 rounded"
-                            />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-accent"
-                              onClick={() =>
-                                copyToClipboard("wb-component", "attributeName")
-                              }
-                            >
-                              {copyStates.attributeName ? (
-                                <CheckCircle className="w-4 h-4 text-green-500" />
-                              ) : (
-                                <Copy className="w-4 h-4" />
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                          <label className="text-paragraph large text-text-medium">
-                            Example Value
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              value="text-type"
-                              readOnly
-                              className="w-full p-2.5 flex items-center justify-center text-attribute bg-base-high border border-foreground/10 rounded"
-                            />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-accent"
-                              onClick={() =>
-                                copyToClipboard("text-type", "attributeValue")
-                              }
-                            >
-                              {copyStates.attributeValue ? (
-                                <CheckCircle className="w-4 h-4 text-green-500" />
-                              ) : (
-                                <Copy className="w-4 h-4" />
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex gap-4 items-stretch">
-                <div className="flex flex-col items-center w-10">
-                  <div className="h-9 w-9 bg-muted-foreground/10 rounded-lg flex items-center justify-center text-foreground font-semibold">
-                    3
-                  </div>
-                  <div className="flex-1 w-px bg-foreground/20 mt-4" />
-                </div>
-                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
-                  <h2 className="text-heading-small text-foreground my-1">
-                    Customize with Attributes
-                  </h2>
-
-                  <div className="relative w-full">
-                    <video
-                      className="rounded-lg border border-border shadow-lg"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="metadata"
-                    >
-                      <source
-                        src="https://www.slabpixel.dev/videos/flowbitz-tutorial.mp4"
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-
-                  <p className="text-paragraph large text-text-medium">
-                    Use additional attributes to customize animation behavior,
-                    timing, and appearance.{" "}
-                    <strong>
-                      {" "}
-                      Each FlowBitz component supports various attributes like
-                      wb-duration for timing control, wb-delay for staggered
-                      effects, wb-easing for smooth motion curves, wb-color for
-                      visual customization, and wb-trigger to control when
-                      animations start.{" "}
-                    </strong>
-                    These attributes work together to create unique, professional
-                    animations tailored to your design needs.
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 4 */}
-              <div className="flex gap-4 items-stretch">
-                <div className="flex flex-col items-center w-10">
-                  <div className="h-9 w-9 bg-muted-foreground/10 rounded-lg flex items-center justify-center text-foreground font-semibold">
-                    4
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0 p-4 bg-white rounded-lg flex flex-col gap-2">
-                  <h2 className="text-heading-small text-foreground my-1">
-                    Publish Your Site
-                  </h2>
-
-                  {/* Step 3: Publish */}
-                  <div className="flex flex-col gap-2">
-                    <p className="text-paragraph large semi text-foreground">
-                      Publish your Webflow site to see the animations in action!
-                    </p>
-
-                    <p className="text-paragraph large text-text-medium">
-                      Once published, your animations will work automatically. The
-                      script loads asynchronously and initializes all components
-                      on page load.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Installation FAQ Section */}
-            <div className="w-full max-w-[800px] flex flex-col gap-4">
-              <h2 className="inter-semi-32 installation text-foreground">
-                Frequently Asked Questions
-              </h2>
-
-              <div className="space-y-3">
-                {installationFAQItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="bg-base-medium rounded p-4 hover:bg-base-high transition-all duration-300"
-                  >
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => toggleFAQItem(index)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <h4 className="inter-med-16 pr-4 text-foreground">
-                          {item.question}
-                        </h4>
-                        <div className="flex items-center gap-2">
-                          {openFAQItems[index] ? (
-                            <ChevronUp className="w-5 h-5 text-muted-foreground" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    {openFAQItems[index] && (
-                      <div className="mt-4 pt-4">
-                        <div className="prose prose-sm max-w-none text-paragraph font-medium text-text-medium">
-                          <p className="whitespace-pre-line">{item.answer}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+      <div className="p-4 lg:p-6">
+        <InstallationGuide className="max-w-[640px] bg-white rounded-lg p-5 md:p-8" />
       </div>
     </>
   );
