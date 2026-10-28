@@ -73,6 +73,13 @@ const link = "text-foreground underline underline-offset-2";
           </details>
         ))}
         <div class="zigzag" />
+        <button
+          type="button"
+          data-open-faq
+          class="mt-3 text-[15px] leading-6 text-foreground/50 hover:text-foreground transition-colors"
+        >
+          More FAQ
+        </button>
       </div>
 
       <footer class="flex flex-col items-center gap-3 text-[13px] leading-5">
@@ -88,6 +95,19 @@ const link = "text-foreground underline underline-offset-2";
     </section>
   </div>
 </Base>
+
+<script>
+  // The FAQ popup lives in the sidebar island and opens on ?faq. Push it the way AstroRouter
+  // does for same-page query changes, so the island hears it without an Astro page swap.
+  // Delegated on document: Astro runs this once, and it must survive page swaps.
+  document.addEventListener("click", (e) => {
+    if (!(e.target instanceof Element) || !e.target.closest("[data-open-faq]")) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("faq", "");
+    window.history.pushState({ usr: null }, "", url);
+    window.dispatchEvent(new Event("flowbitz:location"));
+  });
+</script>
 
 <style>
   /* Zigzag rule from the design: a 1px black stroke at 20% opacity, repeated across. */

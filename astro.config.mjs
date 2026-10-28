@@ -12,6 +12,8 @@ export default defineConfig({
   outDir: "./dist",
   integrations: [react()],
   server: { port: 3000 },
+  // The FAQ is a popup now (FaqModal, opened with ?faq); keep old /faq links working.
+  redirects: { "/faq": "/?faq" },
   vite: {
     // Keep the existing VITE_* env names (Supabase keys) readable in the browser.
     envPrefix: ["VITE_", "PUBLIC_"],

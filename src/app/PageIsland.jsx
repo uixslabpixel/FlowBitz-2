@@ -13,7 +13,6 @@ import ComponentDetail from "./pages/ComponentDetail";
 import Installation from "./pages/Installation";
 import Support from "./pages/Support";
 import Showcase from "./pages/Showcase";
-import FAQ from "./pages/FAQ";
 import Release from "./pages/Release";
 import License from "./pages/License";
 import Blog from "./pages/Blog";
@@ -30,7 +29,6 @@ const PAGES = {
   templates: { paths: ["/templates", "/templates/:slug"], element: <Templates /> },
   installation: { paths: ["/installation"], element: <Installation /> },
   support: { paths: ["/support"], element: <Support /> },
-  faq: { paths: ["/faq"], element: <FAQ /> },
   showcase: { paths: ["/showcase"], element: <Showcase /> },
   blog: { paths: ["/blog"], element: <Blog /> },
   blogPost: { paths: ["/blog/:slug"], element: <BlogPost /> },

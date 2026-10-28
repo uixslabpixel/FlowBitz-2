@@ -11,7 +11,7 @@ const Support = () => {
   const navigate = useNavigate();
 
   const handleFAQ = () => {
-    navigate("/faq");
+    navigate("?faq");
   };
 
   const handleBugReport = () => {
