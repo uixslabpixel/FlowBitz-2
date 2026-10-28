@@ -91,12 +91,6 @@ const SHOWCASE_PROJECTS = [
     components: ["Split Text", "Smart Animate"],
   },
   {
-    name: "Mavence",
-    url: "https://mavencee.webflow.io",
-    description: "Business Solutions",
-    components: ["Split Text", "Smart Animate"],
-  },
-  {
     name: "Formahaus",
     url: "https://formahaus.webflow.io",
     image: "/showcase/formahaus.webp",
