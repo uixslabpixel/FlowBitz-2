@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 // Gallery card for a CMS-managed tool: cover image (or the name, until a cover is uploaded),
 // with the same hover chrome as EffectCard. An optional `hover` image slides up over the cover,
 // pushing it out, and settles from 105% to 100% as it lands. The whole card opens the tool's first link,
-// or an internal route when `to` is set (template detail pages).
+// or an internal route when `to` is set (template detail pages). With `frame` (a color), the cover
+// sits whole on that color instead of filling the card, for screenshots whose ratio isn't 4:3.
 
 // Shared by the cover and hover images so both legs of the push move as one.
 // The 102.5% start offset covers the 2.5% a 105% scale adds above the image's top edge.
@@ -13,7 +14,7 @@ const SLIDE = "transition-transform duration-500 [transition-timing-function:cub
 const PILL =
   "h-[22px] px-[9px] flex items-center rounded-[18px] translate-y-[calc(100%+8px)] transition-transform duration-300 ease-out group-hover:translate-y-0 group-focus-visible:translate-y-0";
 
-const ToolCard = ({ name, cover, hover, price, links = [], to }) => {
+const ToolCard = ({ name, cover, hover, price, links = [], to, frame }) => {
   const linkProps = to
     ? { as: Link, to }
     : { as: "a", href: links[0]?.url, target: "_blank", rel: "noopener noreferrer" };
@@ -24,8 +25,17 @@ const ToolCard = ({ name, cover, hover, price, links = [], to }) => {
       {...rest}
       aria-label={name}
       className="group relative block aspect-[4/3] rounded-lg overflow-hidden bg-white text-black"
+      style={frame ? { backgroundColor: frame } : undefined}
     >
-      {cover ? (
+      {cover && frame ? (
+        <img
+          src={cover}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="absolute inset-0 m-auto w-[94%] h-auto rounded-md pointer-events-none"
+        />
+      ) : cover ? (
         <img
           src={cover}
           alt=""
