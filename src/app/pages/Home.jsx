@@ -64,7 +64,11 @@ const Home = () => {
 
   const allComponents = useMemo(
     () =>
-      FEATURED_EFFECTS.map((key) => ({
+      // Art-directed cards lead; every other effect follows on its default card.
+      [
+        ...FEATURED_EFFECTS,
+        ...getFilteredComponentKeys().filter((key) => !FEATURED_EFFECTS.includes(key)),
+      ].map((key) => ({
         id: key,
         ...componentsMetadata[key],
       })),
