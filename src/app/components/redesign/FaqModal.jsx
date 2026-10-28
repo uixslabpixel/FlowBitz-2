@@ -79,7 +79,7 @@ const FaqModal = () => {
               Frequently asked questions
             </h2>
             <p className="text-[15px] leading-6 text-black/50">
-              Installing, using and customizing FlowBitz.
+              About the effects, templates and tools.
             </p>
           </div>
           <button

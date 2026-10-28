@@ -20,7 +20,7 @@ import { PageHeader } from "../components/redesign/AppShell.jsx";
 import SEO from "../components/SEO.jsx";
 import { useNavigate } from "react-router-dom";
 import { seoPages, jsonLd } from "../content/brandCopy.js";
-import { faqItems } from "../content/faq.js";
+import { faqItems, faqGroups } from "../content/faq.js";
 
 const FAQ = () => {
   const [openItems, setOpenItems] = useState({});
@@ -33,21 +33,7 @@ const FAQ = () => {
     }));
   };
 
-  const faqCategories = [
-    { key: "installation", label: "Installation", icon: Wrench },
-    { key: "usage", label: "Usage", icon: Lightbulb },
-    { key: "customization", label: "Customization", icon: Palette },
-    { key: "troubleshooting", label: "Troubleshooting", icon: Settings },
-    { key: "general", label: "General", icon: GeneralHelp },
-  ];
-
-
-  const groupedItems = faqCategories
-    .map((category) => ({
-      ...category,
-      items: faqItems.filter((item) => item.category === category.key),
-    }))
-    .filter((category) => category.items.length > 0);
+  const groupedItems = faqGroups;
 
   const handleBugReport = () => {
     window.open(

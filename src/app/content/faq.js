@@ -1,147 +1,129 @@
 // FAQ content, shared by the /faq page and the FAQ popup.
 
 export const faqCategories = [
-  { key: "installation", label: "Installation" },
-  { key: "usage", label: "Usage" },
-  { key: "customization", label: "Customization" },
+  { key: "start", label: "Getting started" },
+  { key: "effects", label: "Effects" },
+  { key: "templates-tools", label: "Templates and tools" },
   { key: "troubleshooting", label: "Troubleshooting" },
-  { key: "general", label: "General" },
+  { key: "general", label: "License and support" },
 ];
 
 export const faqItems = [
-  // Installation
+  // Getting started
   {
-    question: "How do I install FlowBitz components?",
+    question: "What is FlowBitz?",
     answer:
-      "Add one FlowBitz script tag in your Webflow project custom code, then set wb-component and related wb-* attributes on elements. One script, consistent motion across pages.",
-    category: "installation",
+      "A collection of effects, templates and tools our team built for client projects and our own experiments. Instead of using them once, we share them so others can use them too.",
+    category: "start",
+  },
+  {
+    question: "How do I add the effects to my site?",
+    answer:
+      "Add one script tag to your site, before the closing </body> tag. Then give an element the attribute wb-component with the effect's name as the value, for example wb-component=\"split-text\". Publish, and the effect runs.",
+    category: "start",
+  },
+  {
+    question: "Do I need to write code?",
+    answer:
+      "No. Effects are set up with attributes, so anything that lets you add a script and custom attributes to elements will work.",
+    category: "start",
   },
   {
     question: "Do I need to install GSAP separately?",
     answer:
-      "No! FlowBitz includes GSAP and all necessary plugins bundled in. Just add our single script tag and everything will work automatically.",
-    category: "installation",
+      "No. GSAP and the plugins the effects need are bundled into the FlowBitz script.",
+    category: "start",
   },
   {
-    question: "Can I use FlowBitz with other frameworks besides Webflow?",
+    question: "Which version of the script should I use?",
     answer:
-      "FlowBitz is specifically designed for Webflow, but the core JavaScript can be adapted for other frameworks. However, we recommend using it with Webflow for the best experience.",
-    category: "installation",
-  },
-  {
-    question: "What's the difference between the UMD and ES module versions?",
-    answer:
-      "The UMD version works in any environment and is recommended for most users. The ES module version is for modern bundlers. For Webflow, use the UMD version.",
-    category: "installation",
+      "Use the script tag (the UMD build) for most sites. If your project uses a bundler, there is also an ES module build.",
+    category: "start",
   },
 
-  // Usage
+  // Effects
   {
-    question: "Do I need to know JavaScript to use FlowBitz?",
+    question: "Can I customize an effect?",
     answer:
-      "You do not need to write custom GSAP or JavaScript. FlowBitz is configured with wb-* attributes in Webflow—different from maintaining your own animation codebase on every project.",
-    category: "usage",
+      "Yes. Each effect has its own wb-* attributes for things like duration, easing, speed and colors, for example wb-duration, wb-ease or wb-colors. Every effect page lists the attributes it supports.",
+    category: "effects",
   },
   {
-    question: "How do I add a component to my Webflow project?",
+    question: "Can effects start when they scroll into view?",
     answer:
-      "1. Add the FlowBitz script to your project's custom code section. 2. Select any text element in Webflow. 3. Go to Element Settings → Custom Attributes. 4. Add 'wb-component' as the attribute name and the component name (like 'split-text') as the value. 5. Publish your site!",
-    category: "usage",
+      "Many do. Where an effect supports it, wb-trigger-on-view turns this on or off, and wb-root-margin sets how far into view the element must be before it starts.",
+    category: "effects",
   },
   {
-    question: "Can I use multiple components on the same page?",
+    question: "Can I use several effects on one page?",
     answer:
-      "Yes, you can use multiple components on the same page, but we recommend limiting it to 2-3 components to maintain good performance and user experience.",
-    category: "usage",
+      "Yes. Each tagged element runs on its own. Heavier background effects draw on a canvas, so test the page on slower phones if you stack several of them.",
+    category: "effects",
   },
   {
-    question: "Will FlowBitz work on mobile devices?",
+    question: "Do the effects work on phones?",
     answer:
-      "Yes, all components are fully responsive and optimized for mobile devices. However, consider disabling some effects on mobile for better performance using Webflow's responsive design features.",
-    category: "usage",
+      "Yes. If an effect feels heavy on small screens, hide that element or use a simpler version of it at that size with your own CSS.",
+    category: "effects",
   },
 
-  // Customization
+  // Templates and tools
   {
-    question: "Can I customize the animations?",
+    question: "What are the templates?",
     answer:
-      "Absolutely! Each component comes with various attributes to customize timing, easing, colors, and behavior. Check the component documentation for all available customization options.",
-    category: "customization",
+      "Complete website templates, sold individually. Each template page shows the price and what is included.",
+    category: "templates-tools",
   },
   {
-    question: "How do I change animation timing and delays?",
+    question: "What are the tools?",
     answer:
-      "Most components have attributes like 'wb-delay', 'wb-duration', and 'wb-stagger-delay' that let you control timing. Check each component's documentation for specific attributes.",
-    category: "customization",
-  },
-  {
-    question: "Can I change colors and styling?",
-    answer:
-      "Yes! Many components support color customization through attributes like 'wb-color', 'wb-gradient', and 'wb-text-color'. You can also use CSS to override styles if needed.",
-    category: "customization",
-  },
-  {
-    question: "How do I make animations trigger on scroll?",
-    answer:
-      "Most components automatically trigger on scroll by default. You can control this with attributes like 'wb-trigger' and 'wb-scroll-offset' to customize when animations start.",
-    category: "customization",
+      "Free web tools for making visuals, such as Banknote Engraver, Image Ink Bleed and LED Tile Maker. They open in your browser, with nothing to install.",
+    category: "templates-tools",
   },
 
   // Troubleshooting
   {
-    question: "My animations aren't working. What should I check?",
+    question: "An effect isn't running. What should I check?",
     answer:
-      "1. Make sure the FlowBitz script is loaded. 2. Check that you have the correct wb-component attribute. 3. Verify the component name is spelled correctly. 4. Check browser console for errors. 5. Ensure your element has text content.",
+      "1. The FlowBitz script is on the published page. 2. The element has the wb-component attribute. 3. The effect name is spelled exactly as on its page. 4. The browser console shows no errors.",
     category: "troubleshooting",
   },
   {
-    question: "The component is working but looks different than expected.",
+    question: "The effect runs but looks different from the preview.",
     answer:
-      "This is usually due to CSS conflicts. Check if your Webflow styles are overriding FlowBitz styles. Try adding !important to FlowBitz styles or adjusting your CSS specificity.",
+      "Your site's own styles are usually the cause, such as font, line height, or overflow on a parent element. Check the effect page's notes, since some effects need a specific element or a set height.",
     category: "troubleshooting",
   },
   {
-    question: "Animations are slow or choppy on mobile.",
+    question: "The page feels slow with effects on.",
     answer:
-      "This is common on mobile devices. Consider reducing the number of components, using simpler animations, or disabling effects on mobile using Webflow's responsive design features.",
-    category: "troubleshooting",
-  },
-  {
-    question: "The component doesn't work with certain Webflow elements.",
-    answer:
-      "FlowBitz works best with text elements. Some complex Webflow elements or nested structures might not work properly. Try using simpler text elements or check the component documentation for compatibility notes.",
+      "Use fewer canvas-based background effects on one page, and lower their particle count or speed where the effect has attributes for it.",
     category: "troubleshooting",
   },
 
-  // General
+  // License and support
   {
-    question: "Are FlowBitz components free to use?",
+    question: "Is it free?",
     answer:
-      "Yes—the core FlowBitz library is free and open source for personal and commercial Webflow projects. Use, modify, and distribute per the MIT license.",
+      "The effects library and the tools are free, and the effects library is open source under the MIT license. Templates are sold individually.",
     category: "general",
   },
   {
-    question: "Can I use FlowBitz in commercial projects?",
+    question: "Can I use it on client projects?",
     answer:
-      "Absolutely! FlowBitz is free for both personal and commercial use. There are no licensing restrictions or fees.",
+      "Yes. The effects library is free for personal and commercial projects under the MIT license.",
     category: "general",
   },
   {
-    question: "How can I contribute to FlowBitz?",
+    question: "How can I contribute?",
     answer:
-      "We welcome contributions! You can report bugs, suggest features, or submit pull requests on our GitHub repository. Check our contributing guidelines for more information.",
+      "Report bugs, suggest features or open a pull request on the FlowBitz GitHub repository.",
     category: "general",
   },
   {
-    question: "Will there be more components added?",
+    question: "Where do I get help?",
     answer:
-      "Yes! We're constantly working on new components and improvements. Follow our GitHub repository to stay updated with the latest releases and announcements.",
-    category: "general",
-  },
-  {
-    question: "How do I get support if I can't find the answer here?",
-    answer:
-      "If you can't find the answer in our FAQ, you can contact us through our support page, open an issue on GitHub, or reach out to us at hello@slabpixel.com.",
+      "Send us a message from the sidebar, open an issue on GitHub, or email hello@slabpixel.com.",
     category: "general",
   },
 ];
