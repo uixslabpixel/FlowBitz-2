@@ -1,47 +1,39 @@
 # FlowBitz: handoff context
 
-Paused 2026-11-03 in the middle of re-recording the home-grid preview videos. Read this before continuing.
+Updated 2026-11-03. All 30 home-grid preview videos are re-recorded with the warm-up fix. Nothing is pending.
 
 ## Where things stand
 
 - Live site: https://flowbitz-redesign.vercel.app (Vercel project `uix-4102/flowbitz-redesign`).
-  It runs commit `44247f7` ("Warm up each card before filming its preview"): 18 cards have the new
-  recordings, and the 12 listed below still have the earlier ones (2x and sRGB, but possibly with the first-frame glitch).
-- Since that deploy, `scripts/record-previews.mjs` gained a **warm-up hover**: hover the card for 1.5s
-  so fonts and images load, leave, hover again, and wait 150ms before filming. This fixes a glitch in the first
+- All 30 cards have recordings made with the **warm-up hover** in `scripts/record-previews.mjs`: hover the card for
+  1.5s so fonts and images load, leave, hover again, and wait 150ms before filming. This fixed a glitch in the first
   frames: the static poster flashed, and Text Pressure briefly showed a fallback serif before Roboto Flex loaded.
-- All 30 cards were being re-recorded with that fix. The run was stopped after 18 of them.
+- Checked: all 90 files in `public/previews/` are 1280x960, all 60 videos are tagged `color_transfer=iec61966-2-1`,
+  the first ~12 frames show no poster flash or font swap, and each poster shows its effect mid-action.
+- Shimmer Button's shimmer only plays on hover, so its 2.5s poster fell between sweeps. Its poster time is now 3.55s
+  (`POSTER_AT_FOR`). The sweep follows the cursor path, so it can drift by a few frames between runs; check the
+  poster after re-recording it.
+- The mobile navbar (below `lg`) matches Figma node 913:2527 (file `Qk6OJ3HZnRZVdoHVC6K0HV`): a 60px bar,
+  a two-line menu icon that becomes an X (`public/images/nav/`), and the pixel easter-egg mark hidden on mobile
+  (the user's choice).
+- Not done: the page heading and filter chips below the mobile bar are larger than in that Figma frame.
 
-### Re-recorded with the warm-up fix (committed)
-split-text, gradient-text, text-type, decrypted-text, variable-proximity, count-up, blur-text,
-scramble-text, rotating-text, shuffle, roll-text, magnetic-button, 3d-card-hover, outline-gradient,
-image-trail, hover-zoom, shiny-text, text-pressure
+## Re-recording previews
 
-### Still to re-record (12)
-tooltip-text, gradient-button, ripple-button, pulse-button, shimmer-button, smart-animate,
-matrix-rain, firefly-background, dot-grid, star-field, particles-network, flow-field
-
-## How to finish
-
-1. Run the dev server: `npm run dev` (Astro on http://localhost:4321).
-2. Record the rest:
-   ```
-   node scripts/record-previews.mjs tooltip-text gradient-button ripple-button pulse-button shimmer-button smart-animate matrix-rain firefly-background dot-grid star-field particles-network flow-field
-   ```
+1. Run the dev server: `npm run dev`. In the cloud environment it served on http://localhost:3000, so set
+   `BASE_URL=http://localhost:3000`. The default is :4321.
+2. Run `node scripts/record-previews.mjs <id> [<id> ...]`.
    This needs **Google Chrome** (playwright-core with `channel: "chrome"`), **ffmpeg/ffprobe** (with libvpx-vp9
    and libx264), and **python3 with Pillow** (posters are made as WebP). If the environment has no Chrome, switch
-   the launch to a bundled Chromium (`npx playwright install chromium` and drop `channel`).
-   Each card takes about 30–40s.
-3. Check the output:
-   - 60 files in `public/previews/` at 1280x960, each tagged `color_transfer=iec61966-2-1`:
-     `ffprobe -v error -select_streams v -show_entries stream=width,height,color_transfer -of csv=p=0 <file>`
-   - The first ~12 frames of each new video show no poster flash or font swap.
-   - Posters (`public/previews/<id>.webp`) show the effect mid-action, not a blank or transitional frame.
-4. Commit, then push to `main`.
-5. Deploy. The Vercel project is **not git-connected**, so deploy manually from a clean checkout of `origin/main`.
-   The user used a worktree at `../flowbitz-deploy`, detached at `origin/main`:
-   `npm install && npm run build && npx vercel --prod --yes`.
-   This needs a logged-in Vercel CLI. In cloud you may need a `VERCEL_TOKEN`; ask the user.
+   the launch to a bundled Chromium and drop `channel`. Each card takes about 30–40s.
+3. Check sizes and tags with
+   `ffprobe -v error -select_streams v -show_entries stream=width,height,color_transfer -of csv=p=0 <file>`,
+   then look at the first frames and the posters.
+
+## Deploying
+
+The Vercel project is **not git-connected**, so deploy manually from a clean checkout of `origin/main`
+(`npm install && npm run build && npx vercel --prod --yes`). This needs a logged-in Vercel CLI or a `VERCEL_TOKEN`.
 
 ## How the recorder works (scripts/record-previews.mjs)
 
