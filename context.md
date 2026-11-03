@@ -14,8 +14,12 @@ Updated 2026-11-03. All 30 home-grid preview videos are re-recorded with the war
   (`POSTER_AT_FOR`). The sweep follows the cursor path, so it can drift by a few frames between runs; check the
   poster after re-recording it.
 - The mobile navbar (below `lg`) matches Figma node 913:2527 (file `Qk6OJ3HZnRZVdoHVC6K0HV`): a 60px bar,
-  a two-line menu icon that becomes an X (`public/images/nav/`), and the pixel easter-egg mark hidden on mobile
-  (the user's choice).
+  two 26px/3px lines that morph into the design's X, and the pixel easter-egg mark hidden on mobile (the user's
+  choice). When the menu opens, the card floats over the page (the bar keeps a 76px slot), each menu line rises
+  in 35ms apart at full opacity (the user rejected fades), `main` dims to 40% via `data-menu-open` on
+  `#main-content` (see `Base.astro`), and the scroller is locked. Tapping the page, Esc, or widening to
+  desktop closes it. The user reviews motion changes as recorded before/after clips in a Claude artifact
+  before anything is pushed.
 - Not done: the page heading and filter chips below the mobile bar are larger than in that Figma frame.
 
 ## Re-recording previews
