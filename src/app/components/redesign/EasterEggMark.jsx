@@ -1,22 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import gsap from "gsap";
 
 // The sidebar's 3x3 pixel mark hides one easter egg per page load (see pickEgg):
 //   glider     — click: one pixel hops, the mark becomes a Game of Life glider and flies off-screen
 //   rain       — click: the pixels fall to the bottom of the viewport, bounce, and fly home
-//   snake      — click: the pixels race one lap around the sidebar's edge
-//   tetris     — click: the mark drops row by row to the sidebar floor and clears a line
 //   screensaver— click: the mark drifts around the viewport bouncing off the edges
 //   firework   — click: every pixel bursts into falling sparks, then the mark pops back
-//   dice       — click: the grid tumbles through die faces and lands on a random number
 //   tagalong   — click: the pixels chase the cursor as a chain, then fly home
-//   shy        — hover near: the pixels scatter away from the cursor and spring back
 const PATTERN = [1, 0, 1, 0, 1, 1, 0, 0, 1];
 const CELL = 10;
 // Pixels are white and blend with `exclusion`: black on light surfaces, inverted over dark ones.
 const INK = "#fff";
 const BLEND = "exclusion";
-const EGGS = ["glider", "rain", "snake", "tetris", "screensaver", "firework", "dice", "tagalong", "shy"];
+const EGGS = ["glider", "rain", "screensaver", "firework", "tagalong"];
 const BAG_KEY = "flowbitz:egg-bag";
 
 // Shuffle bag: each egg shows up once per cycle of refreshes, in random order. The queue lives
@@ -191,66 +187,6 @@ async function playRain(mark, cells) {
   layer.remove();
 }
 
-// --- snake ------------------------------------------------------------------------------
-async function playSnake(mark) {
-  const aside = mark.closest("aside");
-  if (!aside) return;
-  const r = aside.getBoundingClientRect();
-  const cols = Math.floor(r.width / CELL), rows = Math.floor(r.height / CELL);
-  const path = [];
-  for (let y = 0; y < rows; y++) path.push([cols - 1, y]); // right edge, down
-  for (let x = cols - 2; x >= 0; x--) path.push([x, rows - 1]); // bottom, left
-  for (let y = rows - 2; y >= 0; y--) path.push([0, y]); // left edge, up
-  for (let x = 1; x < cols - 1; x++) path.push([x, 0]); // top, right
-
-  const layer = createLayer();
-  const segments = Array.from({ length: 5 }, () => createPixel(layer));
-  mark.style.visibility = "hidden";
-  const stepMs = Math.max(8, 2600 / path.length);
-
-  for (let head = 0; head < path.length + segments.length; head++) {
-    segments.forEach((el, k) => {
-      const idx = head - k;
-      const on = idx >= 0 && idx < path.length;
-      el.style.opacity = on ? 1 : 0;
-      if (on) el.style.transform = `translate(${r.left + path[idx][0] * CELL}px, ${r.top + path[idx][1] * CELL}px)`;
-    });
-    await sleep(stepMs);
-  }
-  layer.remove();
-}
-
-// --- tetris -----------------------------------------------------------------------------
-async function playTetris(mark) {
-  const aside = mark.closest("aside");
-  if (!aside) return;
-  const side = aside.getBoundingClientRect();
-  const start = mark.getBoundingClientRect();
-  const floorY = Math.min(side.bottom, window.innerHeight) - CELL;
-  const landY = floorY - 2 * CELL;
-
-  const layer = createLayer();
-  const piece = createSprite(layer);
-  mark.style.visibility = "hidden";
-  let y = start.top, delay = 80;
-  moveTo(piece, start.left, y);
-  while (y < landY) {
-    await sleep(delay);
-    delay = Math.max(14, delay * 0.9);
-    y = Math.min(landY, y + CELL);
-    moveTo(piece, start.left, y);
-  }
-
-  const bar = document.createElement("div");
-  bar.style.cssText = `position:absolute;left:${side.left}px;top:${floorY}px;height:${CELL}px;width:0;background:${INK};`;
-  layer.appendChild(bar);
-  await gsap.fromTo(bar, { width: 0 }, { width: side.width, duration: 0.22, ease: "power1.out" });
-  // Three hard blinks, ending hidden.
-  await gsap.to(bar, { keyframes: { opacity: [1, 0, 1, 0, 1, 0] }, duration: 0.48, ease: "none" });
-  layer.remove();
-  await sleep(150);
-}
-
 // --- screensaver ------------------------------------------------------------------------
 async function playScreensaver(mark) {
   const home = mark.getBoundingClientRect();
@@ -301,23 +237,6 @@ async function playFirework(mark, cells) {
   await sleep(200);
 }
 
-// --- dice -------------------------------------------------------------------------------
-async function playDice(mark, cells) {
-  const FACES = [[4], [0, 8], [0, 4, 8], [0, 2, 6, 8], [0, 2, 4, 6, 8], [0, 2, 3, 5, 6, 8]];
-  const show = (on) => cells.forEach((c, i) => (c.style.background = on.includes(i) ? INK : "transparent"));
-  const result = FACES[Math.floor(Math.random() * FACES.length)];
-  let delay = 45, rot = 0;
-  for (let n = 0; n < 12; n++) {
-    show(n === 11 ? result : FACES[Math.floor(Math.random() * FACES.length)]);
-    rot += 90;
-    gsap.fromTo(mark, { rotation: rot - 90 }, { rotation: rot, duration: delay / 1000, ease: "none" });
-    await sleep(delay);
-    delay *= 1.22;
-  }
-  await gsap.fromTo(mark, { scale: 1 }, { scale: 1.25, duration: 0.13, ease: "power1.inOut", yoyo: true, repeat: 1 });
-  await sleep(1300);
-}
-
 // --- tag along --------------------------------------------------------------------------
 async function playTagAlong(mark, cells) {
   const start = mark.getBoundingClientRect();
@@ -351,55 +270,6 @@ async function playTagAlong(mark, cells) {
   layer.remove();
 }
 
-// --- shy (continuous, hover-driven) ------------------------------------------------------
-const useShyPixels = (enabled, cellsRef) => {
-  useEffect(() => {
-    if (!enabled) return;
-    const R = 90, PUSH = 28;
-    let frame = 0, displaced = false;
-
-    const onMove = (e) => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const cells = cellsRef.current;
-        // Measure from the untransformed grid: a cell's own rect is mid-transition while it
-        // springs, so subtracting its target offset gives the wrong resting spot (jitter).
-        const g = cells[0].parentElement.getBoundingClientRect();
-        let any = false;
-        cells.forEach((c, i) => {
-          if (!PATTERN[i]) return;
-          const cx = g.left + (i % 3) * CELL + CELL / 2, cy = g.top + Math.floor(i / 3) * CELL + CELL / 2;
-          const dx = cx - e.clientX, dy = cy - e.clientY, d = Math.hypot(dx, dy) || 1;
-          const f = d < R ? (1 - d / R) * PUSH : 0;
-          c._dx = (dx / d) * f;
-          c._dy = (dy / d) * f;
-          if (f) any = true;
-          c.style.transform = f ? `translate(${c._dx}px, ${c._dy}px)` : "";
-        });
-        displaced = any;
-      });
-    };
-    const onLeave = () => {
-      // A queued frame would re-push the cells after we reset them.
-      cancelAnimationFrame(frame);
-      if (!displaced) return;
-      cellsRef.current.forEach((c) => {
-        c._dx = c._dy = 0;
-        c.style.transform = "";
-      });
-      displaced = false;
-    };
-
-    window.addEventListener("mousemove", onMove, { passive: true });
-    document.addEventListener("mouseleave", onLeave);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseleave", onLeave);
-    };
-  }, [enabled, cellsRef]);
-};
-
 const EasterEggMark = ({ className = "" }) => {
   // Drawn once per page load from the shuffle bag; SideNav persists across routes.
   const [egg] = useState(() => {
@@ -410,8 +280,6 @@ const EasterEggMark = ({ className = "" }) => {
   const markRef = useRef(null);
   const cellsRef = useRef([]);
   const busy = useRef(false);
-
-  useShyPixels(egg === "shy", cellsRef);
 
   const run = async (play) => {
     if (busy.current) return;
@@ -431,11 +299,8 @@ const EasterEggMark = ({ className = "" }) => {
   const PLAYS = {
     glider: playGlider,
     rain: playRain,
-    snake: playSnake,
-    tetris: playTetris,
     screensaver: playScreensaver,
     firework: playFirework,
-    dice: playDice,
     tagalong: playTagAlong,
   };
   const onClick = () => PLAYS[egg] && run(PLAYS[egg]);
@@ -446,17 +311,14 @@ const EasterEggMark = ({ className = "" }) => {
       aria-hidden="true"
       data-egg={egg || undefined}
       onClick={onClick}
-      className={`grid grid-cols-3 select-none ${egg && egg !== "shy" ? "cursor-pointer" : ""} ${className}`}
+      className={`grid grid-cols-3 select-none ${egg ? "cursor-pointer" : ""} ${className}`}
       style={{ width: CELL * 3, height: CELL * 3, mixBlendMode: BLEND }}
     >
       {PATTERN.map((on, i) => (
         <span
           key={i}
           ref={(el) => (cellsRef.current[i] = el)}
-          style={{
-            background: on ? INK : "transparent",
-            transition: egg === "shy" ? "transform .25s cubic-bezier(.34,1.56,.64,1)" : undefined,
-          }}
+          style={{ background: on ? INK : "transparent" }}
         />
       ))}
     </div>
