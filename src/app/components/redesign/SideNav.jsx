@@ -256,81 +256,115 @@ const SideNav = () => {
 
   useEffect(() => setMenuOpen(false), [pathname]);
 
+  // While the mobile menu is open: the page behind it dims to 40% (Base.astro styles main off
+  // data-menu-open), the page scroller is locked, Esc closes it, and widening to desktop closes it.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const scroller = document.getElementById("main-content");
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const close = () => setMenuOpen(false);
+    const onKey = (e) => e.key === "Escape" && close();
+    const onWiden = (e) => e.matches && close();
+
+    scroller?.setAttribute("data-menu-open", "");
+    if (scroller) scroller.style.overflowY = "hidden";
+    document.addEventListener("keydown", onKey);
+    desktop.addEventListener("change", onWiden);
+    return () => {
+      scroller?.removeAttribute("data-menu-open");
+      if (scroller) scroller.style.overflowY = "";
+      document.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onWiden);
+    };
+  }, [menuOpen]);
+
   return (
-    <aside className="relative lg:fixed lg:left-2 lg:top-2 lg:bottom-2 lg:w-[250px] m-2 lg:m-0 bg-white rounded-md px-4 lg:p-[25px] flex flex-col text-black font-inter z-20 overflow-y-auto overflow-x-hidden">
-      <EasterEggMark className="max-lg:hidden absolute top-0 right-0 z-10" />
-
-      {/* Mobile: a 60px bar with the logo and a two-line menu button that morphs into an X. */}
-      <div className="flex items-center justify-between h-[60px] lg:h-auto shrink-0">
-        <Link to="/" aria-label="FlowBitz home" className="block w-fit">
-          <Logo fill="black" className="h-[28.17px] lg:h-[34px] w-auto" />
-        </Link>
-        <button
-          type="button"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-expanded={menuOpen}
-          aria-controls="side-nav-links"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          className="lg:hidden relative mx-[6px] w-[26px] h-[26px] rounded-[26px]"
-        >
-          <MenuLine open={menuOpen} edge="top" />
-          <MenuLine open={menuOpen} edge="bottom" />
-        </button>
-      </div>
-
-      {/* Mobile: the panel grows from 0fr to 1fr rows, so its height animates to its real content
-          height; the sections then fade down in a short stagger. Desktop: always shown, no motion. */}
-      <div
-        id="side-nav-links"
-        className={`grid lg:flex lg:flex-col lg:flex-1 lg:visible motion-safe:transition-[grid-template-rows,visibility] ${
-          menuOpen
-            ? "grid-rows-[1fr] visible duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
-            : "grid-rows-[0fr] invisible duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+    // Mobile: this box holds the bar's place in the page (60px bar + 8px margins), and the menu card
+    // floats over the content below it when it opens. Desktop: the sidebar is fixed, so the box is empty.
+    <div className="relative z-30 max-lg:h-[76px]">
+      {/* Tapping the dimmed page closes the menu; it also keeps the page from taking taps meanwhile. */}
+      {menuOpen && (
+        <div aria-hidden="true" onClick={() => setMenuOpen(false)} className="lg:hidden fixed inset-0" />
+      )}
+      <aside
+        className={`relative max-lg:absolute max-lg:inset-x-0 max-lg:top-0 max-lg:max-h-[calc(100dvh-16px)] overscroll-contain lg:fixed lg:left-2 lg:top-2 lg:bottom-2 lg:w-[250px] m-2 lg:m-0 bg-white rounded-md px-4 lg:p-[25px] flex flex-col text-black font-inter z-20 overflow-y-auto overflow-x-hidden max-lg:motion-safe:transition-shadow max-lg:duration-500 ${
+          menuOpen ? "max-lg:shadow-[0_16px_40px_rgba(26,9,9,0.10)]" : ""
         }`}
       >
+        <EasterEggMark className="max-lg:hidden absolute top-0 right-0 z-10" />
+
+        {/* Mobile: a 60px bar with the logo and a two-line menu button that morphs into an X. */}
+        <div className="flex items-center justify-between h-[60px] lg:h-auto shrink-0">
+          <Link to="/" aria-label="FlowBitz home" className="block w-fit">
+            <Logo fill="black" className="h-[28.17px] lg:h-[34px] w-auto" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-controls="side-nav-links"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="lg:hidden relative mx-[6px] w-[26px] h-[26px] rounded-[26px]"
+          >
+            <MenuLine open={menuOpen} edge="top" />
+            <MenuLine open={menuOpen} edge="bottom" />
+          </button>
+        </div>
+
+        {/* Mobile: the panel grows from 0fr to 1fr rows, so its height animates to its real content
+            height; the sections then fade down in a short stagger. Desktop: always shown, no motion. */}
         <div
-          ref={linksRef}
-          className="relative min-h-0 overflow-hidden lg:overflow-visible flex flex-col lg:flex-1"
+          id="side-nav-links"
+          className={`grid lg:flex lg:flex-col lg:flex-1 lg:visible motion-safe:transition-[grid-template-rows,visibility] ${
+            menuOpen
+              ? "grid-rows-[1fr] visible duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+              : "grid-rows-[0fr] invisible duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+          }`}
         >
-          <span
-            aria-hidden="true"
-            className={`hidden lg:block absolute -left-[25px] top-0 w-2 h-2 bg-black ${
-              marker.animate
-                ? "transition-transform duration-500 [transition-timing-function:cubic-bezier(0.65,0,0.35,1)]"
-                : ""
-            } ${marker.visible ? "" : "opacity-0"}`}
-            style={{
-              transform: `translateY(${marker.y}px) rotate(${marker.rotation}deg)`,
-            }}
-          />
-          <NavGroup
-            items={PRIMARY_NAV}
-            pathname={pathname}
-            className="pb-6 lg:pt-6"
-            open={menuOpen}
-            firstStep={0}
-          />
-          <Rise open={menuOpen} step={3}>
-            <WavyDivider />
-          </Rise>
-          <NavGroup
-            items={SECONDARY_NAV}
-            pathname={pathname}
-            className="pt-6"
-            open={menuOpen}
-            firstStep={4}
-          />
-          <div className="flex flex-col py-6 lg:py-0 lg:mt-auto">
-            <Rise open={menuOpen} step={6}>
-              <RequestFeatureButton />
+          <div
+            ref={linksRef}
+            className="relative min-h-0 overflow-hidden lg:overflow-visible flex flex-col lg:flex-1"
+          >
+            <span
+              aria-hidden="true"
+              className={`hidden lg:block absolute -left-[25px] top-0 w-2 h-2 bg-black ${
+                marker.animate
+                  ? "transition-transform duration-500 [transition-timing-function:cubic-bezier(0.65,0,0.35,1)]"
+                  : ""
+              } ${marker.visible ? "" : "opacity-0"}`}
+              style={{
+                transform: `translateY(${marker.y}px) rotate(${marker.rotation}deg)`,
+              }}
+            />
+            <NavGroup
+              items={PRIMARY_NAV}
+              pathname={pathname}
+              className="pb-6 lg:pt-6"
+              open={menuOpen}
+              firstStep={0}
+            />
+            <Rise open={menuOpen} step={3}>
+              <WavyDivider />
             </Rise>
-            <Rise open={menuOpen} step={7}>
-              <ReportBugButton />
-            </Rise>
+            <NavGroup
+              items={SECONDARY_NAV}
+              pathname={pathname}
+              className="pt-6"
+              open={menuOpen}
+              firstStep={4}
+            />
+            <div className="flex flex-col py-6 lg:py-0 lg:mt-auto">
+              <Rise open={menuOpen} step={6}>
+                <RequestFeatureButton />
+              </Rise>
+              <Rise open={menuOpen} step={7}>
+                <ReportBugButton />
+              </Rise>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </div>
   );
 };
 

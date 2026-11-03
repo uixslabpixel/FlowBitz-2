@@ -71,13 +71,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <!-- Shared frame: #main-content owns the page scroll (body is overflow:hidden). The sidebar
-         island is persisted, so Astro page swaps only replace <main>. -->
+         island is persisted, so Astro page swaps only replace <main>. The open mobile menu sets
+         data-menu-open on #main-content, which dims <main> to 40%. -->
     <div
       id="main-content"
       class="relative h-dvh overflow-y-auto overflow-x-hidden bg-background text-foreground font-inter"
     >
       <SideNavIsland client:only="react" transition:persist="sidenav" />
-      <main class="relative lg:pl-[258px] min-w-0"><slot /></main>
+      <main class="relative lg:pl-[258px] min-w-0 transition-opacity duration-300 [[data-menu-open]_&]:opacity-40"><slot /></main>
     </div>
   </body>
 </html>
