@@ -1649,9 +1649,10 @@ class ImageTrailAnimator {
       // Preload all images before creating DOM elements
       const loadedImages = await this.preloadAllImages(config.images);
       
-      // Filter config.images to only include successfully loaded images
-      const validImageUrls = loadedImages.map(img => img.src);
-      config.images = config.images.filter(url => validImageUrls.includes(url));
+      // Filter config.images to only include successfully loaded images. img.src is always absolute,
+      // so resolve each URL the same way, or relative paths ("/images/a.webp") never match.
+      const validImageUrls = new Set(loadedImages.map(img => img.src));
+      config.images = config.images.filter(url => validImageUrls.has(new URL(url, document.baseURI).href));
       
       if (config.images.length === 0) {
         console.error('ImageTrail: No valid images to display');

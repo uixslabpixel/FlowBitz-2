@@ -801,7 +801,7 @@ export const componentsMetadata = {
     description: 'Variable font pressure from cursor proximity—expressive display type',
     category: 'text',
     file: 'textPressure.js',
-    installationNotes: 'Requires variable fonts (like Compressa VF, Recursive, Roboto Flex). Works with any text element. The component dynamically changes font weight, width, and italic based on mouse proximity.',
+    installationNotes: 'Requires variable fonts (like Roboto Flex, Recursive). Works with any text element. The component dynamically changes font weight, width, and italic based on mouse proximity.',
     hoverPreview: false,
     attributes: [
       {
@@ -824,7 +824,6 @@ export const componentsMetadata = {
         inputType: "select",
         options: [
           { value: "inherit", label: "Inherit from Webflow" },
-          { value: "Compressa VF", label: "Compressa VF (Variable Font)" },
           { value: "Recursive", label: "Recursive (Variable Font)" },
           { value: "Roboto Flex", label: "Roboto Flex (Variable Font)" },
           { value: "Source Sans 3", label: "Source Sans 3 (Variable Font)" },
@@ -895,7 +894,7 @@ export const componentsMetadata = {
     ],
     example: {
       title: "Text Pressure Effect",
-      code: '<h1 wb-component="text-pressure" wb-font-family="Compressa VF" class="lg:text-[160px] text-[80px] lg:w-[570px] w-[300px]">PRESSURE!</h1>',
+      code: '<h1 wb-component="text-pressure" wb-font-family="Roboto Flex" class="lg:text-[160px] text-[80px] lg:w-[570px] w-[300px]">PRESSURE!</h1>',
       description: 'Weight, width, and italic shift with cursor—built for variable font headlines'
     }
   },
@@ -1125,9 +1124,9 @@ export const componentsMetadata = {
       {
         name: "wb-split-by",
         description: "Split strategy for GSAP SplitText",
-        default: "words",
+        default: "chars",
         inputType: "dropdown",
-        options: ["words", "chars"],
+        options: ["chars", "words"],
       },
       {
         name: "wb-duration",

@@ -12,19 +12,11 @@ gsap.registerPlugin();
 
 const componentCSS = `
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght,slnt@8..144,100..1000,-10..0&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,slnt,wdth,wght@8..144,-10..0,25..151,100..1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,opsz,wght@0,8..60;1,8..60;0,10..300;1,10..300;0,200..900;1,200..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Recursive:wght@300;400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 
-/* Compressa VF Font - Variable Font */
-@font-face {
-  font-family: 'Compressa VF';
-  src: url('https://res.cloudinary.com/dr6lvwubh/raw/upload/v1529908256/CompressaPRO-GX.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
 
 .wb-text-pressure {
   position: relative;
@@ -404,6 +396,10 @@ class TextPressureAnimator {
       const titleElement = document.createElement("h1");
       titleElement.className = "wb-text-pressure__title";
 
+      // Compressa VF's hosted file is gone, so pages that still ask for it get Roboto Flex,
+      // the closest free font with width and weight axes.
+      if (/compressa/i.test(config.fontFamily)) config.fontFamily = "Roboto Flex";
+
       // Only set font family if it's not inherit
       if (config.fontFamily !== "inherit") {
         titleElement.style.fontFamily = config.fontFamily;
@@ -688,7 +684,7 @@ class TextPressureAnimator {
     if (normalizedFont.includes("recursive")) {
       return `'wght' ${weight}`;
     } else if (normalizedFont.includes("roboto flex")) {
-      return `'wght' ${weight}, 'opsz' ${Math.max(8, Math.min(144, width))}, 'slnt' ${italic}`;
+      return `'wght' ${weight}, 'wdth' ${Math.max(25, Math.min(151, width))}, 'slnt' ${-10 * italic}`;
     } else if (normalizedFont.includes("source sans 3")) {
       return `'wght' ${weight}, 'opsz' ${Math.max(8, Math.min(300, width))}, 'ital' ${italic > 0 ? 1 : 0}`;
     } else if (normalizedFont.includes("space grotesk")) {

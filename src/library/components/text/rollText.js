@@ -13,7 +13,7 @@ class RollTextAnimator {
     this.componentName = 'RollText';
     this.componentClasses = webflowBitsClasses.forComponent(this.componentKey);
     this.defaultConfig = {
-      splitBy: "words", // "chars", "words"
+      splitBy: "chars", // "chars", "words"
       duration: 0.5,
       ease: 'power3.out',
       stagger: 0,

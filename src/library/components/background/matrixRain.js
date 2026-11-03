@@ -329,7 +329,10 @@ class MatrixRainAnimator {
     instance.pendingInit = false;
 
     const chars = this.getCharSet(charMode);
-    const columns = Math.floor(canvas.width / fontSize);
+    // Enough columns to cover the full width, with the spare split evenly off both edges and each
+    // glyph centred in its column, so the rain doesn't leave a bare strip on the right.
+    const columns = Math.ceil(canvas.width / fontSize);
+    const offsetX = (canvas.width - columns * fontSize) / 2 + fontSize / 2;
     instance.drops = new Array(columns).fill(1);
 
     // Pre-compute the trail background rgba string
@@ -341,6 +344,7 @@ class MatrixRainAnimator {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${fontSize}px monospace`;
+      ctx.textAlign = 'center';
 
       const { drops } = instance;
       for (let i = 0; i < drops.length; i++) {
@@ -348,7 +352,7 @@ class MatrixRainAnimator {
 
         // Head highlight: draw leading character in white
         ctx.fillStyle = highlightHead ? '#FFFFFF' : textColor;
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+        ctx.fillText(char, offsetX + i * fontSize, drops[i] * fontSize);
 
         // Reset fillStyle for next iteration consistency
         ctx.fillStyle = textColor;
