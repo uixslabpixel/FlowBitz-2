@@ -252,7 +252,8 @@ export const cardThemes = {
   },
   "pulse-button": {
     background: "#ff5a36",
-    code: `<span wb-component="pulse-button" wb-hover-pause="false" wb-intensity="1.1" wb-speed="1.4s" class="${BUTTON} rounded-full bg-white text-[#ff5a36]">Pulse Button</span>`,
+    // A real <button>: the library only pulses <button> and <a> elements.
+    code: `<button type="button" wb-component="pulse-button" wb-hover-pause="false" wb-intensity="1.1" wb-speed="1.4s" class="${BUTTON} rounded-full bg-white text-[#ff5a36]">Pulse Button</button>`,
   },
   "shimmer-button": {
     background: "#1f1838",
