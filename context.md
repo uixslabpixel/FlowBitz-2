@@ -5,7 +5,8 @@ Paused 2026-11-03 in the middle of re-recording the home-grid preview videos. Re
 ## Where things stand
 
 - Live site: https://flowbitz-redesign.vercel.app (Vercel project `uix-4102/flowbitz-redesign`).
-  It runs commit `b0b1a43` ("Play recorded video previews on the home grid"), which has the earlier recordings.
+  It runs commit `44247f7` ("Warm up each card before filming its preview"): 18 cards have the new
+  recordings, and the 12 listed below still have the earlier ones (2x and sRGB, but possibly with the first-frame glitch).
 - Since that deploy, `scripts/record-previews.mjs` gained a **warm-up hover**: hover the card for 1.5s
   so fonts and images load, leave, hover again, and wait 150ms before filming. This fixes a glitch in the first
   frames: the static poster flashed, and Text Pressure briefly showed a fallback serif before Roboto Flex loaded.
