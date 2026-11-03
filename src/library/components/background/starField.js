@@ -1117,7 +1117,11 @@ class StarFieldAnimator {
       }
     });
 
-    this.mutationObserver.observe(document.body, {
+    // Watch <html>, not <body>: page-transition routers (Astro, Barba, Swup) swap in a new
+
+    // <body>, which would leave this observer watching a detached one.
+
+    this.mutationObserver.observe(document.documentElement, {
       childList: true,
       subtree: true,
       attributes: true,

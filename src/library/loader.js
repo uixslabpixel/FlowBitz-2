@@ -465,7 +465,11 @@ class FlowBitz {
       }
     });
 
-    observer.observe(document.body, {
+    // Watch <html>, not <body>: page-transition routers (Astro, Barba, Swup) swap in a new
+
+    // <body>, which would leave this observer watching a detached one.
+
+    observer.observe(document.documentElement, {
       childList: true,
       subtree: true,
     });
