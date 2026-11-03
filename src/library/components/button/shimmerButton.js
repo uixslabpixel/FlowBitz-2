@@ -274,7 +274,7 @@ class ShimmerButtonAnimator {
   removeComponentClasses(element) {
     ComponentClassManager.removeClasses(
       element, 
-      this.componentClasses, 
+      Object.values(this.componentClasses), 
       this.instances, 
       this.componentName
     );

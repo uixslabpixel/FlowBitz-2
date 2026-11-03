@@ -155,6 +155,10 @@ class RotatingTextAnimator {
       return;
     }
 
+    // Already running: a second setup would rebuild the markup while the first one's timer keeps
+    // animating, which stacks two copies of the word.
+    if (this.instances.has(element)) return;
+
     this.injectStyles();
     
     // Parse texts from wb-text-* attributes

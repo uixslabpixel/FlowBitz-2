@@ -101,6 +101,10 @@ const componentCSS = `
 }
 `;
 
+
+// Elements whose async setup is in progress.
+const initializing = new WeakSet();
+
 class ShuffleAnimator {
   constructor() {
     this.instances = new Map();
@@ -735,7 +739,19 @@ class ShuffleAnimator {
   /**
    * Initialize element with shuffle animation
    */
+  // Setup awaits (fonts or image loading) before it records the instance, so a second call for the
+  // same element, from the DOM observer and a refresh landing together, could build it twice.
   async initElement(element) {
+    if (initializing.has(element)) return;
+    initializing.add(element);
+    try {
+      return await this.runInitElement(element);
+    } finally {
+      initializing.delete(element);
+    }
+  }
+
+  async runInitElement(element) {
     // Add safety check to ensure this is actually a shuffle element
     if (element.getAttribute("wb-component") !== "shuffle") {
       console.warn(

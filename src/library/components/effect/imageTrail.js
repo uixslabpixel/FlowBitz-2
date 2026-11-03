@@ -115,6 +115,10 @@ function getNewPosition(position, offset, arr) {
 // IMAGE ITEM CLASS
 // ============================================
 
+
+// Elements whose async setup is in progress.
+const initializing = new WeakSet();
+
 class ImageItem {
   constructor(DOM_el) {
     this.DOM = {
@@ -1594,7 +1598,19 @@ class ImageTrailAnimator {
    * Initialize a specific element
    * @param {HTMLElement} element - Element to initialize
    */
+  // Setup awaits (fonts or image loading) before it records the instance, so a second call for the
+  // same element, from the DOM observer and a refresh landing together, could build it twice.
   async initElement(element) {
+    if (initializing.has(element)) return;
+    initializing.add(element);
+    try {
+      return await this.runInitElement(element);
+    } finally {
+      initializing.delete(element);
+    }
+  }
+
+  async runInitElement(element) {
     if (this.instances.has(element)) {
       return; // Already initialized
     }
