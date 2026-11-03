@@ -111,6 +111,22 @@ for (const id of ids) {
   await page.evaluate(keepPainting);
   if (CURSOR.has(id)) await page.evaluate(addCursor);
 
+  // Warm-up hover: loads the effect's fonts and images, and measures an aimed target (the live
+  // element only exists while hovered). Then leave, so the filmed hover mounts the effect fresh
+  // and intro animations play from the start, without the poster or a fallback font showing.
+  const clicked = CLICKED.has(id);
+  const aimed = AIMED.has(id);
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.waitForTimeout(1500);
+  const area = aimed ? await page.locator(`#card-${id} [wb-component]`).boundingBox() : box;
+  const cx = area.x + area.width / 2;
+  const cy = area.y + area.height / 2;
+  await page.mouse.move(1, 1);
+  await page.waitForTimeout(500);
+  // Hover again just before filming, giving the live markup its first paint.
+  await page.mouse.move(cx, cy);
+  await page.waitForTimeout(150);
+
   // Screencast frames arrive only when the page repaints, each with its own timestamp.
   const frames = [];
   const cdp = await page.context().newCDPSession(page);
@@ -126,13 +142,6 @@ for (const id of ids) {
     maxHeight: VIEWPORT.height * SCALE,
   });
 
-  // The live element only mounts on hover, so hover first to measure an aimed target.
-  const clicked = CLICKED.has(id);
-  const aimed = AIMED.has(id);
-  if (aimed) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  const area = aimed ? await page.locator(`#card-${id} [wb-component]`).boundingBox() : box;
-  const cx = area.x + area.width / 2;
-  const cy = area.y + area.height / 2;
   const leadIn = LEAD_IN[componentsMetadata[id]?.category] ?? 0;
   const startedAt = Date.now() / 1000 + leadIn;
   const steps = (SECONDS + leadIn) * FPS;
