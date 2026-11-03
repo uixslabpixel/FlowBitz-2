@@ -1249,7 +1249,9 @@ class WebflowBits {
       }
     });
 
-    observer.observe(document.body, {
+    // Watch <html>, not <body>: page-transition routers (Astro, Barba, Swup) swap in a new
+    // <body>, which would leave an observer on the old one watching nothing.
+    observer.observe(document.documentElement, {
       childList: true,
       subtree: true,
       attributes: true,
