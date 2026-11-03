@@ -71,6 +71,17 @@ The Vercel project is **not git-connected**, so deploy manually from a clean che
   - `src/library/components/background/matrixRain.js`: columns now cover the full width and are centred.
   - `src/library/components/effect/imageTrail.js`: relative image URLs are accepted.
   - `src/library/components/text/rollText.js`: `splitBy: "chars"` by default.
+  - `src/library/utils/core/injectStyles.js`: re-adds injected `<style>` tags that page transitions remove.
+    Astro's ClientRouter rebuilds `<head>` on every navigation, so effects opened from the home grid ran
+    without their CSS until a reload.
+  - Firefly, Star Field, Particles Network, Flow Field and `loader.js` watch `<html>` for new elements instead
+    of `<body>`, which the router replaces.
+  - Rotating Text ignores a second setup call on the same element. Shuffle and Image Trail ignore calls made
+    while their async setup is still running.
+- Detail-page check (2026-11-03): all 30 pages opened from home now match a fresh load. Pulse Button's preview is
+  a `<button>` because the library only pulses `<button>` and `<a>`, and its video was re-recorded.
+- Recording note: Astro's dev toolbar can cover "Load more" and make `record-previews.mjs` time out. Disable it
+  with `npx astro preferences disable devToolbar --global`.
 
 ## User preferences seen in this work
 
