@@ -219,21 +219,36 @@ const SideNav = () => {
   useEffect(() => setMenuOpen(false), [pathname]);
 
   return (
-    <aside className="relative lg:fixed lg:left-2 lg:top-2 lg:bottom-2 lg:w-[250px] m-2 lg:m-0 bg-white rounded-md p-[25px] flex flex-col text-black font-inter z-20 overflow-y-auto overflow-x-hidden">
-      <EasterEggMark className="absolute top-0 right-0 z-10" />
+    <aside className="relative lg:fixed lg:left-2 lg:top-2 lg:bottom-2 lg:w-[250px] m-2 lg:m-0 bg-white rounded-md px-4 lg:p-[25px] flex flex-col text-black font-inter z-20 overflow-y-auto overflow-x-hidden">
+      <EasterEggMark className="max-lg:hidden absolute top-0 right-0 z-10" />
 
-      <div className="flex items-center justify-between">
+      {/* Mobile: a 60px bar with the logo and a two-line menu button that turns into an X. */}
+      <div className="flex items-center justify-between h-[60px] lg:h-auto shrink-0">
         <Link to="/" aria-label="FlowBitz home" className="block w-fit">
-          <Logo fill="black" className="h-[34px] w-auto" />
+          <Logo fill="black" className="h-[28.17px] lg:h-[34px] w-auto" />
         </Link>
         <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
           aria-expanded={menuOpen}
           aria-controls="side-nav-links"
-          className="lg:hidden mr-6 text-[15px] leading-7 px-3 rounded-[26px] bg-[#f0f0f0]"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          className="lg:hidden mx-[6px] flex items-center justify-center h-[26px] rounded-[26px]"
         >
-          {menuOpen ? "Close" : "Menu"}
+          {menuOpen ? (
+            // The X's strokes overflow its 18.4px box, as in the design.
+            <span className="relative block size-[18.385px]">
+              <img
+                src="/images/nav/close.svg"
+                alt=""
+                width="20.8909"
+                height="20.6985"
+                className="absolute left-[-5.77%] top-[-6.82%] block max-w-none"
+              />
+            </span>
+          ) : (
+            <img src="/images/nav/menu.svg" alt="" width="26" height="11" className="block" />
+          )}
         </button>
       </div>
 
@@ -253,11 +268,11 @@ const SideNav = () => {
             transform: `translateY(${marker.y}px) rotate(${marker.rotation}deg)`,
           }}
         />
-        <NavGroup items={PRIMARY_NAV} pathname={pathname} className="py-6" />
+        <NavGroup items={PRIMARY_NAV} pathname={pathname} className="pb-6 lg:pt-6" />
         <WavyDivider />
         <NavGroup items={SECONDARY_NAV} pathname={pathname} className="pt-6" />
 
-        <div className="flex flex-col mt-6 lg:mt-auto">
+        <div className="flex flex-col py-6 lg:py-0 lg:mt-auto">
           <RequestFeatureButton />
           <ReportBugButton />
         </div>
