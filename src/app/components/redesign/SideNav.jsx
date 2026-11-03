@@ -210,6 +210,36 @@ const ReportBugButton = () => {
   );
 };
 
+// One stroke of the mobile menu icon. Closed: two 26px lines 8px apart (the design's hamburger).
+// Open: both meet in the middle and turn ±45° into the design's X, whose box sits 3.8px further right.
+const MenuLine = ({ open, edge }) => {
+  const top = edge === "top";
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute left-0 top-[11.5px] w-[26px] h-[3px] bg-black motion-safe:transition-transform motion-safe:duration-[450ms] ease-[cubic-bezier(0.65,0,0.35,1)]"
+      style={{
+        transform: open
+          ? `translate(3.81px, 0) rotate(${top ? 45 : -45}deg)`
+          : `translate(0, ${top ? -4 : 4}px)`,
+      }}
+    />
+  );
+};
+
+// Mobile menu section that fades and slides in after the panel starts opening, one step after another.
+// It leaves together with the panel, with no delay. Desktop never animates it.
+const Reveal = ({ open, step, className = "", children }) => (
+  <div
+    className={`flex flex-col max-lg:motion-safe:transition-[opacity,transform] max-lg:motion-safe:duration-300 ease-out ${
+      open ? "" : "max-lg:opacity-0 max-lg:-translate-y-1.5"
+    } ${className}`}
+    style={{ transitionDelay: open ? `${90 + step * 45}ms` : "0ms" }}
+  >
+    {children}
+  </div>
+);
+
 const SideNav = () => {
   const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -222,7 +252,7 @@ const SideNav = () => {
     <aside className="relative lg:fixed lg:left-2 lg:top-2 lg:bottom-2 lg:w-[250px] m-2 lg:m-0 bg-white rounded-md px-4 lg:p-[25px] flex flex-col text-black font-inter z-20 overflow-y-auto overflow-x-hidden">
       <EasterEggMark className="max-lg:hidden absolute top-0 right-0 z-10" />
 
-      {/* Mobile: a 60px bar with the logo and a two-line menu button that turns into an X. */}
+      {/* Mobile: a 60px bar with the logo and a two-line menu button that morphs into an X. */}
       <div className="flex items-center justify-between h-[60px] lg:h-auto shrink-0">
         <Link to="/" aria-label="FlowBitz home" className="block w-fit">
           <Logo fill="black" className="h-[28.17px] lg:h-[34px] w-auto" />
@@ -233,48 +263,51 @@ const SideNav = () => {
           aria-expanded={menuOpen}
           aria-controls="side-nav-links"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
-          className="lg:hidden mx-[6px] flex items-center justify-center h-[26px] rounded-[26px]"
+          className="lg:hidden relative mx-[6px] w-[26px] h-[26px] rounded-[26px]"
         >
-          {menuOpen ? (
-            // The X's strokes overflow its 18.4px box, as in the design.
-            <span className="relative block size-[18.385px]">
-              <img
-                src="/images/nav/close.svg"
-                alt=""
-                width="20.8909"
-                height="20.6985"
-                className="absolute left-[-5.77%] top-[-6.82%] block max-w-none"
-              />
-            </span>
-          ) : (
-            <img src="/images/nav/menu.svg" alt="" width="26" height="11" className="block" />
-          )}
+          <MenuLine open={menuOpen} edge="top" />
+          <MenuLine open={menuOpen} edge="bottom" />
         </button>
       </div>
 
+      {/* Mobile: the panel grows from 0fr to 1fr rows, so its height animates to its real content
+          height; the sections then fade down in a short stagger. Desktop: always shown, no motion. */}
       <div
-        ref={linksRef}
         id="side-nav-links"
-        className={`${menuOpen ? "flex" : "hidden"} lg:flex relative flex-col flex-1`}
+        className={`grid lg:flex lg:flex-col lg:flex-1 lg:visible motion-safe:transition-[grid-template-rows,visibility] ${
+          menuOpen
+            ? "grid-rows-[1fr] visible duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+            : "grid-rows-[0fr] invisible duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        }`}
       >
-        <span
-          aria-hidden="true"
-          className={`hidden lg:block absolute -left-[25px] top-0 w-2 h-2 bg-black ${
-            marker.animate
-              ? "transition-transform duration-500 [transition-timing-function:cubic-bezier(0.65,0,0.35,1)]"
-              : ""
-          } ${marker.visible ? "" : "opacity-0"}`}
-          style={{
-            transform: `translateY(${marker.y}px) rotate(${marker.rotation}deg)`,
-          }}
-        />
-        <NavGroup items={PRIMARY_NAV} pathname={pathname} className="pb-6 lg:pt-6" />
-        <WavyDivider />
-        <NavGroup items={SECONDARY_NAV} pathname={pathname} className="pt-6" />
-
-        <div className="flex flex-col py-6 lg:py-0 lg:mt-auto">
-          <RequestFeatureButton />
-          <ReportBugButton />
+        <div
+          ref={linksRef}
+          className="relative min-h-0 overflow-hidden lg:overflow-visible flex flex-col lg:flex-1"
+        >
+          <span
+            aria-hidden="true"
+            className={`hidden lg:block absolute -left-[25px] top-0 w-2 h-2 bg-black ${
+              marker.animate
+                ? "transition-transform duration-500 [transition-timing-function:cubic-bezier(0.65,0,0.35,1)]"
+                : ""
+            } ${marker.visible ? "" : "opacity-0"}`}
+            style={{
+              transform: `translateY(${marker.y}px) rotate(${marker.rotation}deg)`,
+            }}
+          />
+          <Reveal open={menuOpen} step={0}>
+            <NavGroup items={PRIMARY_NAV} pathname={pathname} className="pb-6 lg:pt-6" />
+          </Reveal>
+          <Reveal open={menuOpen} step={1}>
+            <WavyDivider />
+          </Reveal>
+          <Reveal open={menuOpen} step={2}>
+            <NavGroup items={SECONDARY_NAV} pathname={pathname} className="pt-6" />
+          </Reveal>
+          <Reveal open={menuOpen} step={3} className="py-6 lg:py-0 lg:mt-auto">
+            <RequestFeatureButton />
+            <ReportBugButton />
+          </Reveal>
         </div>
       </div>
     </aside>
