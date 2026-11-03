@@ -30,8 +30,9 @@ const FPS = 30;
 const LEAD_IN = { background: 1.2 };
 // The poster frame, in seconds into the clip: late enough that intro animations have settled.
 const POSTER_AT = 2.5;
-// Effects whose 2.5s frame is mid-transition or has the cursor away from the text.
-const POSTER_AT_FOR = { "rotating-text": 1.0, "text-pressure": 1.8 };
+// Effects whose 2.5s frame is mid-transition, has the cursor away from the text, or (shimmer-button)
+// falls between hover sweeps.
+const POSTER_AT_FOR = { "rotating-text": 1.0, "text-pressure": 1.8, "shimmer-button": 3.55 };
 // Effects that react to clicks: the mouse stays on the button and clicks about once a second.
 const CLICKED = new Set(["ripple-button", "pulse-button"]);
 const CLICK_EVERY = Math.round(FPS * 0.9);
