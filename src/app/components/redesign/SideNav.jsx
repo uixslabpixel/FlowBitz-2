@@ -69,10 +69,12 @@ const NavItem = ({ label, to, active }) => {
   );
 };
 
-const NavGroup = ({ items, pathname, className = "" }) => (
+const NavGroup = ({ items, pathname, className = "", open, firstStep = 0 }) => (
   <nav className={`flex flex-col ${className}`}>
-    {items.map((item) => (
-      <NavItem key={item.label} {...item} active={isActive(item, pathname)} />
+    {items.map((item, i) => (
+      <Rise key={item.label} open={open} step={firstStep + i}>
+        <NavItem {...item} active={isActive(item, pathname)} />
+      </Rise>
     ))}
   </nav>
 );
@@ -227,16 +229,22 @@ const MenuLine = ({ open, edge }) => {
   );
 };
 
-// Mobile menu section that fades and slides in after the panel starts opening, one step after another.
-// It leaves together with the panel, with no delay. Desktop never animates it.
-const Reveal = ({ open, step, className = "", children }) => (
-  <div
-    className={`flex flex-col max-lg:motion-safe:transition-[opacity,transform] max-lg:motion-safe:duration-300 ease-out ${
-      open ? "" : "max-lg:opacity-0 max-lg:-translate-y-1.5"
-    } ${className}`}
-    style={{ transitionDelay: open ? `${90 + step * 45}ms` : "0ms" }}
-  >
-    {children}
+// Mobile menu line that rises into place from just below its own row, one step after the line above.
+// Nothing fades, so text and buttons stay at full contrast the whole way in. Closing drops every line
+// back down at once while the panel folds up. Desktop never moves it or clips it.
+const RISE_STAGGER_MS = 35;
+const Rise = ({ open, step, className = "", children }) => (
+  <div className={`max-lg:overflow-hidden ${className}`}>
+    <div
+      className={`max-lg:motion-safe:transition-transform ${
+        open
+          ? "duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+          : "max-lg:translate-y-full duration-200 ease-[cubic-bezier(0.4,0,1,1)]"
+      }`}
+      style={{ transitionDelay: open ? `${70 + step * RISE_STAGGER_MS}ms` : "0ms" }}
+    >
+      {children}
+    </div>
   </div>
 );
 
@@ -295,19 +303,31 @@ const SideNav = () => {
               transform: `translateY(${marker.y}px) rotate(${marker.rotation}deg)`,
             }}
           />
-          <Reveal open={menuOpen} step={0}>
-            <NavGroup items={PRIMARY_NAV} pathname={pathname} className="pb-6 lg:pt-6" />
-          </Reveal>
-          <Reveal open={menuOpen} step={1}>
+          <NavGroup
+            items={PRIMARY_NAV}
+            pathname={pathname}
+            className="pb-6 lg:pt-6"
+            open={menuOpen}
+            firstStep={0}
+          />
+          <Rise open={menuOpen} step={3}>
             <WavyDivider />
-          </Reveal>
-          <Reveal open={menuOpen} step={2}>
-            <NavGroup items={SECONDARY_NAV} pathname={pathname} className="pt-6" />
-          </Reveal>
-          <Reveal open={menuOpen} step={3} className="py-6 lg:py-0 lg:mt-auto">
-            <RequestFeatureButton />
-            <ReportBugButton />
-          </Reveal>
+          </Rise>
+          <NavGroup
+            items={SECONDARY_NAV}
+            pathname={pathname}
+            className="pt-6"
+            open={menuOpen}
+            firstStep={4}
+          />
+          <div className="flex flex-col py-6 lg:py-0 lg:mt-auto">
+            <Rise open={menuOpen} step={6}>
+              <RequestFeatureButton />
+            </Rise>
+            <Rise open={menuOpen} step={7}>
+              <ReportBugButton />
+            </Rise>
+          </div>
         </div>
       </div>
     </aside>
