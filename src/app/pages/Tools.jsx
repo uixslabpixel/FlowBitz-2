@@ -42,13 +42,13 @@ const Tools = () => {
   return (
     <>
       <SEO
-        title="Free Webapp Tools | FlowBitz"
+        title="Free Tools | FlowBitz"
         description="Free web app tools from the FlowBitz team."
         image="https://www.slabpixel.dev/images/FlowBitz-OpenGraph.webp"
         url="https://www.flowbitz.dev/tools"
       />
 
-      <PageHeader title="Free Webapp Tools">
+      <PageHeader title="Free Tools">
         {filters.length > 1 && (
           <FilterChips
             filters={filters}
