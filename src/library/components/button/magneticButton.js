@@ -110,11 +110,16 @@ class MagnetEffect {
     this.rect = null;
     this.animationId = null;
 
-    // Throttle mouse move for better performance
+    // The field reaches `padding` px beyond the button, so the pointer is tracked on the window,
+    // not only while it is over the button. Handlers are bound once so destroy() can remove them.
     this.throttledMouseMove = this.throttle(
       this.handleMouseMove.bind(this),
       16,
     ); // ~60fps
+    this.handlePointerOut = this.handlePointerOut.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchMove = this.handleTouchMove.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
 
     this.init();
   }
@@ -125,29 +130,26 @@ class MagnetEffect {
     this.startAnimationLoop();
   }
 
+  // The button's box where it rests: its current box minus the pull it is showing right now.
   updateRect() {
-    this.rect = this.element.getBoundingClientRect();
+    const r = this.element.getBoundingClientRect();
+    this.rect = {
+      left: r.left - this.currentX,
+      top: r.top - this.currentY,
+      width: r.width,
+      height: r.height,
+    };
   }
 
   initEvents() {
-    // Mouse events
-    this.element.addEventListener(
-      "mouseenter",
-      this.handleMouseEnter.bind(this),
-    );
-    this.element.addEventListener(
-      "mouseleave",
-      this.handleMouseLeave.bind(this),
-    );
-    this.element.addEventListener("mousemove", this.throttledMouseMove);
+    // Mouse: anywhere on the page, so the pull starts inside the field, before the button.
+    window.addEventListener("mousemove", this.throttledMouseMove, { passive: true });
+    document.addEventListener("mouseout", this.handlePointerOut);
 
     // Touch events
-    this.element.addEventListener(
-      "touchstart",
-      this.handleTouchStart.bind(this),
-    );
-    this.element.addEventListener("touchmove", this.handleTouchMove.bind(this));
-    this.element.addEventListener("touchend", this.handleTouchEnd.bind(this));
+    this.element.addEventListener("touchstart", this.handleTouchStart);
+    this.element.addEventListener("touchmove", this.handleTouchMove);
+    this.element.addEventListener("touchend", this.handleTouchEnd);
 
     // Resize event
     this.handleResize = this.throttle(() => {
@@ -156,27 +158,23 @@ class MagnetEffect {
     window.addEventListener("resize", this.handleResize);
   }
 
-  handleMouseEnter() {
-    if (this.config.disabled) return;
-    this.isActive = true;
-    this.updateRect();
-    if (this.config.debug) {
-      console.log("Magnetic Button: Mouse entered");
-    }
-  }
-
-  handleMouseLeave() {
-    if (this.config.disabled) return;
+  // The pointer left the window: let the button spring back.
+  handlePointerOut(e) {
+    if (e.relatedTarget) return;
     this.isActive = false;
     this.targetX = 0;
     this.targetY = 0;
-    if (this.config.debug) {
-      console.log("Magnetic Button: Mouse left");
-    }
   }
 
   handleMouseMove(e) {
-    if (this.config.disabled || !this.isActive) return;
+    if (this.config.disabled) return;
+    // Removed from the page (e.g. by a page transition) without destroy(): stop listening.
+    if (!this.element.isConnected) {
+      this.destroy();
+      return;
+    }
+    this.isActive = true;
+    this.updateRect();
     this.updatePosition(e);
   }
 
@@ -260,9 +258,8 @@ class MagnetEffect {
 
   destroy() {
     // Remove event listeners
-    this.element.removeEventListener("mouseenter", this.handleMouseEnter);
-    this.element.removeEventListener("mouseleave", this.handleMouseLeave);
-    this.element.removeEventListener("mousemove", this.throttledMouseMove);
+    window.removeEventListener("mousemove", this.throttledMouseMove);
+    document.removeEventListener("mouseout", this.handlePointerOut);
     this.element.removeEventListener("touchstart", this.handleTouchStart);
     this.element.removeEventListener("touchmove", this.handleTouchMove);
     this.element.removeEventListener("touchend", this.handleTouchEnd);
