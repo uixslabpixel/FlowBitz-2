@@ -61,10 +61,11 @@ const BUTTON =
 export const cardThemes = {
   "split-text": {
     background: "#1d2fd0",
-    image: "/images/cards/wave-gradient.webp",
-    code: `<h2 wb-component="split-text" wb-split-type="words" wb-trigger-on-view="false"
-      class="font-inter font-semibold text-white text-[length:6.259cqw] leading-[8.271cqw] tracking-[-0.263cqw] max-w-[89.419cqw]">
-      Create Amazing Websites with Powerful Animations</h2>`,
+    // Split by character with a slow stagger, so each letter visibly lands; the last word in lime.
+    code: `<h2 wb-component="split-text" wb-split-type="characters" wb-stagger-delay="60" wb-duration="0.9"
+      wb-ease="back.out(1.7)" wb-trigger-on-view="false"
+      class="w-[86cqw] text-left font-clash font-semibold uppercase text-white text-[length:21cqw] leading-[18.2cqw] tracking-[-0.5cqw]">
+      Every<br>letter<br><span class="text-[#c6ff3d]">lands.</span></h2>`,
   },
   "gradient-text": {
     background: "#103337",
