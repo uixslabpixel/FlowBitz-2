@@ -24,6 +24,8 @@ const componentCSS = `
   padding: 8px 12px;
   font-size: 14px;
   line-height: 1.4;
+  /* Don't inherit the host text's tracking: headings are often set tight, which squeezes 14px text. */
+  letter-spacing: normal;
   width: max-content;
   max-width: 300px;
   white-space: normal;
