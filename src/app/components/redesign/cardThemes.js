@@ -262,8 +262,9 @@ export const cardThemes = {
   },
   "smart-animate": {
     background: "#1d1d1d",
-    // Each direct child animates in, one after another: four labels stacking up.
-    code: `<div wb-component="smart-animate" class="flex flex-col items-center gap-[1.4cqw] font-anton uppercase text-[length:9.5cqw] leading-[1.2]">
+    // Each direct child animates in, one after another: four labels stacking up. Spaced 0.35s apart
+    // so each one visibly arrives on its own (the default 0.1s blurs them into one move).
+    code: `<div wb-component="smart-animate" wb-interval-delay="0.35" wb-duration="0.8" wb-ease="back.out(1.4)" class="flex flex-col items-center gap-[1.4cqw] font-anton uppercase text-[length:9.5cqw] leading-[1.2]">
       <span class="px-[3cqw] bg-[#e4ff3d] text-[#111111]">Every element</span>
       <span class="px-[3cqw] bg-[#ff5a36] text-white">arrives</span>
       <span class="px-[3cqw] bg-[#6d4aff] text-white">in its</span>
