@@ -1,0 +1,8 @@
+{
+  "name": "Video Compressor",
+  "cover": "/images/tools/video-compressor.webp",
+  "tags": ["Tools"],
+  "links": [
+    { "label": "Open tool", "url": "https://video-compressor-one.vercel.app/" }
+  ]
+}

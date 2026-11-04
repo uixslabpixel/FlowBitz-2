@@ -1,6 +1,6 @@
 {
   "name": "LED Tile Maker",
-  "cover": "/images/tools/pixel-mosaic.jpg",
+  "cover": "/images/tools/led-tile-maker.webp",
   "tags": ["Tools"],
   "links": [
     { "label": "Open tool", "url": "https://led-tile-maker.vercel.app/" }

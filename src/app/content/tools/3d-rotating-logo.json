@@ -1,0 +1,8 @@
+{
+  "name": "3D Rotating Logo",
+  "cover": "/images/tools/3d-rotating-logo.webp",
+  "tags": ["Tools"],
+  "links": [
+    { "label": "Open tool", "url": "https://3d-rotating-logo.vercel.app/" }
+  ]
+}

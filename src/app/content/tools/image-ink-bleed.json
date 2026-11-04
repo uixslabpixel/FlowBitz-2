@@ -1,6 +1,6 @@
 {
   "name": "Image Ink Bleed",
-  "cover": "/images/tools/image-dissolve.jpg",
+  "cover": "/images/tools/image-ink-bleed.webp",
   "tags": ["Shaders"],
   "links": [
     { "label": "Open tool", "url": "https://image-ink-bleed.vercel.app/" }
