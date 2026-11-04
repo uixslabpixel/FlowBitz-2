@@ -130,7 +130,7 @@ export const cardThemes = {
     // Split effects wrap stray whitespace in spans, so the rotating word hugs its tags.
     code: `<h2 class="font-anton uppercase text-[#111111] text-[length:13cqw] leading-[1.15] flex flex-col items-center gap-[1.5cqw]">
       <span>We build</span>
-      <span wb-component="rotating-text" wb-text-1="Websites" wb-text-2="Brands" wb-text-3="Motion"
+      <span wb-component="rotating-text" wb-rotating-interval="1000" wb-rotating-stagger-duration="35" wb-duration="0.5" wb-text-1="Websites" wb-text-2="Brands" wb-text-3="Motion"
         wb-background-color="#111111" wb-text-color="#f6c945" wb-border-radius="2.5cqw"
         class="px-[3.5cqw] py-[0.5cqw]">Websites</span>
     </h2>`,
@@ -168,7 +168,7 @@ export const cardThemes = {
     code: `<div class="relative flex items-center justify-center w-[56cqw] h-[56cqw]">
       <span class="absolute inset-0 rounded-full border-[0.4cqw] border-dashed border-black/25"></span>
       <span class="absolute inset-[9cqw] rounded-full border-[0.4cqw] border-dashed border-black/40"></span>
-      <span wb-component="magnetic-button" wb-padding="140" wb-strength="1.6"
+      <span wb-component="magnetic-button" wb-padding="140" wb-strength="1.1"
         class="pointer-events-auto flex items-center justify-center w-[26cqw] h-[26cqw] rounded-full bg-black font-anton uppercase text-[#ff2e88] text-[length:5.4cqw] leading-none">
         Grab me</span>
     </div>`,

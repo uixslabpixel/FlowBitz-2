@@ -36,14 +36,15 @@ const PRE_ROLL = 0.4;
 // The poster frame, in seconds into the clip: late enough that intro animations have settled.
 const POSTER_AT = 2.5;
 // Effects whose 2.5s frame is mid-transition, has the cursor away from the text, or (shimmer-button)
-// falls between hover sweeps.
-const POSTER_AT_FOR = { "rotating-text": 1.0, "text-pressure": 1.8, "shimmer-button": 3.55 };
+// falls between hover sweeps. The route runs on the clock, so these times hold from run to run.
+const POSTER_AT_FOR = { "rotating-text": 1.0, "text-pressure": 1.8, "shimmer-button": 3.8, "variable-proximity": 0.2 };
 // Effects that react to clicks: the mouse moves around the button and clicks each time it stops.
 const CLICKED = new Set(["ripple-button", "pulse-button"]);
 // Effects on a smaller target (a button, one word, the 3D card): the mouse moves over that element,
-// not the whole card. The value is the element to measure inside the card.
+// not the whole card. The value selects the element(s) to measure inside the card; when it matches
+// several (Roll Text's three menu items), the route covers the box around all of them.
 const AIMED = {
-  ...Object.fromEntries([...CLICKED, "tooltip-text"].map((id) => [id, "[wb-component]"])),
+  ...Object.fromEntries([...CLICKED, "tooltip-text", "roll-text", "magnetic-button"].map((id) => [id, "[wb-component]"])),
   // The effect moves the visible card into a new inner element; the outer one fills the tile.
   "3d-card-hover": ".wb-hover3d__inner",
 };
@@ -76,7 +77,8 @@ const addCursor = ({ svg, scale, tip }) => {
 // The mouse's route: points around the middle of the card (or of the aimed element), as fractions
 // of its width and height scaled by `spread`. Every route starts and ends in the middle, so the clip
 // loops without a jump. The mouse rests `pause` seconds at each point (and clicks there, for
-// CLICKED effects); `bow` curves each move to one side, alternating, like a wrist pivoting.
+// CLICKED effects), or `pauses[i]` after move i; `bow` curves each move to one side, alternating,
+// like a wrist pivoting. `posterAtStop` takes the poster mid-pause at that point.
 const ROUTES = {
   default: {
     points: [[0, 0], [-0.85, -0.6], [0.9, -0.3], [0.3, 0.85], [-0.65, 0.4], [0, 0]],
@@ -95,6 +97,47 @@ const ROUTES = {
     // Poster: mid-pause at the top-right corner, with the card fully tilted.
     posterAtStop: 2,
   },
+  // A menu: each item rolls when the pointer enters it. Units are half the menu's width and height,
+  // so the items sit at y -0.66 (Work), 0 (About) and 0.66 (Contact). From About: out to the right,
+  // in on Work, straight down through About to Contact (they roll one after another), out to the
+  // left, and back onto About, with time left for that last roll (0.5s) to finish before the loop.
+  "roll-text": {
+    points: [[0, 0], [1.7, -0.35], [0.1, -0.66], [0, 0.68], [-1.7, 0.3], [0, 0]],
+    spread: { x: 0.5, y: 0.5 },
+    pauses: [0.2, 0.3, 0.3, 0.15, 0.65],
+    bow: 0.12,
+    posterAtStop: 2,
+  },
+  // Units are half the underlined word's width and height. Start on the word (bubble up), drop off
+  // below it so the bubble fades, sweep left along the second line, come up beside "the", and glide
+  // onto the word so the bubble appears again, resting there to close the loop.
+  "tooltip-text": {
+    points: [[0, 0], [1.6, 2.6], [-1.7, 2.6], [-1.75, 0.1], [0, 0]],
+    spread: { x: 0.5, y: 0.5 },
+    pauses: [0.35, 0.1, 0.15, 0.75],
+    bow: 0.1,
+    posterAtStop: 4,
+  },
+  // Units are the button's radius; the field reaches about 2.7 radii, past the outer dashed ring
+  // (2.2). Out beyond the field (the button rests), into the field (it is pulled toward the cursor),
+  // round the button inside the rings (it follows), and back over its middle.
+  "magnetic-button": {
+    points: [[0, 0], [2.95, -1.7], [1.55, -0.55], [-0.5, -1.55], [-1.5, 0.8], [0.7, 1.35], [0, 0]],
+    spread: { x: 0.5, y: 0.5 },
+    pause: 0.16,
+    bow: 0.14,
+    posterAtStop: 3,
+  },
+};
+
+// The box around every element a locator matches.
+const boxAround = async (locator) => {
+  const boxes = (await Promise.all((await locator.all()).map((el) => el.boundingBox()))).filter(Boolean);
+  const left = Math.min(...boxes.map((b) => b.x));
+  const top = Math.min(...boxes.map((b) => b.y));
+  const right = Math.max(...boxes.map((b) => b.x + b.width));
+  const bottom = Math.max(...boxes.map((b) => b.y + b.height));
+  return { x: left, y: top, width: right - left, height: bottom - top };
 };
 
 // A hand reaching for a point speeds up smoothly and settles gently: the minimum-jerk profile.
@@ -102,7 +145,7 @@ const reach = (u) => u * u * u * (10 - 15 * u + 6 * u * u);
 
 // Plans the route through the area as timed, slightly curved moves. Longer moves take longer, but
 // not proportionally (as with a real hand), and the whole route fills exactly `seconds`.
-const planRoute = (area, seconds, { points: route, spread, pause, bow: bowBy }) => {
+const planRoute = (area, seconds, { points: route, spread, pause = 0.18, pauses, bow: bowBy }) => {
   const cx = area.x + area.width / 2;
   const cy = area.y + area.height / 2;
   const points = route.map(([nx, ny]) => [cx + nx * area.width * spread.x, cy + ny * area.height * spread.y]);
@@ -123,15 +166,16 @@ const planRoute = (area, seconds, { points: route, spread, pause, bow: bowBy }) 
       weight: Math.sqrt(length),
     };
   });
-  const moving = seconds - pause * moves.length;
+  const rest = (i) => pauses?.[i] ?? pause;
+  const moving = seconds - moves.reduce((sum, _, i) => sum + rest(i), 0);
   const total = moves.reduce((sum, m) => sum + m.weight, 0);
   let at = 0;
-  for (const m of moves) {
+  moves.forEach((m, i) => {
     m.from = at;
     m.to = at + (m.weight / total) * moving;
-    m.clickAt = m.to + pause / 2;
-    at = m.to + pause;
-  }
+    m.clickAt = m.to + rest(i) / 2;
+    at = m.to + rest(i);
+  });
   return { moves, start: points[0] };
 };
 
@@ -214,7 +258,7 @@ for (const id of ids) {
   const aimAt = AIMED[id];
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.waitForTimeout(1500);
-  const area = aimAt ? await page.locator(`#card-${id} ${aimAt}`).first().boundingBox() : box;
+  const area = aimAt ? await boxAround(page.locator(`#card-${id} ${aimAt}`)) : box;
   const cx = area.x + area.width / 2;
   const cy = area.y + area.height / 2;
   await page.mouse.move(1, 1);
