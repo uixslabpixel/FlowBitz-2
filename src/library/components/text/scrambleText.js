@@ -339,10 +339,10 @@ class ScrambleTextAnimator {
           return;
         }
 
-        gsap.set(char, {
-          display: "inline-block",
-          attr: { "data-content": char.innerHTML },
-        });
+        gsap.set(char, { display: "inline-block" });
+        // Set directly: GSAP's attr setter turns a whitespace-only value (a line break before the
+        // first word) into the number 0, and that "0" then stays on screen after a scramble.
+        char.setAttribute("data-content", char.innerHTML);
       });
     } catch (error) {
       console.error(
