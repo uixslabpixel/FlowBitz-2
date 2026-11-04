@@ -40,8 +40,13 @@ const POSTER_AT = 2.5;
 const POSTER_AT_FOR = { "rotating-text": 1.0, "text-pressure": 1.8, "shimmer-button": 3.55 };
 // Effects that react to clicks: the mouse moves around the button and clicks each time it stops.
 const CLICKED = new Set(["ripple-button", "pulse-button"]);
-// Effects on a small target (a button, one word): the mouse traces over that element, not the card.
-const AIMED = new Set([...CLICKED, "tooltip-text"]);
+// Effects on a smaller target (a button, one word, the 3D card): the mouse moves over that element,
+// not the whole card. The value is the element to measure inside the card.
+const AIMED = {
+  ...Object.fromEntries([...CLICKED, "tooltip-text"].map((id) => [id, "[wb-component]"])),
+  // The effect moves the visible card into a new inner element; the outer one fills the tile.
+  "3d-card-hover": ".wb-hover3d__inner",
+};
 // Effects driven by the pointer get a drawn cursor (screencasts don't capture the real one), so the
 // video shows what's causing the motion.
 const CURSOR = new Set([
@@ -68,29 +73,46 @@ const addCursor = ({ svg, scale, tip }) => {
   addEventListener("mouseup", () => (cursor.style.scale = String(scale)), true);
 };
 
-// The mouse's route, as points around the middle of the card (or of the aimed element), in units
-// of SPREAD. It starts and ends in the middle, so the clip loops without a jump.
-const ROUTE = [[0, 0], [-0.85, -0.6], [0.9, -0.3], [0.3, 0.85], [-0.65, 0.4], [0, 0]];
-const SPREAD = { x: 0.32, y: 0.26 };
-// The mouse rests briefly at each point (and clicks there, for CLICKED effects).
-const PAUSE = 0.18;
+// The mouse's route: points around the middle of the card (or of the aimed element), as fractions
+// of its width and height scaled by `spread`. Every route starts and ends in the middle, so the clip
+// loops without a jump. The mouse rests `pause` seconds at each point (and clicks there, for
+// CLICKED effects); `bow` curves each move to one side, alternating, like a wrist pivoting.
+const ROUTES = {
+  default: {
+    points: [[0, 0], [-0.85, -0.6], [0.9, -0.3], [0.3, 0.85], [-0.65, 0.4], [0, 0]],
+    spread: { x: 0.32, y: 0.26 },
+    pause: 0.18,
+    bow: 0.16,
+  },
+  // The card tilts toward the pointer (1deg per 15px from its centre, eased over 300ms). Visit its
+  // corners at 80% of the way out, so the tilt stays slight, and pause long enough to let it settle:
+  // top-left, a slow sweep to top-right, down to the bottom edge, back to the middle.
+  "3d-card-hover": {
+    points: [[0, 0], [-0.8, -0.78], [0.8, -0.72], [0.05, 0.85], [0, 0]],
+    spread: { x: 0.5, y: 0.5 },
+    pause: 0.3,
+    bow: 0.08,
+    // Poster: mid-pause at the top-right corner, with the card fully tilted.
+    posterAtStop: 2,
+  },
+};
 
 // A hand reaching for a point speeds up smoothly and settles gently: the minimum-jerk profile.
 const reach = (u) => u * u * u * (10 - 15 * u + 6 * u * u);
 
 // Plans the route through the area as timed, slightly curved moves. Longer moves take longer, but
 // not proportionally (as with a real hand), and the whole route fills exactly `seconds`.
-const planRoute = (area, seconds) => {
+const planRoute = (area, seconds, { points: route, spread, pause, bow: bowBy }) => {
   const cx = area.x + area.width / 2;
   const cy = area.y + area.height / 2;
-  const points = ROUTE.map(([nx, ny]) => [cx + nx * area.width * SPREAD.x, cy + ny * area.height * SPREAD.y]);
+  const points = route.map(([nx, ny]) => [cx + nx * area.width * spread.x, cy + ny * area.height * spread.y]);
   const moves = points.slice(1).map((end, i) => {
     const start = points[i];
     const dx = end[0] - start[0];
     const dy = end[1] - start[1];
     const length = Math.hypot(dx, dy) || 1;
     // Bow each move a little to one side, alternating, like a wrist pivoting.
-    const bow = length * 0.16 * (i % 2 ? -1 : 1);
+    const bow = length * bowBy * (i % 2 ? -1 : 1);
     const nx = (-dy / length) * bow;
     const ny = (dx / length) * bow;
     return {
@@ -101,14 +123,14 @@ const planRoute = (area, seconds) => {
       weight: Math.sqrt(length),
     };
   });
-  const moving = seconds - PAUSE * moves.length;
+  const moving = seconds - pause * moves.length;
   const total = moves.reduce((sum, m) => sum + m.weight, 0);
   let at = 0;
   for (const m of moves) {
     m.from = at;
     m.to = at + (m.weight / total) * moving;
-    m.clickAt = m.to + PAUSE / 2;
-    at = m.to + PAUSE;
+    m.clickAt = m.to + pause / 2;
+    at = m.to + pause;
   }
   return { moves, start: points[0] };
 };
@@ -189,10 +211,10 @@ for (const id of ids) {
   // element only exists while hovered). Then leave, so the filmed hover mounts the effect fresh
   // and intro animations play from the start, without the poster or a fallback font showing.
   const clicked = CLICKED.has(id);
-  const aimed = AIMED.has(id);
+  const aimAt = AIMED[id];
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.waitForTimeout(1500);
-  const area = aimed ? await page.locator(`#card-${id} [wb-component]`).boundingBox() : box;
+  const area = aimAt ? await page.locator(`#card-${id} ${aimAt}`).first().boundingBox() : box;
   const cx = area.x + area.width / 2;
   const cy = area.y + area.height / 2;
   await page.mouse.move(1, 1);
@@ -220,7 +242,8 @@ for (const id of ids) {
   const startedAt = Date.now() / 1000 + leadIn;
   // The mouse follows the clock, not a step count, so a slow machine can't change its speed. It
   // waits in the middle through any lead-in, then runs the route over the filmed seconds.
-  const route = planRoute(area, SECONDS);
+  const routePlan = ROUTES[id] ?? ROUTES.default;
+  const route = planRoute(area, SECONDS, routePlan);
   const clicks = clicked ? route.moves.map((m) => m.clickAt) : [];
   for (;;) {
     const t = Date.now() / 1000 - startedAt;
@@ -266,7 +289,9 @@ for (const id of ids) {
 
   ffmpeg([...input, "-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "38", "-row-mt", "1", join(OUT_DIR, `${id}.webm`)]);
   ffmpeg([...input, "-c:v", "libx264", "-crf", "27", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", join(OUT_DIR, `${id}.mp4`)]);
-  const posterFrame = join(dir, `${String(Math.round((POSTER_AT_FOR[id] ?? POSTER_AT) * FPS)).padStart(4, "0")}.jpg`);
+  const routePoster = routePlan.posterAtStop && route.moves[routePlan.posterAtStop - 1].clickAt;
+  const posterAt = POSTER_AT_FOR[id] ?? routePoster ?? POSTER_AT;
+  const posterFrame = join(dir, `${String(Math.round(posterAt * FPS)).padStart(4, "0")}.jpg`);
   // Many ffmpeg builds lack libwebp, so the poster goes through a PNG and Pillow.
   const posterPng = join(dir, "poster.png");
   ffmpeg(["-i", posterFrame, "-vf", crop, posterPng]);
