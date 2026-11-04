@@ -5,8 +5,8 @@
 //   node scripts/record-previews.mjs split-text   only the named effects
 //
 // Each card is hovered in a real browser so the live effect runs, captured for a few seconds
-// through Chrome's screencast while the mouse traces a figure-eight (cursor-driven effects need
-// movement), then cropped with ffmpeg into public/previews/<id>.webm, .mp4 (Safari) and .webp (poster).
+// through Chrome's screencast while the mouse moves around it like a hand would (cursor-driven
+// effects need movement), then cropped with ffmpeg into public/previews/<id>.webm, .mp4 (Safari) and .webp (poster).
 // Needs Google Chrome and ffmpeg installed. Set BASE_URL if the dev server isn't on :4321.
 
 import { chromium } from "playwright-core";
@@ -20,22 +20,26 @@ const BASE_URL = process.env.BASE_URL || "http://localhost:4321";
 const OUT_DIR = "public/previews";
 const LIST_FILE = "src/app/content/previewVideos.json";
 const SECONDS = 4;
-// Below md the grid is one column, so a 672px window gives a 640x480 card.
-const VIEWPORT = { width: 672, height: 900 };
+// Below md the grid is one column, so a 672px window gives a 640x480 card. The window is only a
+// little taller than the card: smaller screencast frames arrive about 60 times a second instead of
+// 40, so fewer output frames repeat.
+const VIEWPORT = { width: 672, height: 540 };
 // Captured and kept at 2x, so cards stay crisp on retina screens.
 const SCALE = 2;
 const OUTPUT_WIDTH = 1280;
 const FPS = 30;
 // Canvas backgrounds paint their first frame a moment after mounting; skip that blank lead-in.
 const LEAD_IN = { background: 1.2 };
+// Every clip also starts after this much off-camera wiggling in the middle: an effect's first
+// pointer moves can stall the page briefly, which would otherwise show as a frozen start.
+const PRE_ROLL = 0.4;
 // The poster frame, in seconds into the clip: late enough that intro animations have settled.
 const POSTER_AT = 2.5;
 // Effects whose 2.5s frame is mid-transition, has the cursor away from the text, or (shimmer-button)
 // falls between hover sweeps.
 const POSTER_AT_FOR = { "rotating-text": 1.0, "text-pressure": 1.8, "shimmer-button": 3.55 };
-// Effects that react to clicks: the mouse stays on the button and clicks about once a second.
+// Effects that react to clicks: the mouse moves around the button and clicks each time it stops.
 const CLICKED = new Set(["ripple-button", "pulse-button"]);
-const CLICK_EVERY = Math.round(FPS * 0.9);
 // Effects on a small target (a button, one word): the mouse traces over that element, not the card.
 const AIMED = new Set([...CLICKED, "tooltip-text"]);
 // Effects driven by the pointer get a drawn cursor (screencasts don't capture the real one), so the
@@ -45,15 +49,82 @@ const CURSOR = new Set([
   "tooltip-text", "roll-text", "scramble-text", "star-field", "particles-network", ...CLICKED,
 ]);
 
-// An arrow that follows the mouse and dips on press. Runs in the page.
-const addCursor = () => {
+// The cursor from the design (Figma "Cursor size scale", node 915:1841): drawn 22x24 on a 448px card,
+// so it is scaled by card width / 448 to keep that size relative to the card.
+const CURSOR_SVG = `<svg width="27.3608" height="30.0649" viewBox="0 0 27.3608 30.0649" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible"><g filter="url(#wb-cursor-shadow)"><path d="M4.75003 1.87558L22.6108 12.5641L12.6539 13.1635L8.68519 22.3149L4.75003 1.87558Z" fill="#1E1E1E" stroke-width="1.5" stroke-linejoin="round" stroke="white"/></g><defs><filter id="wb-cursor-shadow" x="-1.21276" y="-1" width="30" height="32" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="3"/><feGaussianBlur stdDeviation="2"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.34 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/></filter></defs></svg>`;
+const CURSOR_DESIGN_CARD_WIDTH = 448;
+// The arrow's tip in the SVG: the point that sits on the mouse position.
+const CURSOR_TIP = [4.75, 1.876];
+
+// Draws the cursor at the mouse; it dips slightly, around its tip, while the button is pressed.
+// Runs in the page.
+const addCursor = ({ svg, scale, tip }) => {
   const cursor = document.createElement("div");
-  cursor.innerHTML = `<svg width="30" height="38" viewBox="0 0 22 28"><path d="M2 2v21l5.5-5.2 3.6 8.3 3.6-1.6-3.5-8.1H19z" fill="#111" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>`;
-  cursor.style.cssText = "position:fixed;left:0;top:0;z-index:2147483647;pointer-events:none;transition:scale .12s;transform-origin:3px 3px";
+  cursor.innerHTML = svg;
+  cursor.style.cssText = `position:fixed;left:0;top:0;z-index:2147483647;pointer-events:none;transform-origin:${tip[0]}px ${tip[1]}px;scale:${scale};transition:scale .12s cubic-bezier(.3,0,.2,1)`;
   document.body.append(cursor);
-  addEventListener("mousemove", (e) => (cursor.style.translate = `${e.clientX - 3}px ${e.clientY - 3}px`), true);
-  addEventListener("mousedown", () => (cursor.style.scale = "0.8"), true);
-  addEventListener("mouseup", () => (cursor.style.scale = "1"), true);
+  addEventListener("mousemove", (e) => (cursor.style.translate = `${e.clientX - tip[0]}px ${e.clientY - tip[1]}px`), true);
+  addEventListener("mousedown", () => (cursor.style.scale = String(scale * 0.86)), true);
+  addEventListener("mouseup", () => (cursor.style.scale = String(scale)), true);
+};
+
+// The mouse's route, as points around the middle of the card (or of the aimed element), in units
+// of SPREAD. It starts and ends in the middle, so the clip loops without a jump.
+const ROUTE = [[0, 0], [-0.85, -0.6], [0.9, -0.3], [0.3, 0.85], [-0.65, 0.4], [0, 0]];
+const SPREAD = { x: 0.32, y: 0.26 };
+// The mouse rests briefly at each point (and clicks there, for CLICKED effects).
+const PAUSE = 0.18;
+
+// A hand reaching for a point speeds up smoothly and settles gently: the minimum-jerk profile.
+const reach = (u) => u * u * u * (10 - 15 * u + 6 * u * u);
+
+// Plans the route through the area as timed, slightly curved moves. Longer moves take longer, but
+// not proportionally (as with a real hand), and the whole route fills exactly `seconds`.
+const planRoute = (area, seconds) => {
+  const cx = area.x + area.width / 2;
+  const cy = area.y + area.height / 2;
+  const points = ROUTE.map(([nx, ny]) => [cx + nx * area.width * SPREAD.x, cy + ny * area.height * SPREAD.y]);
+  const moves = points.slice(1).map((end, i) => {
+    const start = points[i];
+    const dx = end[0] - start[0];
+    const dy = end[1] - start[1];
+    const length = Math.hypot(dx, dy) || 1;
+    // Bow each move a little to one side, alternating, like a wrist pivoting.
+    const bow = length * 0.16 * (i % 2 ? -1 : 1);
+    const nx = (-dy / length) * bow;
+    const ny = (dx / length) * bow;
+    return {
+      start,
+      end,
+      c1: [start[0] + dx * 0.3 + nx, start[1] + dy * 0.3 + ny],
+      c2: [start[0] + dx * 0.7 + nx, start[1] + dy * 0.7 + ny],
+      weight: Math.sqrt(length),
+    };
+  });
+  const moving = seconds - PAUSE * moves.length;
+  const total = moves.reduce((sum, m) => sum + m.weight, 0);
+  let at = 0;
+  for (const m of moves) {
+    m.from = at;
+    m.to = at + (m.weight / total) * moving;
+    m.clickAt = m.to + PAUSE / 2;
+    at = m.to + PAUSE;
+  }
+  return { moves, start: points[0] };
+};
+
+// Where the mouse is `t` seconds into the route.
+const positionAt = ({ moves, start }, t) => {
+  if (t <= 0) return start;
+  for (const m of moves) {
+    if (t < m.from) return m.start;
+    if (t <= m.to) {
+      const u = reach((t - m.from) / (m.to - m.from));
+      const v = 1 - u;
+      return [0, 1].map((k) => v * v * v * m.start[k] + 3 * v * v * u * m.c1[k] + 3 * v * u * u * m.c2[k] + u * u * u * m.end[k]);
+    }
+  }
+  return moves[moves.length - 1].end;
 };
 
 // Screencast frames only arrive when the page repaints, and compositor-only animations (a CSS
@@ -110,7 +181,9 @@ for (const id of ids) {
   await page.waitForTimeout(600);
   const box = await page.locator(`#card-${id}`).boundingBox();
   await page.evaluate(keepPainting);
-  if (CURSOR.has(id)) await page.evaluate(addCursor);
+  if (CURSOR.has(id)) {
+    await page.evaluate(addCursor, { svg: CURSOR_SVG, scale: box.width / CURSOR_DESIGN_CARD_WIDTH, tip: CURSOR_TIP });
+  }
 
   // Warm-up hover: loads the effect's fonts and images, and measures an aimed target (the live
   // element only exists while hovered). Then leave, so the filmed hover mounts the effect fresh
@@ -143,16 +216,25 @@ for (const id of ids) {
     maxHeight: VIEWPORT.height * SCALE,
   });
 
-  const leadIn = LEAD_IN[componentsMetadata[id]?.category] ?? 0;
+  const leadIn = (LEAD_IN[componentsMetadata[id]?.category] ?? 0) + PRE_ROLL;
   const startedAt = Date.now() / 1000 + leadIn;
-  const steps = (SECONDS + leadIn) * FPS;
-  for (let i = 0; i <= steps; i++) {
-    const t = (i / steps) * Math.PI * 2;
-    const x = cx + Math.sin(t) * area.width * 0.3;
-    const y = cy + Math.sin(t * 2) * area.height * 0.2;
-    if (clicked && i % CLICK_EVERY === Math.floor(CLICK_EVERY / 2)) await page.mouse.click(x, y);
-    else await page.mouse.move(x, y);
-    await page.waitForTimeout(1000 / FPS);
+  // The mouse follows the clock, not a step count, so a slow machine can't change its speed. It
+  // waits in the middle through any lead-in, then runs the route over the filmed seconds.
+  const route = planRoute(area, SECONDS);
+  const clicks = clicked ? route.moves.map((m) => m.clickAt) : [];
+  for (;;) {
+    const t = Date.now() / 1000 - startedAt;
+    if (t > SECONDS + 1 / FPS) break;
+    const [x, y] = positionAt(route, t);
+    // Before the route starts, wiggle half a pixel so the effect keeps getting pointer moves.
+    await page.mouse.move(t < 0 ? x + (Math.round(t * 60) % 2) * 0.5 : x, y);
+    if (clicks.length && t >= clicks[0]) {
+      clicks.shift();
+      await page.mouse.down();
+      await page.waitForTimeout(70);
+      await page.mouse.up();
+    }
+    await page.waitForTimeout(8);
   }
   await cdp.send("Page.stopScreencast");
   await page.close();
