@@ -30,8 +30,8 @@ const OUTPUT_WIDTH = 1280;
 const FPS = 30;
 // Canvas backgrounds paint their first frame a moment after mounting; skip that blank lead-in.
 const LEAD_IN = { background: 1.2 };
-// Every clip also starts after this much off-camera wiggling in the middle: an effect's first
-// pointer moves can stall the page briefly, which would otherwise show as a frozen start.
+// Cursor effects start filming after this much off-camera wiggling in the middle: an effect's first
+// pointer moves can stall the page briefly, which would otherwise show as a frozen cursor at the start.
 const PRE_ROLL = 0.4;
 // The poster frame, in seconds into the clip: late enough that intro animations have settled.
 const POSTER_AT = 2.5;
@@ -238,7 +238,8 @@ for (const id of ids) {
     maxHeight: VIEWPORT.height * SCALE,
   });
 
-  const leadIn = (LEAD_IN[componentsMetadata[id]?.category] ?? 0) + PRE_ROLL;
+  // Only cursor effects get the pre-roll: others often play an intro on hover, which must start on camera.
+  const leadIn = (LEAD_IN[componentsMetadata[id]?.category] ?? 0) + (CURSOR.has(id) ? PRE_ROLL : 0);
   const startedAt = Date.now() / 1000 + leadIn;
   // The mouse follows the clock, not a step count, so a slow machine can't change its speed. It
   // waits in the middle through any lead-in, then runs the route over the filmed seconds.
