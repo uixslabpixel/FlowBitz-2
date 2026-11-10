@@ -135,8 +135,10 @@ symlink to the new version — even when zero files were copied.
 
 `scripts/create-beta.js:22-37` has the same copy loop (source
 `dist/beta-build/`, destination `dist/beta/`). `scripts/promote-beta.js` has
-the same loop around `:102-131` (source `dist/beta/`), then re-points
-`dist/latest`, and at `:147` runs `fs.rmSync(betaDir, { recursive: true });`.
+the same loop at `:45-60` (source `betaDir`, destination `versionDir`; its
+warning text is `Beta file not found`), then re-points `dist/latest`
+(`:62-75`), and near the end of the file, under the comment
+`// Clean up beta`, runs `fs.rmSync(betaDir, { recursive: true });`.
 
 Script conventions: ES modules, single quotes, semicolons, two-space indent,
 emoji-prefixed `console.log` progress lines, `process.exit(1)` on fatal
