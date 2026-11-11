@@ -16,7 +16,7 @@ The maintainer chose these five from the audit's findings table (rows 5, 1, 3,
 | [002](002-init-elements-added-after-load.md) | Elements added after a component has loaded are initialised | P1 | S | 001 | DONE |
 | [003](003-smart-animate-lifecycle.md) | Smart Animate starts in every build and is torn down by `destroy()` | P1 | S | 001 | DONE |
 | [004](004-harden-report-board.md) | The report board only stores and shows what the form can produce | P1 | S–M | 001 | DONE — SQL not yet applied |
-| [005](005-investigate-cdn-channels.md) | Find out what the CDN channels serve; release scripts cannot half-publish | P2 | M | — | TODO |
+| [005](005-investigate-cdn-channels.md) | Find out what the CDN channels serve; release scripts cannot half-publish | P2 | M | — | DONE — decision needed, see [findings](005-findings.md) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale — finding fixed independently or approach abandoned)
 
