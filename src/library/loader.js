@@ -9,12 +9,12 @@
  * - Smart GSAP loading (only if required)
  * - Detects existing GSAP installations
  *
- * @version 2.3.5
+ * @version 2.4.5
  * @author Slabpixel Studio
  * @license MIT
  */
 
-const VERSION = "2.3.5";
+const VERSION = "2.4.5";
 const ATTR_PREFIX = "wb-component";
 
 /**
@@ -70,7 +70,7 @@ const COMPONENT_REQUIREMENTS = {
   // Effect components
   "smart-animate": ["core", "scrollTrigger"],
   "3d-card-hover": [],
-  "outline-gradient-animate": [], // CSS only, no GSAP needed
+  "outline-gradient": [], // CSS only, no GSAP needed
   "image-trail": ["core"],
   "hover-zoom": [], // CSS only, no GSAP needed
 
@@ -602,4 +602,4 @@ if (typeof window !== "undefined") {
 
 // Export for ES modules
 export default flowbitz;
-export { FlowBitz, VERSION };
+export { FlowBitz, VERSION, COMPONENT_LOADERS, COMPONENT_REQUIREMENTS };

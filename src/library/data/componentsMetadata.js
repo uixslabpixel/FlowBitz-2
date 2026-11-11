@@ -1319,7 +1319,7 @@ export const componentsMetadata = {
     name: 'Magnetic Button',
     description: 'Cursor-follow magnetism for premium button interactions',
     category: 'button',
-    file: 'magnet.js',
+    file: 'magneticButton.js',
     installationNotes: 'Use with <button>, <a>, or any interactive element. Creates a magnetic effect where the element follows mouse movement within a specified radius. Great for interactive buttons and links.',
     attributes: [
       {
