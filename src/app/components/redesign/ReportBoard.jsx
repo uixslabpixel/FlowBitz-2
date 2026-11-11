@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
+import { isReportImageUrl } from "../../../shared/lib/reportImages";
 import FilterChips from "./FilterChips";
 
 // Public board for one report type (Supabase `reports` table): the form card on the left,
@@ -250,7 +251,14 @@ const ReportBoard = ({ type = "bug", component, onClose }) => {
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) console.error("Error loading reports:", error);
-    setReports(data || []);
+    // Only show screenshots from our own bucket; a row inserted around the form can hold any text.
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    setReports(
+      (data || []).map((r) => ({
+        ...r,
+        images: (r.images || []).filter((src) => isReportImageUrl(src, supabaseUrl)),
+      })),
+    );
     setLoading(false);
   }, [type]);
 
