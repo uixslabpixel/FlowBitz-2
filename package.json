@@ -30,6 +30,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "test": "node --test \"test/**/*.test.js\"",
     "build": "astro build && vite build --config vite.config.library.js",
     "build:app": "astro build",
     "build:library": "vite build --config vite.config.library.js",

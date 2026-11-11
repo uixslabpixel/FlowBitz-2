@@ -20,7 +20,7 @@ if (!fs.existsSync(betaDir)) {
 }
 
 // Copy library files to beta directory
-const files = ['flowbitz.umd.js', 'flowbitz.es.js', 'flowbitz.umd.js.map'];
+const files = ['flowbitz.umd.js', 'flowbitz.es.js', 'flowbitz.umd.js.map', 'flowbitz.es.js.map'];
 let copiedFiles = 0;
 
 files.forEach(file => {
@@ -32,9 +32,17 @@ files.forEach(file => {
     console.log(`✅ Copied ${file} to beta`);
     copiedFiles++;
   } else {
-    console.warn(`⚠️  Source file not found: ${file}`);
+    console.error(`❌ Source file not found: ${source}`);
+    process.exit(1);
   }
 });
+
+// The ES entry imports ./chunks/*, so the chunks must travel with it.
+const chunksSource = path.join(betaBuildDir, 'chunks');
+if (fs.existsSync(chunksSource)) {
+  fs.cpSync(chunksSource, path.join(betaDir, 'chunks'), { recursive: true });
+  console.log('✅ Copied chunks/');
+}
 
 // Create beta version info
 const betaInfo = {
