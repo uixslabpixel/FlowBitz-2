@@ -231,6 +231,14 @@ class SmartAnimateAnimator {
   }
 
   /**
+   * Initialize SmartAnimate on every matching element in the document
+   */
+  initAll() {
+    const elements = document.querySelectorAll('[wb-component="smart-animate"]');
+    elements.forEach((element) => this.initElement(element));
+  }
+
+  /**
    * Refresh all SmartAnimate instances
    */
   refresh() {
@@ -239,15 +247,30 @@ class SmartAnimateAnimator {
   }
 
   /**
+   * Destroy the instance for a specific element
+   * @param {HTMLElement} element - The element to clean up
+   */
+  destroyElement(element) {
+    const instance = this.instances.get(element);
+    if (!instance) return;
+    instance.destroy();
+    this.instances.delete(element);
+  }
+
+  /**
    * Destroy all instances
    */
+  destroyAll() {
+    Array.from(this.instances.keys()).forEach((element) =>
+      this.destroyElement(element),
+    );
+  }
+
+  /**
+   * Destroy all instances (kept for backward compatibility)
+   */
   destroy() {
-    this.instances.forEach((instance) => {
-      if (instance.destroy) {
-        instance.destroy();
-      }
-    });
-    this.instances.clear();
+    this.destroyAll();
   }
 }
 
@@ -255,12 +278,16 @@ class SmartAnimateAnimator {
 const smartAnimateAnimator = new SmartAnimateAnimator();
 
 // Auto-initialize components with wb-component="smart-animate"
-document.addEventListener("DOMContentLoaded", () => {
-  const elements = document.querySelectorAll('[wb-component="smart-animate"]');
-  elements.forEach((element) => {
-    smartAnimateAnimator.initElement(element);
-  });
-});
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      smartAnimateAnimator.initAll();
+    });
+  } else {
+    // DOM already loaded, initialize immediately
+    smartAnimateAnimator.initAll();
+  }
+}
 
 export default smartAnimateAnimator;
 export { SmartAnimate, SmartAnimateAnimator };
