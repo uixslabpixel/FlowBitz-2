@@ -273,7 +273,9 @@ async function loadRequiredGSAP(componentName, debug = false) {
  * FlowBitz Main Class
  */
 class FlowBitz {
-  constructor() {
+  constructor(loaders = COMPONENT_LOADERS) {
+    this.loaders = loaders;
+    this.loadPromises = new Map();
     this.version = VERSION;
     this.modules = {};
     this.loading = new Set();
@@ -342,7 +344,7 @@ class FlowBitz {
 
     elements.forEach((el) => {
       const componentName = el.getAttribute(ATTR_PREFIX);
-      if (COMPONENT_LOADERS[componentName]) {
+      if (this.loaders[componentName]) {
         components.add(componentName);
       }
     });
@@ -362,17 +364,35 @@ class FlowBitz {
    * @returns {Promise} Component module
    */
   async load(componentName) {
-    // Already loading or loaded
-    if (this.loading.has(componentName) || this.modules[componentName]) {
+    // Already loaded
+    if (this.modules[componentName]) {
       return this.modules[componentName];
     }
 
+    // Already loading: share the same promise
+    if (this.loadPromises.has(componentName)) {
+      return this.loadPromises.get(componentName);
+    }
+
     // Check if component exists
-    if (!COMPONENT_LOADERS[componentName]) {
+    if (!this.loaders[componentName]) {
       console.warn(`⚠️ FlowBitz: Component "${componentName}" not found`);
       return null;
     }
 
+    const promise = this.loadComponent(componentName).finally(() => {
+      this.loadPromises.delete(componentName);
+    });
+    this.loadPromises.set(componentName, promise);
+    return promise;
+  }
+
+  /**
+   * Import, register and initialise a component (one in-flight call per name)
+   * @param {string} componentName - Name of component to load
+   * @returns {Promise} Component module, or null on failure
+   */
+  async loadComponent(componentName) {
     this.loading.add(componentName);
 
     try {
@@ -395,7 +415,7 @@ class FlowBitz {
       }
 
       // Dynamic import component
-      const module = await COMPONENT_LOADERS[componentName]();
+      const module = await this.loaders[componentName]();
       const component = module.default;
 
       // Store module
@@ -421,47 +441,61 @@ class FlowBitz {
   }
 
   /**
+   * Load the components for elements that were added to the page, and
+   * initialise any element its component does not hold yet.
+   * @param {Map<string, Set<Element>>} elementsByComponent
+   */
+  async initAddedElements(elementsByComponent) {
+    for (const [name, elements] of elementsByComponent) {
+      const component = await this.load(name);
+      if (!component) continue;
+
+      const pending = Array.from(elements).filter(
+        (el) => el.isConnected && !component.instances?.has?.(el),
+      );
+      if (pending.length === 0) continue;
+
+      if (typeof component.initElement === "function") {
+        pending.forEach((el) => component.initElement(el));
+      } else if (typeof component.initAll === "function") {
+        component.initAll();
+      }
+    }
+  }
+
+  /**
    * Setup mutation observer for dynamic content
    */
   setupObserver() {
     const observer = new MutationObserver(async (mutations) => {
-      const componentsToLoad = new Set();
+      const elementsByComponent = new Map();
+      const collect = (el) => {
+        const name = el.getAttribute?.(ATTR_PREFIX);
+        if (!name || !this.loaders[name]) return;
+        if (!elementsByComponent.has(name)) elementsByComponent.set(name, new Set());
+        elementsByComponent.get(name).add(el);
+      };
 
       mutations.forEach((mutation) => {
         if (mutation.type === "childList") {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === Node.ELEMENT_NODE) {
-              // Check if the node itself has the attribute
-              const componentName = node.getAttribute?.(ATTR_PREFIX);
-              if (componentName && COMPONENT_LOADERS[componentName]) {
-                componentsToLoad.add(componentName);
-              }
-
-              // Check children
-              const elements = node.querySelectorAll?.(`[${ATTR_PREFIX}]`);
-              elements?.forEach((el) => {
-                const name = el.getAttribute(ATTR_PREFIX);
-                if (COMPONENT_LOADERS[name]) {
-                  componentsToLoad.add(name);
-                }
-              });
+              collect(node);
+              node.querySelectorAll?.(`[${ATTR_PREFIX}]`).forEach(collect);
             }
           });
         }
       });
 
-      // Load newly detected components
-      if (componentsToLoad.size > 0) {
+      if (elementsByComponent.size > 0) {
         if (this.config.debug) {
           console.log(
             "🔄 New components detected:",
-            Array.from(componentsToLoad),
+            Array.from(elementsByComponent.keys()),
           );
         }
 
-        for (const name of componentsToLoad) {
-          await this.load(name);
-        }
+        await this.initAddedElements(elementsByComponent);
       }
     });
 
@@ -579,6 +613,7 @@ class FlowBitz {
     // Clear state
     this.modules = {};
     this.loading.clear();
+    this.loadPromises.clear();
     this.initialized.clear();
     this.observers = [];
 
